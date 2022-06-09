@@ -8,9 +8,21 @@ const PROJECTS_QUERY = `
   query GetProjects {
     projects( where: { contract: "${coreContractAddress?.toLowerCase()}" }) {
       id
-      invocations
-      artistName
       name
+      description
+      license
+      locked
+      pricePerTokenInWei
+      active
+      paused
+      complete
+      artistName
+      invocations
+      maxInvocations
+      currencyAddress
+      currencySymbol
+      createdAt
+      activatedAt
     }
   }`;
 
