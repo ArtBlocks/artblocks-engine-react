@@ -12,7 +12,10 @@ interface ProjectsQueryParams {
 const projectsQuery = ({ first, skip }: ProjectsQueryParams) => `
   query GetProjects {
     projects(
-        where: { contract: "${coreContractAddress?.toLowerCase()}" }
+        where: {
+          contract: "${coreContractAddress?.toLowerCase()}"
+          active: true
+        }
         first: ${first}
         skip: ${skip}
         orderBy: createdAt orderDirection: desc

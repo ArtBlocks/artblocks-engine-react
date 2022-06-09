@@ -4,8 +4,8 @@ import Typography from "@mui/material/Typography";
 import Grid from '@mui/material/Grid';
 import Link from "@mui/material/Link";
 import { Project } from "utils/types";
-import useTheme from "@mui/material/styles/useTheme";
 import TokenImage from "./TokenImage";
+import ProjectStats from "./ProjectStats";
 
 const ProjectPreview = ({
   id,
@@ -16,82 +16,54 @@ const ProjectPreview = ({
   paused,
   complete,
   tokens,
-}: Project) => {
-  const theme = useTheme();
-
-  return (
-    <Paper elevation={1} sx={{
-      padding: 2,
-      marginBottom: 4,
+}: Project) => (
+  <Paper elevation={1} sx={{
+    padding: 2,
+    marginBottom: 4,
+  }}>
+    <Box sx={{
+      display: 'flex',
+      alignItems: 'center',
     }}>
-      <Box sx={{
-        justifyContent: 'space-between'
+      <Link href={`project/${id}`}>
+        <Typography variant="h5" fontWeight="bold">
+          { name } 
+        </Typography>
+      </Link>
+      <Typography sx={{
+        marginLeft: 1,
+        marginRight: 1,
       }}>
-       
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-          <Link href={`project/${id}`}>
-            <Typography variant="h5" fontWeight="bold">
-              { name } 
-            </Typography>
-          </Link>
-          <Typography sx={{
-            marginLeft: 1,
-            marginRight: 1,
-          }}>
-            •
-          </Typography>
-          <Typography variant="h5">
-            { artistName }
-          </Typography>
-        </Box>
-      </Box>
+        •
+      </Typography>
+      <Typography variant="h5">
+        { artistName }
+      </Typography>
+    </Box>
 
-      <Box sx={{
-        display: 'flex',
-        marginTop: 1,
-      }}>
-        {
-          complete ? (
-            <Typography fontWeight="bold" sx={{
-              marginRight: 1,
-              color: theme.palette.success.main
-            }}>
-              Completed •
-            </Typography>
-          ) : paused ? (
-            <Typography fontWeight="bold" sx={{
-              marginRight: 1,
-              color: theme.palette.info.main
-            }}>
-              Paused •
-            </Typography>
-          ) : null
-        }
-        <Box>
-          { invocations?.toString() } of { maxInvocations?.toString() }
-        </Box>
-      </Box>
+    <ProjectStats
+      paused={paused}
+      complete={complete}
+      invocations={invocations}
+      maxInvocations={maxInvocations}
+    />
 
-      {
-        tokens && tokens.length > 0 && (
-          <Box sx={{ marginTop: 2}}>
-            <Grid container spacing={2}>
-              {
-                tokens.map(token => (
-                  <Grid key={token.id} item md={3}>
-                    <TokenImage tokenId={token.tokenId} width="100%" thumb />
-                  </Grid>
-                ))
-              }
-            </Grid>
-          </Box>
-        )
-      }
-    </Paper>
-  )
-}
+    {
+      tokens && tokens.length > 0 && (
+        <Box sx={{ marginTop: 2}}>
+          <Grid container spacing={2}>
+            {
+              tokens.map(token => (
+                <Grid key={token.id} item md={3}>
+                  <TokenImage tokenId={token.tokenId} width="100%" thumb />
+                </Grid>
+              ))
+            }
+          </Grid>
+        </Box>
+      )
+    }
+  </Paper>
+)
 
 export default ProjectPreview;

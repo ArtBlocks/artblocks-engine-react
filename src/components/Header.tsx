@@ -9,7 +9,7 @@ const Header = () => {
       <Toolbar sx={
         {
           width: '100%',
-          maxWidth: 1170,
+          maxWidth: 1200,
           display: 'flex',
           margin: 'auto',
         }
