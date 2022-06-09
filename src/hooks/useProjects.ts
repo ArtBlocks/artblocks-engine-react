@@ -4,9 +4,19 @@ import {
 } from '@apollo/client';
 import { coreContractAddress } from 'config';
 
-const PROJECTS_QUERY = `
+interface ProjectsQueryParams {
+  first?: number;
+  skip?: number;
+}
+
+const projectsQuery = ({ first, skip }: ProjectsQueryParams) => `
   query GetProjects {
-    projects( where: { contract: "${coreContractAddress?.toLowerCase()}" }) {
+    projects(
+        where: { contract: "${coreContractAddress?.toLowerCase()}" }
+        first: ${first}
+        skip: ${skip}
+        orderBy: createdAt orderDirection: desc
+    ) {
       id
       name
       description
@@ -23,11 +33,18 @@ const PROJECTS_QUERY = `
       currencySymbol
       createdAt
       activatedAt
+      tokens (first:4 orderBy: createdAt orderDirection: desc) {
+        id
+        tokenId
+      }
     }
   }`;
 
-const useProjects = () => {
-  const { loading, error, data } = useQuery(gql(PROJECTS_QUERY));
+const useProjects = (params?: ProjectsQueryParams) => {
+  const first = params?.first || 10;
+  const skip = params?.skip || 0;
+
+  const { loading, error, data } = useQuery(gql(projectsQuery({ first, skip })));
 
   return {
     loading,

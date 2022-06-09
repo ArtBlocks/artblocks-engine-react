@@ -4,4 +4,13 @@ export interface Project {
   artistName: string;
   invocations: BigInt;
   maxInvocations: BigInt;
+  active: boolean;
+  paused: boolean;
+  complete: boolean;
+  tokens: Token[];
+}
+
+export interface Token {
+  id: string;
+  tokenId: string;
 }
