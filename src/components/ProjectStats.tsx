@@ -1,6 +1,5 @@
-import useTheme from "@mui/system/useTheme";
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
 
 interface Props {
   complete: boolean;
@@ -10,28 +9,17 @@ interface Props {
 }
 
 const ProjectStats = ({ complete, paused, invocations, maxInvocations }: Props) => {
-  const theme = useTheme();
-
   return (
     <Box sx={{
       display: 'flex',
       marginTop: 1,
+      alignItems: 'center',
     }}>
       {
-        complete ? (
-          <Typography fontWeight="bold" sx={{
-            marginRight: 1,
-            color: theme.palette.success.main
-          }}>
-            Completed •
-          </Typography>
-        ) : paused ? (
-          <Typography fontWeight="bold" sx={{
-            marginRight: 1,
-            color: theme.palette.info.main
-          }}>
-            Paused •
-          </Typography>
+        paused ? (
+          <Chip label="Paused" color="info" sx={{ color: 'white', marginRight: '8px' }} />
+        ) : !complete ? (
+          <Chip label="Live" color="success" sx={{ color: 'white', marginRight: '8px' }} />
         ) : null
       }
       <Box>

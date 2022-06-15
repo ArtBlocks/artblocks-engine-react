@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from 'components/pages/HomePage';
 import ProjectsPage from 'components/pages/ProjectsPage';
 import ProjectPage from 'components/pages/ProjectPage';
 import TokenPage from 'components/pages/TokenPage';
@@ -9,7 +10,8 @@ function App() {
     <AppProviders>
       <Router>
         <Routes>
-          <Route index element={<ProjectsPage />} />
+          <Route index element={<HomePage />} />
+          <Route path="projects" element={<ProjectsPage />} />
           <Route path="project/:id" element={<ProjectPage />} />
           <Route path="token/:projectId/:tokenId" element={<TokenPage />} />
         </Routes>

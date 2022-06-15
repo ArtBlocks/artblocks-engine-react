@@ -48,7 +48,7 @@ const ConnectWallet = () => {
   return (
     <>
       <Button variant="contained" onClick={handleOpen}>
-        Connect
+        Connect Wallet
       </Button>
 
       <Dialog
