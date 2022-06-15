@@ -10,8 +10,8 @@ const TokenPreview = ({ tokenId, width='auto', height='auto' }: Props) => {
     <iframe
       title={tokenId}
       src={`${generatorUrl}/${coreContractAddress}/${tokenId}`}
-      width={width}
-      height={height}
+      width={String(width)}
+      height={String(height)}
       frameBorder="0"
     />
   )

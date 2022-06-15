@@ -21,9 +21,11 @@ const theme = createTheme({
   palette: {
     primary: {
       main: '#333',
+      contrastText: 'white',
     },
     secondary: {
       main: '#888',
+      contrastText: 'white',
     },
     error: {
       main: red.A400,
