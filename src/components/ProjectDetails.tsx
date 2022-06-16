@@ -38,6 +38,7 @@ const ProjectDetails = ({ id }: Props) => {
           project.tokens?.length > 0 && (
             <Grid item sm={5}>
               <TokenPreview
+                projectId={project.id}
                 tokenId={project.tokens[0].tokenId}
                 width={size}
                 height={size}
@@ -66,8 +67,6 @@ const ProjectDetails = ({ id }: Props) => {
           <ProjectStats
             paused={project.paused}
             complete={project.complete}
-            invocations={project.invocations}
-            maxInvocations={project.maxInvocations}
           />
         </Grid>
       </Grid>

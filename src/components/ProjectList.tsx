@@ -10,14 +10,7 @@ const ProjectList = () => {
 
   if (loading) {
     return (
-      <Box sx={{
-        display: 'flex',
-        width: '100%',
-        justifyContent: 'center',
-        margin: 2,
-      }}>
-        <CircularProgress />
-      </Box>
+      <CircularProgress />
     )
   }
 

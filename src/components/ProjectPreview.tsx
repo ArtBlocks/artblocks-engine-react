@@ -11,8 +11,6 @@ const ProjectPreview = ({
   id,
   name,
   artistName,
-  invocations,
-  maxInvocations,
   paused,
   complete,
   tokens,
@@ -44,8 +42,6 @@ const ProjectPreview = ({
     <ProjectStats
       paused={paused}
       complete={complete}
-      invocations={invocations}
-      maxInvocations={maxInvocations}
     />
 
     {
@@ -55,7 +51,11 @@ const ProjectPreview = ({
             {
               tokens.map(token => (
                 <Grid key={token.id} item md={3}>
-                  <TokenImage tokenId={token.tokenId} width="100%" thumb />
+                  <TokenImage
+                    tokenId={token.tokenId}
+                    width={240}
+                    thumb
+                  />
                 </Grid>
               ))
             }

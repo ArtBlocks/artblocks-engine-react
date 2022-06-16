@@ -7,9 +7,10 @@ import { coreContractAddress } from 'config';
 interface ProjectsQueryParams {
   first?: number;
   skip?: number;
+  orderDirection?: 'asc' | 'desc';
 }
 
-const projectsQuery = ({ first, skip }: ProjectsQueryParams) => `
+const projectsQuery = ({ first, skip, orderDirection='desc' }: ProjectsQueryParams) => `
   query GetProjects {
     projects(
         where: {
@@ -18,7 +19,7 @@ const projectsQuery = ({ first, skip }: ProjectsQueryParams) => `
         }
         first: ${first}
         skip: ${skip}
-        orderBy: createdAt orderDirection: desc
+        orderBy: createdAt orderDirection: ${orderDirection}
     ) {
       id
       name
@@ -32,13 +33,15 @@ const projectsQuery = ({ first, skip }: ProjectsQueryParams) => `
       artistName
       invocations
       maxInvocations
+      scriptJSON
       currencyAddress
       currencySymbol
       createdAt
       activatedAt
-      tokens (first:4 orderBy: createdAt orderDirection: desc) {
+      tokens (first:10 orderBy: createdAt orderDirection: desc) {
         id
         tokenId
+        invocation
       }
     }
   }`;

@@ -4,11 +4,10 @@ import Chip from '@mui/material/Chip';
 interface Props {
   complete: boolean;
   paused: boolean;
-  invocations: BigInt;
-  maxInvocations: BigInt;
 }
 
-const ProjectStats = ({ complete, paused, invocations, maxInvocations }: Props) => {
+// TODO:  show upcoming if paused and launch date is in the future
+const ProjectStats = ({ complete, paused }: Props) => {
   return (
     <Box sx={{
       display: 'flex',
@@ -17,14 +16,21 @@ const ProjectStats = ({ complete, paused, invocations, maxInvocations }: Props) 
     }}>
       {
         paused ? (
-          <Chip label="Paused" color="info" sx={{ color: 'white', marginRight: '8px' }} />
+          <Chip
+            label="Paused"
+            color="info"
+            size="small"
+            sx={{ color: 'white', marginRight: '8px' }}
+          />
         ) : !complete ? (
-          <Chip label="Live" color="success" sx={{ color: 'white', marginRight: '8px' }} />
+          <Chip 
+            label="Live"
+            color="success"
+            size="small"
+            sx={{ color: 'white', marginRight: '8px' }}
+          />
         ) : null
       }
-      <Box>
-        { invocations?.toString() } of { maxInvocations?.toString() }
-      </Box>
     </Box>
   )
 }

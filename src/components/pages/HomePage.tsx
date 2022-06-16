@@ -1,13 +1,10 @@
-import ProjectList from 'components/ProjectList';
+import HomeProjects from 'components/HomeProjects';
 import Page from 'components/Page';
 
 const HomePage = () => {
   return (
     <Page>
-      <h2>
-        Home Page
-      </h2>
-      <ProjectList />
+      <HomeProjects />
     </Page>
   )
 }

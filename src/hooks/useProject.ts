@@ -20,6 +20,7 @@ const projectQuery = (id: string) => `
       artistName
       invocations
       maxInvocations
+      scriptJSON
       currencyAddress
       currencySymbol
       createdAt
@@ -27,6 +28,7 @@ const projectQuery = (id: string) => `
       tokens (first:1 orderBy: createdAt orderDirection: desc) {
         id
         tokenId
+        invocation
       }
     }
   }`;
