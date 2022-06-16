@@ -54,7 +54,7 @@ const ProjectOverview = ({ project }:Props) => {
           <p>
             { project.description }
           </p>
-          <Link href="/project/{project.id}">
+          <Link href={`/project/${project.id}`}>
             More
           </Link>
         </Grid>
