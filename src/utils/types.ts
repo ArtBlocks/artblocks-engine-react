@@ -5,6 +5,7 @@ export interface Project {
   artistName: string;
   invocations: BigInt;
   maxInvocations: BigInt;
+  activatedAt: BigInt;
   scriptJSON: string;
   active: boolean;
   paused: boolean;

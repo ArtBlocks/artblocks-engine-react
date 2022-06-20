@@ -1,4 +1,6 @@
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
@@ -37,13 +39,19 @@ const HomeProjects = () => {
       <ProjectOverview project={data.projects[0]} />
       <Divider sx={{ margin: '32px 0' }} />
       
-      <Typography variant="h4">
-        Recent projects
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', align: 'center' }}>
+        <Typography variant="h4">
+          Recent projects
+        </Typography>
+
+        <Button href="projects" endIcon={<ArrowForwardIcon />}>
+          See all
+        </Button>
+      </Box>
 
       <Masonry columns={[1, 1, 3]} spacing={2} sx={{ margin: '32px 0 48px' }}>
         {[1, 2, 3].map((index) => (
-          <ProjectSummary project={data.projects[index]} />
+          <ProjectSummary key={index} project={data.projects[index]} />
         ))}
       </Masonry>
     </Box>

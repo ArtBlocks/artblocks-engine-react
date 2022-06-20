@@ -6,6 +6,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { Project } from 'utils/types';
 import TokenPreview from 'components/TokenPreview';
 import { useWindowSize } from 'hooks/useWindowSize';
+import ProjectStats from './ProjectStats';
 
 interface Props {
   project: Project;
@@ -14,7 +15,7 @@ interface Props {
 const random = Math.random();
 
 const ProjectOverview = ({ project }:Props) => {
-  const randomIndex = Math.round(random * (project.tokens.length - 1));
+  const randomIndex = Math.floor(random * project.tokens.length);
   const token = project.tokens[randomIndex];
   const theme = useTheme();
   const size = useWindowSize();
@@ -45,18 +46,26 @@ const ProjectOverview = ({ project }:Props) => {
           />
         </Grid>
         <Grid item md={4}>
-          <Typography variant="h4">
-            { project.name }
-          </Typography>
-          <Typography variant="h6">
-            { project.artistName }
-          </Typography>
-          <p>
-            { project.description }
-          </p>
-          <Link href={`/project/${project.id}`}>
-            More
-          </Link>
+          <Box sx={{ paddingLeft: [0, 0, 2] }}>
+            <ProjectStats
+              complete={project.complete}
+              paused={project.paused}
+              activatedAt={project.activatedAt}
+            />
+
+            <Typography sx={{ marginTop: 4 }} variant="h4">
+              { project.name }
+            </Typography>
+            <Typography variant="h6">
+              { project.artistName }
+            </Typography>
+            <p>
+              { project.description }
+            </p>
+            <Link href={`/project/${project.id}`}>
+              More
+            </Link>
+          </Box>
         </Grid>
       </Grid>
     </Box>

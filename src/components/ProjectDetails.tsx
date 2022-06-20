@@ -67,6 +67,7 @@ const ProjectDetails = ({ id }: Props) => {
           <ProjectStats
             paused={project.paused}
             complete={project.complete}
+            activatedAt={project.activatedAt}
           />
         </Grid>
       </Grid>

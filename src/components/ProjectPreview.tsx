@@ -14,6 +14,7 @@ const ProjectPreview = ({
   paused,
   complete,
   tokens,
+  activatedAt,
 }: Project) => (
   <Paper elevation={1} sx={{
     padding: 2,
@@ -42,6 +43,7 @@ const ProjectPreview = ({
     <ProjectStats
       paused={paused}
       complete={complete}
+      activatedAt={activatedAt}
     />
 
     {
