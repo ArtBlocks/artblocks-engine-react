@@ -20,9 +20,9 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
     url: `https://ropsten.infura.io/v3/${infuraKey}`,
     name: 'Ropsten',
   },
-  4: {
-    url: `https://rinkeby.infura.io/v3/${infuraKey}`,
-    name: 'Rinkeby',
+  6284: {
+    url: `https://goerli.infura.io/v3/${infuraKey}`,
+    name: 'Goerli',
   },
 }
 

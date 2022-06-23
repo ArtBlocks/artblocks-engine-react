@@ -5,12 +5,19 @@ import useTheme from '@mui/material/styles/useTheme';
 import { Project } from 'utils/types';
 import TokenImage from 'components/TokenImage';
 import { useWindowSize } from 'hooks/useWindowSize';
+import { Link } from '@mui/material';
 
 interface Props {
   project: Project;
+  showDescription?: boolean;
+  showMoreLink?: boolean;
 }
 
-const ProjectSummary = ({ project }:Props) => {
+const ProjectSummary = ({
+  project,
+  showDescription=false,
+  showMoreLink=false,
+}:Props) => {
   const token = project.tokens[0];
   const theme = useTheme();
   const size = useWindowSize();
@@ -34,7 +41,7 @@ const ProjectSummary = ({ project }:Props) => {
   const activatedDate = moment.unix(parseInt(project.activatedAt.toString()));
 
   return (
-    <Box>
+    <Box sx={{ paddingBottom: 8 }}>
       <TokenImage
         tokenId={token.tokenId}
         aspectRatio={scriptJSON?.aspectRatio}
@@ -50,6 +57,20 @@ const ProjectSummary = ({ project }:Props) => {
       <Typography variant="h6">
         { project.artistName }
       </Typography>
+      {
+        showDescription && (
+          <p>
+            { project.description }
+          </p>
+        )
+      }
+      {
+        showMoreLink && (
+          <Link href={`/project/${project.id}`}>
+            More
+          </Link>
+        )
+      }
     </Box>
   )
 }
