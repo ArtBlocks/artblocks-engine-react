@@ -42,9 +42,9 @@ const ProjectSummary = ({
       <Typography sx={{ marginTop: 3 }}>
         Launched { activatedDate.format('MMMM DD, YYYY') }
       </Typography>
-      <Typography variant="h4" sx={{ marginTop: 1 }}>
+      <Link href={`/project/${project.id}`} sx={{ marginTop: 1, fontSize: 32, textDecoration: 'none' }}>
         { project.name }
-      </Typography>
+      </Link>
       <Typography variant="h6">
         { project.artistName }
       </Typography>

@@ -9,7 +9,6 @@ interface Props {
   activatedAt: BigInt;
 }
 
-// TODO:  show upcoming if paused and launch date is in the future
 const ProjectStats = ({ complete, paused, activatedAt }: Props) => {
   const activatedDate = moment.unix(parseInt(activatedAt.toString()));
 

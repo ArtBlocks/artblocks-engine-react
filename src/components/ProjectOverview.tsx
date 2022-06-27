@@ -53,7 +53,7 @@ const ProjectOverview = ({ project }:Props) => {
               activatedAt={project.activatedAt}
             />
 
-            <Typography sx={{ marginTop: 4 }} variant="h4">
+            <Typography sx={{ marginTop: 3 }} variant="h4">
               { project.name }
             </Typography>
             <Typography variant="h6">

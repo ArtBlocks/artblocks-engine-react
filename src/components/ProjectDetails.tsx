@@ -1,12 +1,15 @@
-import Box from "@mui/material/Box";
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
-import useProject from "hooks/useProject";
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
+import Divider from '@mui/material/Divider';
+import LinearProgress from '@mui/material/LinearProgress';
+import useProject from 'hooks/useProject';
+import { useWindowSize } from 'hooks/useWindowSize';
+import useTheme from '@mui/material/styles/useTheme';
 import TokenPreview from "./TokenPreview";
 import ProjectStats from "./ProjectStats";
-import { useWindowSize } from "hooks/useWindowSize";
+import Loading from "./Loading";
 
 interface Props {
   id: string;
@@ -14,11 +17,11 @@ interface Props {
 
 const ProjectDetails = ({ id }: Props) => {
   const { loading, error, data } = useProject(id);
-  const ws = useWindowSize();
-  const size = ws.width >= 600 ? Math.min(ws.width*.4 - 24, 440) : ws.width - 32;
+  const size = useWindowSize();
+  const theme = useTheme();
 
   if (loading) {
-    return <CircularProgress />
+    return <Loading />
   }
 
   if (error) {
@@ -29,46 +32,88 @@ const ProjectDetails = ({ id }: Props) => {
     )
   }
 
-  const project = data?.project; 
+  const project = data?.project;
+  const token = project?.tokens[0];
+  const width = size.width > theme.breakpoints.values.md
+    ? (Math.min(size.width, 1200)- 48)*0.666666
+      : size.width > theme.breakpoints.values.sm
+        ? size.width - 48
+        : size.width - 32
+
+  let scriptJSON;
+  try {
+    scriptJSON = JSON.parse(project.scriptJSON);
+  } catch (e) {
+    console.log('Error parsing script JSON');
+  }
+
+  const {
+    id: projectId,
+    name, artistName,
+    paused,
+    complete,
+    activatedAt,
+    invocations,
+    maxInvocations,
+  } = project;
   
   return project && (
     <Box>
-      <Grid container>
+      <Grid spacing={2} container>
         {
           project.tokens?.length > 0 && (
-            <Grid item sm={5}>
+            <Grid item md={8}>
               <TokenPreview
-                projectId={project.id}
-                tokenId={project.tokens[0].tokenId}
-                width={size}
-                height={size}
+                projectId={projectId}
+                tokenId={token.tokenId}
+                invocation={token.invocation}
+                aspectRatio={scriptJSON?.aspectRatio}
+                width={width}
+                showImageLink
+                showLiveViewLink
               />
-              <Box sx={{
-                width: size,
-                textAlign: 'center',
-                marginTop: 1,
-                marginBottom: 3,
-              }}>
-                mint # {project.tokens[0].tokenId }
-              </Box>
             </Grid>
           )
         }
         
-        <Grid item sm={7}>
-          <Typography variant="h2" fontWeight="bold">
-            { project.name } 
-          </Typography>
-          
-          <Typography variant="h5">
-            { project.artistName }
-          </Typography>
+        <Grid item md={4} xs={12} sm={12}>
+          <Box sx={{ width: '100%', paddingLeft: [0, 0, 2]}}>
+            <ProjectStats
+              paused={paused}
+              complete={complete}
+              activatedAt={activatedAt}
+            />
+            
+            <Typography variant="h4" mt={3}>
+              { name } 
+            </Typography>
 
-          <ProjectStats
-            paused={project.paused}
-            complete={project.complete}
-            activatedAt={project.activatedAt}
-          />
+            <Typography variant="h6" mb={2}>
+              { artistName }
+            </Typography>
+
+            <Divider sx={{ display: ['block', 'none', 'none'], marginBottom: 2 }} />
+
+            <Box sx={{ fontWeight: 'bold' }}>
+              { invocations } / { maxInvocations } minted
+            </Box>
+
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+              <LinearProgress
+                sx={{ width: 'calc(100% - 32px)' }}
+                value={(invocations/maxInvocations)*100}
+                variant="determinate"
+              />
+              <Box sx={{ fontSize: 12 }}>
+                { Math.floor((invocations/maxInvocations)*100) } %
+              </Box>
+            </Box>
+
+          </Box>
         </Grid>
       </Grid>
     </Box>

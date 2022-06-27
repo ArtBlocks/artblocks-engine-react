@@ -2,12 +2,12 @@ import useProjects from 'hooks/useProjects';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
 import Masonry from '@mui/lab/Masonry';
 import { Project } from 'utils/types';
 import { useWindowSize } from 'hooks/useWindowSize';
 import useTheme from '@mui/material/styles/useTheme';
 import ProjectSummary from './ProjectSummary';
+import Loading from './Loading';
 
 interface Props {
   skip?: number;
@@ -23,9 +23,7 @@ const ProjectList = ({
   const theme = useTheme();
 
   if (loading) {
-    return (
-      <CircularProgress />
-    )
+    return <Loading />
   }
 
   if (error) {

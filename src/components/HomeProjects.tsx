@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
@@ -11,6 +10,7 @@ import ProjectSummary from 'components/ProjectSummary';
 import useProjects from 'hooks/useProjects';
 import { useWindowSize } from 'hooks/useWindowSize';
 import useTheme from '@mui/material/styles/useTheme';
+import Loading from './Loading';
 
 const HomeProjects = () => {
   const { loading, error, data } = useProjects({ first: 7 });
@@ -18,16 +18,7 @@ const HomeProjects = () => {
   const theme = useTheme();
 
   if (loading) {
-    return (
-      <Box sx={{
-        display: 'flex',
-        width: '100%',
-        justifyContent: 'center',
-        margin: 2,
-      }}>
-        <CircularProgress />
-      </Box>
-    )
+    return <Loading />
   }
 
   if (error) {
