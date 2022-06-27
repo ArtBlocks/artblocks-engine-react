@@ -5,10 +5,22 @@ import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import Masonry from '@mui/lab/Masonry';
 import { Project } from 'utils/types';
+import { useWindowSize } from 'hooks/useWindowSize';
+import useTheme from '@mui/material/styles/useTheme';
 import ProjectSummary from './ProjectSummary';
 
-const ProjectList = () => {
-  const { loading, error, data } = useProjects();
+interface Props {
+  skip?: number;
+  first?: number;
+}
+
+const ProjectList = ({
+  skip=0,
+  first=8
+}: Props) => {
+  const { loading, error, data } = useProjects({ skip, first });
+  const size = useWindowSize();
+  const theme = useTheme();
 
   if (loading) {
     return (
@@ -24,9 +36,19 @@ const ProjectList = () => {
     )
   }
 
+  let width = 280;
+  const maxColumns = 2;
+  if (size && !isNaN(size.width)) {
+    width = size.width > theme.breakpoints.values.md
+      ? (Math.min(size.width, 1200)- 96)*1/maxColumns
+        : size.width > theme.breakpoints.values.sm
+          ? size.width - 64
+          : size.width - 48
+  }
+
   return (
     <Box>
-      <Typography variant="h4">
+      <Typography variant="h4" p="0 1rem">
         All Projects
       </Typography>
       <Masonry columns={[1, 1, 2]} spacing={3} sx={{ margin: '32px 0 48px' }}>
@@ -36,6 +58,7 @@ const ProjectList = () => {
               <ProjectSummary
                 key={project.id}
                 project={project}
+                width={width}
                 showDescription
                 showMoreLink
               />

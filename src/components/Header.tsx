@@ -17,7 +17,7 @@ import { appTitle } from 'config';
 const navItems = [
   {
     label: 'Projects',
-    url: 'projects'
+    url: '/projects'
   }
 ]
 
@@ -50,7 +50,6 @@ const Header = () => {
         <Toolbar sx={
           {
             width: '100%',
-            maxWidth: 1200,
             display: 'flex',
             margin: 'auto',
             justifyContent: 'space-between',

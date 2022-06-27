@@ -9,9 +9,13 @@ import Masonry from '@mui/lab/Masonry';
 import ProjectOverview from 'components/ProjectOverview';
 import ProjectSummary from 'components/ProjectSummary';
 import useProjects from 'hooks/useProjects';
+import { useWindowSize } from 'hooks/useWindowSize';
+import useTheme from '@mui/material/styles/useTheme';
 
 const HomeProjects = () => {
-  const { loading, error, data } = useProjects({ first: 4 });
+  const { loading, error, data } = useProjects({ first: 7 });
+  const size = useWindowSize();
+  const theme = useTheme();
 
   if (loading) {
     return (
@@ -34,6 +38,16 @@ const HomeProjects = () => {
     )
   }
 
+  let width = 280;
+  const maxColumns = 3;
+  if (size && !isNaN(size.width)) {
+    width = size.width > theme.breakpoints.values.md
+      ? (Math.min(size.width, 1200)- 96)*1/maxColumns
+        : size.width > theme.breakpoints.values.sm
+          ? size.width - 64
+          : size.width - 48
+  }
+
   return data?.projects && (
     <Box> 
       <ProjectOverview project={data.projects[0]} />
@@ -50,8 +64,8 @@ const HomeProjects = () => {
       </Box>
 
       <Masonry columns={[1, 1, 3]} spacing={2} sx={{ margin: '32px 0 48px' }}>
-        {[1, 2, 3].map((index) => (
-          <ProjectSummary key={index} project={data.projects[index]} />
+        {[1, 2, 3, 4, 5, 6].map((index) => (
+          <ProjectSummary key={index} project={data.projects[index]} width={width} />
         ))}
       </Masonry>
     </Box>

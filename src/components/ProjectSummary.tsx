@@ -1,35 +1,26 @@
 import moment from 'moment';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import useTheme from '@mui/material/styles/useTheme';
 import { Project } from 'utils/types';
 import TokenImage from 'components/TokenImage';
-import { useWindowSize } from 'hooks/useWindowSize';
 import { Link } from '@mui/material';
+import truncate from 'utils/truncate';
 
 interface Props {
   project: Project;
+  width?: number;
   showDescription?: boolean;
   showMoreLink?: boolean;
 }
 
 const ProjectSummary = ({
   project,
+  width=280,
   showDescription=false,
   showMoreLink=false,
 }:Props) => {
   const token = project.tokens[0];
-  const theme = useTheme();
-  const size = useWindowSize();
 
-  let width = 280;
-  if (size && !isNaN(size.width)) {
-    width = size.width > theme.breakpoints.values.md
-      ? (Math.min(size.width, 1200)- 96)*0.33333
-        : size.width > theme.breakpoints.values.sm
-          ? size.width - 64
-          : size.width - 48
-  }
 
   let scriptJSON;
   try {
@@ -60,7 +51,7 @@ const ProjectSummary = ({
       {
         showDescription && (
           <p>
-            { project.description }
+            { truncate(project.description, 100) }
           </p>
         )
       }
