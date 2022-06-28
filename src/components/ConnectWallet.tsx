@@ -3,47 +3,23 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
-import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
-import { SxProps } from '@mui/material';
-import { metaMask } from 'utils/connectors';
-
-interface WalletIconProps {
-  name: string;
-  logo: string;
-  onClick?: () => void;
-  width?: number | string;
-}
-
-const WalletIcon = ({ name, logo, width=100, onClick, ...styles }: WalletIconProps & SxProps) => (
-  <ButtonBase onClick={onClick}>
-    <Box
-      sx={{
-        height: 160,
-        display: 'flex',
-        justifyContent: 'space-between',
-        flexDirection: 'column',
-        cursor: 'pointer',
-        marginRight: [0, 3],
-        ...styles,
-      }}
-    >
-      <img src={logo} alt={name} width={width} />
-      <Typography pb={2} fontSize={14} fontWeight={400} textAlign="center">
-        { name }
-      </Typography>
-    </Box>
-  </ButtonBase>
-);
+import Alert from '@mui/material/Alert';
+import {
+  metaMask,
+  metaMaskHooks,
+  walletConnect,
+  walletConnectHooks,
+  coinbaseWallet,
+  coinbaseWalletHooks,
+} from 'utils/connectors';
+import WalletConnector from './WalletConnector';
 
 const ConnectWallet = () => {
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const connectWithMetamask = () => {
-    metaMask.activate(1);
-  };
 
   return (
     <>
@@ -75,26 +51,45 @@ const ConnectWallet = () => {
           <Box sx={{
             display: 'flex',
             marginTop: 3,
-            marginLeft: 'auto',
+            margin: '8px auto',
             width: '100%',
-            maxWidth: 460,
+            maxWidth: '400px',
             alignItems: 'center',
             flexDirection: ['column', 'row'],
           }}>
-            <WalletIcon
+            <WalletConnector
               name="MetaMask"
               logo="/img/metamask-logo.svg"
-              onClick={connectWithMetamask}
+              connector={metaMask}
+              hooks={metaMaskHooks}
+              onError={setError}
+              onSuccess={handleClose}
             />
-            <WalletIcon
+            <WalletConnector
               name="Wallet Connect"
               logo="/img/wallet-connect-logo.svg"
+              connector={walletConnect}
+              hooks={walletConnectHooks}
+              onError={setError}
+              onSuccess={handleClose}
             />
-            <WalletIcon
+            <WalletConnector
               name="Coinbase Wallet"
               logo="/img/coinbase-wallet-logo.png"
+              connector={coinbaseWallet}
+              hooks={coinbaseWalletHooks}
+              onError={setError}
+              onSuccess={handleClose}
             />
           </Box>
+
+          {
+            error && (
+              <Alert severity="error">
+                { error }
+              </Alert>
+            )
+          }
 
         </Box>
       </Dialog>

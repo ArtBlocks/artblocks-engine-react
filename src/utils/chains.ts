@@ -33,3 +33,24 @@ export const URLS: { [chainId: number]: string } = Object.keys(CHAINS).reduce<{ 
     return acc;
   }, {}
 )
+
+function isExtendedChainInformation(
+  chainInformation: BasicChainInformation | ExtendedChainInformation
+): chainInformation is ExtendedChainInformation {
+  return !!(chainInformation as ExtendedChainInformation).nativeCurrency
+}
+
+export function getAddChainParameters(chainId: number): AddEthereumChainParameter | number {
+  const chainInformation = CHAINS[chainId]
+  if (isExtendedChainInformation(chainInformation)) {
+    return {
+      chainId,
+      chainName: chainInformation.name,
+      nativeCurrency: chainInformation.nativeCurrency,
+      rpcUrls: [chainInformation.url],
+      blockExplorerUrls: chainInformation.blockExplorerUrls,
+    }
+  } else {
+    return chainId
+  }
+}
