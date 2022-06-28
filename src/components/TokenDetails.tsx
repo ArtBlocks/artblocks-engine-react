@@ -10,6 +10,7 @@ import Grid from '@mui/material/Grid';
 import useTheme from '@mui/material/styles/useTheme';
 import { useWindowSize } from 'hooks/useWindowSize';
 import TokenPreview from './TokenPreview';
+import TokenTraits from './TokenTraits';
 
 interface Props {
   id: string;
@@ -86,6 +87,16 @@ const TokenDetails = ({ id }: Props) => {
           <Typography variant="h6">
             { token.project.artistName }
           </Typography>
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={2}>
+        <Grid item md={6}>
+          <TokenTraits tokenId={token.tokenId} />
+        </Grid>
+
+        <Grid item md={6}>
+          Etherscan OpenSea
         </Grid>
       </Grid>
     </Box>

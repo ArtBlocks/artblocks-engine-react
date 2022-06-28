@@ -35,3 +35,8 @@ export interface MinterConfiguration {
   startTime: BigInt,
   endTime: BigInt;
 }
+
+export interface Trait {
+  trait_type: string;
+  value: string;
+}
