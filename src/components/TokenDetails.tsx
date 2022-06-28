@@ -5,12 +5,15 @@ import Alert from '@mui/material/Alert';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
-import Loading from './Loading';
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import useTheme from '@mui/material/styles/useTheme';
 import { useWindowSize } from 'hooks/useWindowSize';
+import Loading from './Loading';
 import TokenPreview from './TokenPreview';
 import TokenTraits from './TokenTraits';
+import { coreContractAddress, openseaBaseUrl, etherscanBaseUrl } from 'config';
 
 interface Props {
   id: string;
@@ -75,8 +78,6 @@ const TokenDetails = ({ id }: Props) => {
           />
         </Grid>
 
-        <div>uri: { token.uri }</div>
-
         <Grid item md={4}>
           <Typography fontSize="14px" mb={4}>
             Minted { moment.unix(token.createdAt).format('MMM DD, YYYY') }
@@ -90,13 +91,32 @@ const TokenDetails = ({ id }: Props) => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={2} mt={4}>
         <Grid item md={6}>
+          <Typography variant="h6" mb={2}>Features</Typography>
           <TokenTraits tokenId={token.tokenId} />
         </Grid>
 
         <Grid item md={6}>
-          Etherscan OpenSea
+          <Box sx={{ display: 'flex' }}>
+            <Button
+              endIcon={<ArrowForwardIcon />}
+              sx={{ marginRight: 2}}
+              onClick={() => {
+                window.open(`${etherscanBaseUrl}/token/${coreContractAddress}?a=${token.tokenId}`);
+              }}
+            >
+              Etherscan
+            </Button>
+            <Button
+              endIcon={<ArrowForwardIcon />}
+              onClick={() => {
+                window.open(`${openseaBaseUrl}/${coreContractAddress}/${token.tokenId}`);
+              }}
+            >
+              View on Opensea
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </Box>

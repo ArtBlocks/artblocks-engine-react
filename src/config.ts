@@ -8,6 +8,7 @@ export const generatorUrl = process.env.REACT_APP_GENERATOR_URL;
 export const infuraProjectId = process.env.REACT_APP_INFURA_PROJECT_ID;
 export const infuraKey = process.env.REACT_APP_INFURA_KEY;
 export const openseaBaseUrl = process.env.REACT_APP_OPENSEA_BASE_URL;
+export const etherscanBaseUrl = process.env.REACT_APP_ETHERSCAN_BASE_URL;
 export const projectsPerPage = 8;
 export const tokensPerPage = 12;
 export const expectedChainId = Number(process.env.REACT_APP_EXPECTED_CHAIN_ID);

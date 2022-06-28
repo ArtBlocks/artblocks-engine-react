@@ -28,23 +28,23 @@ const TokenTraits = ({ tokenId }: Props) => {
     );
   }
 
-  return (
+  return traits && (
     <TableContainer sx={{ marginBottom: 4 }}>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Feature</TableCell>
             <TableCell>Value</TableCell>
-            <TableCell>% Count</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {traits.map((trait:Trait) => {
+            const parts = trait.value.split(':');
+
             return (
-              <TableRow key={trait.trait_type}>
-                <TableCell>{ trait.trait_type }</TableCell>
-                <TableCell>{ trait.value }</TableCell>
-                <TableCell>-</TableCell>
+              <TableRow key={parts[0]}>
+                <TableCell>{ parts[0] }</TableCell>
+                <TableCell>{ parts[1] }</TableCell>
               </TableRow>
             );
           })}
