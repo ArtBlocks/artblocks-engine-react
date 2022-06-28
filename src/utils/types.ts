@@ -14,10 +14,16 @@ export interface Project {
   minterConfiguration?: MinterConfiguration;
 }
 
+export interface Account {
+  id: string;
+}
 export interface Token {
   id: string;
   tokenId: string;
   invocation: BigInt;
+  uri: string;
+  createdAt: BigInt;
+  owner?: Account;
 }
 
 export interface MinterConfiguration {

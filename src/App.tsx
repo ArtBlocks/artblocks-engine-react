@@ -13,7 +13,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="project/:id" element={<ProjectPage />} />
-          <Route path="token/:projectId/:tokenId" element={<TokenPage />} />
+          <Route path="token/:id" element={<TokenPage />} />
         </Routes>
       </Router>
     </AppProviders>

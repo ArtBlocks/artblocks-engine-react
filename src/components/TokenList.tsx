@@ -59,7 +59,7 @@ const TokenList = ({
           {
             data.tokens.map(((token:Token) => (
               <Grid key={token.tokenId} item md={4} sm={12} xs={12}>
-                <Link href={`/token/${projectId}/${token.tokenId}`}>
+                <Link href={`/token/${token.id}`}>
                   <TokenImage
                     tokenId={token.tokenId}
                     aspectRatio={aspectRatio}

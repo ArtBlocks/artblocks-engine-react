@@ -105,6 +105,7 @@ const ProjectDetails = ({ id }: Props) => {
             <Grid item md={8}>
               <TokenPreview
                 projectId={projectId}
+                id={token.id}
                 tokenId={token.tokenId}
                 invocation={token.invocation}
                 aspectRatio={scriptJSON?.aspectRatio}

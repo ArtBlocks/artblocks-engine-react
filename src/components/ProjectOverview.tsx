@@ -39,6 +39,7 @@ const ProjectOverview = ({ project }:Props) => {
         <Grid item md={8}>
           <TokenPreview
             projectId={project.id}
+            id={token.id}
             tokenId={token.tokenId}
             invocation={token.invocation}
             aspectRatio={scriptJSON?.aspectRatio}

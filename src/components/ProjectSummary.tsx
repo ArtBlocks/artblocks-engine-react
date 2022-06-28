@@ -35,12 +35,14 @@ const ProjectSummary = ({
 
   return (
     <Box sx={{ paddingBottom: 8 }}>
-      <TokenImage
-        tokenId={token.tokenId}
-        aspectRatio={scriptJSON?.aspectRatio}
-        width={width}
-        thumb
-      />
+      <Link href={`/project/${project.id}`}>
+        <TokenImage
+          tokenId={token.tokenId}
+          aspectRatio={scriptJSON?.aspectRatio}
+          width={width}
+          thumb
+        />
+      </Link>
       {
         startDate && (
           <Typography sx={{ marginTop: 3 }}>
