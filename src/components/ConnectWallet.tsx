@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useWeb3React } from '@web3-react/core';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   metaMask,
   metaMaskHooks,
@@ -14,18 +17,57 @@ import {
   coinbaseWalletHooks,
 } from 'utils/connectors';
 import WalletConnector from './WalletConnector';
+import Address from './Address';
 
 const ConnectWallet = () => {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
+  const { isActive, account, connector } = useWeb3React();
+
+  useEffect(() => {
+    try {
+      if (connector?.connectEagerly) {
+        connector.connectEagerly();
+      }
+    } catch(error) {
+      console.log(error);
+    }
+  }, []); // eslint-disable-line
+
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setError(undefined);
+  }
+
+  const disconnect = () => {
+    if (connector?.deactivate) {
+      try {
+        connector.deactivate();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      void connector.resetState()
+    }
+  }
 
   return (
     <>
-      <Button variant="contained" onClick={handleOpen}>
-        Connect Wallet
-      </Button>
+      {
+        isActive && account ? (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Address address={account} />
+            <IconButton onClick={disconnect} sx={{ marginLeft: 1, color: 'white' }}>
+              <LogoutIcon />
+            </IconButton>
+          </Box>
+        ) : (
+          <Button variant="contained" onClick={handleOpen}>
+            Connect Wallet
+          </Button>
+        )
+      }
 
       <Dialog
         open={open}
@@ -53,7 +95,7 @@ const ConnectWallet = () => {
             marginTop: 3,
             margin: '8px auto',
             width: '100%',
-            maxWidth: '400px',
+            maxWidth: '550px',
             alignItems: 'center',
             flexDirection: ['column', 'row'],
           }}>

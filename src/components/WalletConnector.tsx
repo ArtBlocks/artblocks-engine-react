@@ -25,7 +25,7 @@ const formatError = (error:any): string => {
   return 'Unexpected error';
 }
 
-const WalletConnector = ({ name, logo, width=100, connector, hooks, onError, onSuccess, ...styles }: Props) => {
+const WalletConnector = ({ name, logo, width=100, connector, hooks, onError, onSuccess }: Props) => {
   const connect = useCallback(async () => {
     onError(undefined)
     try {
@@ -50,7 +50,9 @@ const WalletConnector = ({ name, logo, width=100, connector, hooks, onError, onS
           flexDirection: 'column',
           cursor: 'pointer',
           margin: 2,
-          ...styles,
+          padding: 3,
+          borderRadius: 3,
+          border: '1px solid #eee',
         }}
       >
         <img src={logo} alt={name} width={width} />
