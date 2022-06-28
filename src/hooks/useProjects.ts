@@ -2,7 +2,7 @@ import {
   useQuery,
   gql
 } from '@apollo/client';
-import { coreContractAddress } from 'config';
+import { coreContractAddress, projectsPerPage } from 'config';
 
 interface ProjectsQueryParams {
   first?: number;
@@ -10,7 +10,7 @@ interface ProjectsQueryParams {
   orderDirection?: 'asc' | 'desc';
 }
 
-const projectsQuery = ({ first, skip, orderDirection='desc' }: ProjectsQueryParams) => `
+const projectsQuery = ({ first, skip, orderDirection }: ProjectsQueryParams) => `
   query GetProjects {
     projects(
         where: {
@@ -43,14 +43,24 @@ const projectsQuery = ({ first, skip, orderDirection='desc' }: ProjectsQueryPara
         tokenId
         invocation
       }
+      minterConfiguration {
+        basePrice
+        startPrice
+        priceIsConfigured
+        currencySymbol
+        currencyAddress
+        startTime
+        endTime
+      }
     }
   }`;
 
 const useProjects = (params?: ProjectsQueryParams) => {
-  const first = params?.first || 10;
+  const first = params?.first || projectsPerPage;
   const skip = params?.skip || 0;
+  const orderDirection = params?.orderDirection || 'desc'
 
-  const { loading, error, data } = useQuery(gql(projectsQuery({ first, skip })));
+  const { loading, error, data } = useQuery(gql(projectsQuery({ first, skip, orderDirection })));
 
   return {
     loading,

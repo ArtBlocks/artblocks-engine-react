@@ -40,7 +40,7 @@ const HomeProjects = () => {
   }
 
   return data?.projects && (
-    <Box> 
+    <Box sx={{ paddingTop: 2 }}> 
       <ProjectOverview project={data.projects[0]} />
       <Divider sx={{ margin: '32px 0' }} />
       

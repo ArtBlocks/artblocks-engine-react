@@ -30,6 +30,15 @@ const projectQuery = (id: string) => `
         tokenId
         invocation
       }
+      minterConfiguration {
+        basePrice
+        startPrice
+        priceIsConfigured
+        currencySymbol
+        currencyAddress
+        startTime
+        endTime
+      }
     }
   }`;
 

@@ -1,22 +1,46 @@
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import LinearProgress from '@mui/material/LinearProgress';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Stack from '@mui/material/Stack';
+import Pagination from '@mui/material/Pagination';
+import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import useProject from 'hooks/useProject';
 import { useWindowSize } from 'hooks/useWindowSize';
 import useTheme from '@mui/material/styles/useTheme';
-import TokenPreview from "./TokenPreview";
-import ProjectStats from "./ProjectStats";
-import Loading from "./Loading";
+import TokenPreview from './TokenPreview';
+import ProjectStats from './ProjectStats';
+import Loading from './Loading';
+import TokenList from './TokenList';
+import { tokensPerPage } from 'config';
 
 interface Props {
   id: string;
 }
 
+interface TitleProps {
+  children: any;
+}
+
+const Title = ({ children }: TitleProps) => (
+  <Typography
+    fontSize="12px"
+    textTransform="uppercase"
+    mb={2}
+  >
+    { children }
+  </Typography>
+);
+
 const ProjectDetails = ({ id }: Props) => {
   const { loading, error, data } = useProject(id);
+  const [currentPage, setCurrentPage] = useState(0);
   const size = useWindowSize();
   const theme = useTheme();
 
@@ -49,16 +73,32 @@ const ProjectDetails = ({ id }: Props) => {
 
   const {
     id: projectId,
-    name, artistName,
+    name,
+    description,
+    artistName,
+    website,
+    license,
     paused,
     complete,
-    activatedAt,
+    minterConfiguration: {
+      startTime,
+    },
     invocations,
     maxInvocations,
   } = project;
   
   return project && (
     <Box>
+      <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 4 }}>
+        <Link href="/" underline="hover" sx={{ color: '#666' }}>
+          Home
+        </Link>
+        <Typography>
+          { name }
+        </Typography>
+      </Breadcrumbs>
+
+
       <Grid spacing={2} container>
         {
           project.tokens?.length > 0 && (
@@ -81,7 +121,7 @@ const ProjectDetails = ({ id }: Props) => {
             <ProjectStats
               paused={paused}
               complete={complete}
-              activatedAt={activatedAt}
+              startTime={startTime}
             />
             
             <Typography variant="h4" mt={3}>
@@ -104,7 +144,7 @@ const ProjectDetails = ({ id }: Props) => {
               alignItems: 'center',
             }}>
               <LinearProgress
-                sx={{ width: 'calc(100% - 32px)' }}
+                sx={{ width: 'calc(100% - 48px)' }}
                 value={(invocations/maxInvocations)*100}
                 variant="determinate"
               />
@@ -116,6 +156,83 @@ const ProjectDetails = ({ id }: Props) => {
           </Box>
         </Grid>
       </Grid>
+
+      <Grid spacing={2} container mt={4} pb={4}>
+        <Grid item md={7} sm={12} xs={12}>
+          <Typography variant="h6" mb={2}>
+            About { name }
+          </Typography>
+          <Box paddingRight={[0, 0, 4]}>
+            { description }
+          </Box>
+          
+          <Box sx={{ display: 'flex', marginTop: 4 }}>
+            <Box mr={6}>
+              <Title>
+                License
+              </Title>
+              <Typography>
+                { license }
+              </Typography>
+            </Box>
+
+            <Box>
+              <Title>
+                Library
+              </Title>
+              <Typography>
+                { scriptJSON?.type }
+              </Typography>
+            </Box>
+          </Box>
+        </Grid>
+
+        <Grid item md={5} sm={12} xs={12}>
+          <Box display="flex" mb={4}>
+            
+            {
+              website && (
+                <Button
+                  endIcon={<ArrowForwardIcon />}
+                  sx={{ textTransform: 'none', marginRight: 4 }}
+                  onClick={() => window.open(website)}
+                >
+                  Artist link
+                </Button>
+              )
+            }
+          </Box>
+            
+        </Grid>
+      </Grid>
+
+      <Divider />
+
+      <Box px={1}>
+        <Box mt={4} mb={4} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="h4">{ invocations} Item{ Number(invocations) === 1 ? '' : 's' }</Typography>
+
+          <Box>
+            Showing { Math.min(invocations, tokensPerPage) }
+          </Box>
+        </Box>
+      
+        <TokenList
+          projectId={projectId}
+          first={tokensPerPage}
+          skip={currentPage*tokensPerPage}
+          aspectRatio={scriptJSON?.aspectRatio}
+        />
+
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Stack mt={6} mb={8} spacing={2}>
+            <Pagination count={Math.ceil(invocations/tokensPerPage)} color="primary" onChange={(event, page) => {
+              setCurrentPage(page - 1);
+            }} />
+          </Stack>
+        </Box>
+
+      </Box>
     </Box>
   )
 }

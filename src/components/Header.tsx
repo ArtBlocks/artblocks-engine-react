@@ -65,9 +65,8 @@ const Header = () => {
             >
               <MenuIcon />
             </IconButton>
-            <Link href="/" sx={{
+            <Link href="/" underline="hover" sx={{
               color: 'white',
-              textDecoration: 'none'
             }}>
               <Typography variant="h6" color="inherit" mr={3} noWrap>
                 { appTitle }

@@ -8,6 +8,7 @@ import { useWindowSize } from 'hooks/useWindowSize';
 import useTheme from '@mui/material/styles/useTheme';
 import ProjectSummary from './ProjectSummary';
 import Loading from './Loading';
+import { projectsPerPage } from 'config';
 
 interface Props {
   skip?: number;
@@ -16,7 +17,7 @@ interface Props {
 
 const ProjectList = ({
   skip=0,
-  first=8
+  first=projectsPerPage
 }: Props) => {
   const { loading, error, data } = useProjects({ skip, first });
   const size = useWindowSize();

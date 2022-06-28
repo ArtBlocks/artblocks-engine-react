@@ -29,7 +29,9 @@ const ProjectSummary = ({
     console.log('Error parsing script JSON');
   }
 
-  const activatedDate = moment.unix(parseInt(project.activatedAt.toString()));
+  const startDate = project.minterConfiguration?.startTime
+    ? moment.unix(parseInt(project.minterConfiguration.startTime.toString()))
+    : null;
 
   return (
     <Box sx={{ paddingBottom: 8 }}>
@@ -39,10 +41,14 @@ const ProjectSummary = ({
         width={width}
         thumb
       />
-      <Typography sx={{ marginTop: 3 }}>
-        Launched { activatedDate.format('MMMM DD, YYYY') }
-      </Typography>
-      <Link href={`/project/${project.id}`} sx={{ marginTop: 1, fontSize: 32, textDecoration: 'none' }}>
+      {
+        startDate && (
+          <Typography sx={{ marginTop: 3 }}>
+            { startDate.isBefore() ? 'Launched' : '' } { startDate.format('MMMM DD, YYYY') }
+          </Typography>
+        )
+      }
+      <Link href={`/project/${project.id}`} underline="hover" sx={{ marginTop: 1, fontSize: 32 }}>
         { project.name }
       </Link>
       <Typography variant="h6">

@@ -6,11 +6,11 @@ import Typography from '@mui/material/Typography';
 interface Props {
   complete: boolean;
   paused: boolean;
-  activatedAt: BigInt;
+  startTime?: BigInt;
 }
 
-const ProjectStats = ({ complete, paused, activatedAt }: Props) => {
-  const activatedDate = moment.unix(parseInt(activatedAt.toString()));
+const ProjectStats = ({ complete, paused, startTime }: Props) => {
+  const startDate = startTime ? moment.unix(parseInt(startTime.toString())) : null;
 
   return (
     <Box sx={{
@@ -18,7 +18,14 @@ const ProjectStats = ({ complete, paused, activatedAt }: Props) => {
       alignItems: 'center',
     }}>
       {
-        paused ? (
+        startDate?.isAfter() ? 
+        <Chip
+          label="Upcoming"
+          color="upcoming"
+          size="small"
+          sx={{ color: 'white', marginRight: 2, }}
+        />
+        : paused ? (
           <Chip
             label="Paused"
             color="info"
@@ -35,9 +42,13 @@ const ProjectStats = ({ complete, paused, activatedAt }: Props) => {
         ) : null
       }
 
-      <Typography>
-        Launched { activatedDate.format('MMM DD, YYYY') }
-      </Typography>
+      {
+        startDate && (
+          <Typography>
+            { startDate.isBefore() ? 'Launched' : '' } { startDate.format('MMM DD, YYYY') }
+          </Typography>
+        )
+      }
     </Box>
   )
 }

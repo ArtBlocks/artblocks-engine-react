@@ -50,7 +50,7 @@ const ProjectOverview = ({ project }:Props) => {
             <ProjectStats
               complete={project.complete}
               paused={project.paused}
-              activatedAt={project.activatedAt}
+              startTime={project.minterConfiguration?.startTime}
             />
 
             <Typography sx={{ marginTop: 3 }} variant="h4">
