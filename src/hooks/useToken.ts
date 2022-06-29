@@ -18,6 +18,7 @@ const tokenQuery = (id: string) => `
       }
       project {
         id
+        projectId
         name
         artistName
         scriptJSON

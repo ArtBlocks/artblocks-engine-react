@@ -14,6 +14,7 @@ import Loading from './Loading';
 import TokenPreview from './TokenPreview';
 import TokenTraits from './TokenTraits';
 import { coreContractAddress, openseaBaseUrl, etherscanBaseUrl } from 'config';
+import { parseAspectRatio } from 'utils/scriptJSON';
 
 interface Props {
   id: string;
@@ -43,20 +44,13 @@ const TokenDetails = ({ id }: Props) => {
         ? size.width - 48
         : size.width - 32;
 
-  let scriptJSON;
-  try {
-    scriptJSON = JSON.parse(token.project.scriptJSON);
-  } catch (e) {
-    console.log('Error parsing script JSON');
-  }
-
   return token && (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 4 }}>
         <Link href="/" underline="hover" sx={{ color: '#666' }}>
           Home
         </Link>
-        <Link href="/" underline="hover" sx={{ color: '#666' }}>
+        <Link href={`/project/${token.project.id}`} underline="hover" sx={{ color: '#666' }}>
           { token.project.name }
         </Link>
         <Typography>
@@ -69,10 +63,9 @@ const TokenDetails = ({ id }: Props) => {
           <TokenPreview
             id={token.id}
             tokenId={token.tokenId}
-            projectId={token.project.id}
             owner={token.owner.id}
             width={width}
-            aspectRatio={scriptJSON?.aspectRatio}
+            aspectRatio={parseAspectRatio(token.project.scriptJSON)}
             showLiveViewLink
             showImageLink
           />

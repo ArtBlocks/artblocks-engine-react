@@ -22,6 +22,7 @@ const projectsQuery = ({ first, skip, orderDirection }: ProjectsQueryParams) => 
         orderBy: createdAt orderDirection: ${orderDirection}
     ) {
       id
+      projectId
       name
       description
       license

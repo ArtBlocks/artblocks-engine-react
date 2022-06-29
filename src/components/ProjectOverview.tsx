@@ -38,7 +38,6 @@ const ProjectOverview = ({ project }:Props) => {
       <Grid container spacing={2}>
         <Grid item md={8}>
           <TokenPreview
-            projectId={project.id}
             id={token.id}
             tokenId={token.tokenId}
             invocation={token.invocation}
@@ -54,9 +53,11 @@ const ProjectOverview = ({ project }:Props) => {
               startTime={project.minterConfiguration?.startTime}
             />
 
-            <Typography sx={{ marginTop: 3 }} variant="h4">
-              { project.name }
-            </Typography>
+            <Link href={`/project/${project.id}`} sx={{ display: 'block', marginTop: 3 }} underline="hover">
+              <Typography variant="h4">
+                { project.name }
+              </Typography>
+            </Link>
             <Typography variant="h6">
               { project.artistName }
             </Typography>

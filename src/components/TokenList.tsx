@@ -64,7 +64,6 @@ const TokenList = ({
                     tokenId={token.tokenId}
                     aspectRatio={aspectRatio}
                     width={width}
-                    thumb
                   />
                 </Link>
                 <Typography mt={2} fontWeight="bold">

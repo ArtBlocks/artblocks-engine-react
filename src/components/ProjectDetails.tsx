@@ -18,7 +18,9 @@ import TokenPreview from './TokenPreview';
 import ProjectStats from './ProjectStats';
 import Loading from './Loading';
 import TokenList from './TokenList';
+import PurchaseProject from './PurchaseProject';
 import { tokensPerPage } from 'config';
+import { parseScriptType, parseAspectRatio } from 'utils/scriptJSON';
 
 interface Props {
   id: string;
@@ -44,6 +46,10 @@ const ProjectDetails = ({ id }: Props) => {
   const size = useWindowSize();
   const theme = useTheme();
 
+  if (data?.project === null) {
+    return <Alert severity="error">Project not found</Alert>
+  }
+
   if (loading) {
     return <Loading />
   }
@@ -62,17 +68,9 @@ const ProjectDetails = ({ id }: Props) => {
     ? (Math.min(size.width, 1200)- 48)*0.666666
       : size.width > theme.breakpoints.values.sm
         ? size.width - 48
-        : size.width - 32
-
-  let scriptJSON;
-  try {
-    scriptJSON = JSON.parse(project.scriptJSON);
-  } catch (e) {
-    console.log('Error parsing script JSON');
-  }
+        : size.width - 32;
 
   const {
-    id: projectId,
     name,
     description,
     artistName,
@@ -80,11 +78,9 @@ const ProjectDetails = ({ id }: Props) => {
     license,
     paused,
     complete,
-    minterConfiguration: {
-      startTime,
-    },
     invocations,
     maxInvocations,
+    scriptJSON,
   } = project;
   
   return project && (
@@ -104,11 +100,10 @@ const ProjectDetails = ({ id }: Props) => {
           project.tokens?.length > 0 && (
             <Grid item md={8}>
               <TokenPreview
-                projectId={projectId}
                 id={token.id}
                 tokenId={token.tokenId}
                 invocation={token.invocation}
-                aspectRatio={scriptJSON?.aspectRatio}
+                aspectRatio={parseAspectRatio(scriptJSON)}
                 width={width}
                 showImageLink
                 showLiveViewLink
@@ -122,7 +117,7 @@ const ProjectDetails = ({ id }: Props) => {
             <ProjectStats
               paused={paused}
               complete={complete}
-              startTime={startTime}
+              startTime={project?.minterConfiguration?.startTime}
             />
             
             <Typography variant="h4" mt={3}>
@@ -143,6 +138,7 @@ const ProjectDetails = ({ id }: Props) => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              marginBottom: 3,
             }}>
               <LinearProgress
                 sx={{ width: 'calc(100% - 48px)' }}
@@ -153,6 +149,8 @@ const ProjectDetails = ({ id }: Props) => {
                 { Math.floor((invocations/maxInvocations)*100) } %
               </Box>
             </Box>
+
+            <PurchaseProject project={project} />
 
           </Box>
         </Grid>
@@ -182,7 +180,7 @@ const ProjectDetails = ({ id }: Props) => {
                 Library
               </Title>
               <Typography>
-                { scriptJSON?.type }
+                { parseScriptType(scriptJSON) }
               </Typography>
             </Box>
           </Box>
@@ -219,10 +217,10 @@ const ProjectDetails = ({ id }: Props) => {
         </Box>
       
         <TokenList
-          projectId={projectId}
+          projectId={id}
           first={tokensPerPage}
           skip={currentPage*tokensPerPage}
-          aspectRatio={scriptJSON?.aspectRatio}
+          aspectRatio={parseAspectRatio(scriptJSON)}
         />
 
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>

@@ -1,5 +1,6 @@
 export interface Project {
   id: string;
+  projectId: BigInt;
   name: string;
   description: string;
   artistName: string;
@@ -11,6 +12,9 @@ export interface Project {
   paused: boolean;
   complete: boolean;
   tokens: Token[];
+  pricePerTokenInWei: BigInt;
+  currencyAddress: string;
+  currencySymbol: string;
   minterConfiguration?: MinterConfiguration;
 }
 

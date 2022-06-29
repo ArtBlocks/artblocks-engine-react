@@ -5,6 +5,7 @@ import { Project } from 'utils/types';
 import TokenImage from 'components/TokenImage';
 import { Link } from '@mui/material';
 import truncate from 'utils/truncate';
+import { parseAspectRatio } from 'utils/scriptJSON';
 
 interface Props {
   project: Project;
@@ -21,14 +22,6 @@ const ProjectSummary = ({
 }:Props) => {
   const token = project.tokens[0];
 
-
-  let scriptJSON;
-  try {
-    scriptJSON = JSON.parse(project.scriptJSON);
-  } catch (e) {
-    console.log('Error parsing script JSON');
-  }
-
   const startDate = project.minterConfiguration?.startTime
     ? moment.unix(parseInt(project.minterConfiguration.startTime.toString()))
     : null;
@@ -38,7 +31,7 @@ const ProjectSummary = ({
       <Link href={`/project/${project.id}`}>
         <TokenImage
           tokenId={token.tokenId}
-          aspectRatio={scriptJSON?.aspectRatio}
+          aspectRatio={parseAspectRatio(project.scriptJSON)}
           width={width}
           thumb
         />

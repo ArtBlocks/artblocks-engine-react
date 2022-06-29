@@ -10,7 +10,6 @@ import Address from './Address';
 
 interface Props {
   id: string;
-  projectId: string;
   tokenId: string;
   aspectRatio?: number;
   invocation?: BigInt;
