@@ -45,6 +45,14 @@ const ProjectList = ({
           : size.width - 48
   }
 
+  if (data?.projects?.length === 0) {
+    return (
+      <Alert severity="info">
+        No projects found
+      </Alert>
+    )
+  }
+
   return (
     <Box>
       <Typography variant="h4" p="0 1rem">
@@ -59,7 +67,6 @@ const ProjectList = ({
                 project={project}
                 width={width}
                 showDescription
-                showMoreLink
               />
             ))
           )

@@ -39,6 +39,14 @@ const HomeProjects = () => {
           : size.width - 48
   }
 
+  if (data?.projects?.length === 0) {
+    return (
+      <Alert severity="info">
+        No projects found
+      </Alert>
+    )
+  }
+
   return data?.projects && (
     <Box sx={{ paddingTop: 2 }}> 
       <ProjectOverview project={data.projects[0]} />

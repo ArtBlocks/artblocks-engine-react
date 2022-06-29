@@ -3,22 +3,20 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Project } from 'utils/types';
 import TokenImage from 'components/TokenImage';
-import { Link } from '@mui/material';
-import truncate from 'utils/truncate';
+import Link from '@mui/material/Link';
 import { parseAspectRatio } from 'utils/scriptJSON';
+import Collapsible from './Collapsible';
 
 interface Props {
   project: Project;
   width?: number;
   showDescription?: boolean;
-  showMoreLink?: boolean;
 }
 
 const ProjectSummary = ({
   project,
   width=280,
   showDescription=false,
-  showMoreLink=false,
 }:Props) => {
   if (!project) {
     return null;
@@ -54,16 +52,7 @@ const ProjectSummary = ({
       </Typography>
       {
         showDescription && (
-          <p>
-            { truncate(project.description, 100) }
-          </p>
-        )
-      }
-      {
-        showMoreLink && (
-          <Link href={`/project/${project.id}`}>
-            More
-          </Link>
+          <Collapsible content={project.description} />
         )
       }
     </Box>

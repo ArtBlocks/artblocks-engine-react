@@ -7,6 +7,7 @@ import { Project } from 'utils/types';
 import TokenPreview from 'components/TokenPreview';
 import { useWindowSize } from 'hooks/useWindowSize';
 import ProjectStats from './ProjectStats';
+import Collapsible from './Collapsible';
 
 interface Props {
   project: Project;
@@ -15,8 +16,8 @@ interface Props {
 const random = Math.random();
 
 const ProjectOverview = ({ project }:Props) => {
-  const randomIndex = Math.floor(random * project.tokens.length);
-  const token = project.tokens[randomIndex];
+  const randomIndex = Math.floor(random * project?.tokens?.length);
+  const token = project?.tokens[randomIndex];
   const theme = useTheme();
   const size = useWindowSize();
 
@@ -31,6 +32,10 @@ const ProjectOverview = ({ project }:Props) => {
     scriptJSON = JSON.parse(project.scriptJSON);
   } catch (e) {
     console.log('Error parsing script JSON');
+  }
+
+  if (!project) {
+    return null;
   }
 
   return (
@@ -61,12 +66,7 @@ const ProjectOverview = ({ project }:Props) => {
             <Typography variant="h6">
               { project.artistName }
             </Typography>
-            <p>
-              { project.description }
-            </p>
-            <Link href={`/project/${project.id}`}>
-              More
-            </Link>
+            <Collapsible content={project.description} />
           </Box>
         </Grid>
       </Grid>
