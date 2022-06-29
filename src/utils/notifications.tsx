@@ -17,7 +17,7 @@ const displayMessage = (message:string, txLink:string) => (
       { message }
     </Box>
     <Box fontSize="14px" textAlign="right">
-      <a href={txLink} target="_blank" rel="noopener noreferrer">
+      <a href={txLink} target="_blank" style={{ color: 'black' }} rel="noopener noreferrer">
         View in explorer
       </a>
     </Box>

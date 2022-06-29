@@ -22,7 +22,7 @@ import Address from './Address';
 const ConnectWallet = () => {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const { isActive, account, connector, chainId } = useWeb3React();
+  const { isActive, account, connector } = useWeb3React();
 
   useEffect(() => {
     try {

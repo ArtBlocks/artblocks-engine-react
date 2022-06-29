@@ -2,13 +2,17 @@ import { useCallback, useState } from 'react';
 import { ethers, utils, BigNumber } from 'ethers';
 import moment from 'moment';
 import { useWeb3React } from '@web3-react/core';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
-import { Project } from 'utils/types';
+import { ERC20Token, Project } from 'utils/types';
 import { CHAINS } from 'utils/chains';
 import { notifyTx } from 'utils/notifications';
 import { GenArt721Minter__factory } from 'contracts';
 import { expectedChainId, mintContractAddress } from 'config';
+import MintSuccessDialog from './MintSuccessDialog';
+import RequiresBalance from './RequiresBalance';
+import ApproveERC20Token from './ApproveERC20Token';
 
 interface Props {
   project: Project;
@@ -20,7 +24,7 @@ const PurchaseProject = ({ project }:Props) => {
   const usesCustomToken = project?.currencyAddress !== ethers.constants.AddressZero;
   const [pending, setPending] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
-  const [mintedToken, setMintedToken] = useState<number | null>(null);
+  const [mintedTokenId, setMintedTokenId] = useState<number | null>(null);
   const weiPrice = BigNumber.from(project.pricePerTokenInWei.toString());
 
   const connect = useCallback(() => {
@@ -41,7 +45,6 @@ const PurchaseProject = ({ project }:Props) => {
   }
 
   const mint = () => {
-    console.log('minting', provider, mintContractAddress);
     if (!provider || !mintContractAddress) {
       return; 
     }
@@ -52,7 +55,7 @@ const PurchaseProject = ({ project }:Props) => {
       error: 'An error occured while trying to mint.',
       onSuccess: (receipt:any) => {
         const tokenId = parseInt(receipt?.events[0]?.topics[3], 16);
-        setMintedToken(tokenId);
+        setMintedTokenId(tokenId);
         setPending(false);
         setSuccessOpen(true);
       },
@@ -113,36 +116,75 @@ const PurchaseProject = ({ project }:Props) => {
     );
   }
 
-  // const ApproveAndMint = () => (
-  //   <RequiresBalance
-  //     amount={BigNumber.from(parseInt(String(utils.formatEther(weiPrice))))}
-  //     paymentToken={legendToken}
-  //   >
-  //     <ApproveERC20
-  //       amount={BigNumber.from(parseInt(String(utils.formatEther(weiPrice))))}
-  //       paymentToken={legendToken}
-  //       spendingContractAddress={mintContractAddress}
-  //       approveLabel={`Approve LEGEND`}
-  //       chainId={expectedNetwork}
-  //       useExact={false}
-  //     >
-  //       <Mint />
-  //     </ApproveERC20>
-  //   </RequiresBalance>
-  // );
+  let customToken: ERC20Token;
+  if (usesCustomToken) {
+    customToken = {
+      address: project.currencyAddress,
+      decimals: 18,
+      symbol: project.currencySymbol,
+    }
+  }
   
   const Mint = () => (
     <Button
       variant="contained"
       color="primary"
       onClick={mint}
+
     >
       Purchase a mint { utils.formatEther(weiPrice) } { project.currencySymbol }
     </Button>
   );
 
+  const ApproveAndMint = () => {
+    if (!mintContractAddress) {
+      return (
+        <Alert severity="warning">
+          Mint contract not configured
+        </Alert>
+      );
+    }
+    return (
+      <RequiresBalance
+        amount={BigNumber.from(parseInt(String(utils.formatEther(weiPrice))))}
+        paymentToken={customToken}
+      >
+        <ApproveERC20Token
+          amount={BigNumber.from(parseInt(String(utils.formatEther(weiPrice))))}
+          paymentToken={customToken}
+          spendingContractAddress={mintContractAddress}
+          approveLabel={`Approve LEGEND`}
+          chainId={chainId}
+          expectedChainId={expectedChainId}
+          useExact={false}
+        >
+          <Mint />
+        </ApproveERC20Token>
+      </RequiresBalance>
+    );
+  }
+
   return (
-    <Mint />
+    <>
+      {
+        pending ? (
+          <LoadingButton
+            loading
+            variant="outlined"
+            color="primary"
+          >
+            Purchasing
+          </LoadingButton>
+        ) : usesCustomToken ? <ApproveAndMint /> : <Mint />
+      }
+      <MintSuccessDialog
+        mintedTokenId={String(mintedTokenId)}
+        open={successOpen}
+        handleClose={() => {
+          setSuccessOpen(false)
+        }}
+      />
+    </>
   )
 }
 

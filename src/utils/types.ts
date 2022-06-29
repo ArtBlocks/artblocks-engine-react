@@ -44,3 +44,9 @@ export interface Trait {
   trait_type: string;
   value: string;
 }
+
+export interface ERC20Token {
+  address: string;
+  decimals: number;
+  symbol: string;
+}

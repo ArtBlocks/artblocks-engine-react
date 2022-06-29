@@ -2,6 +2,7 @@ import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask'
 import { WalletConnect } from '@web3-react/walletconnect';
 import { CoinbaseWallet } from '@web3-react/coinbase-wallet';
+import { QueryClientProvider, QueryClient } from 'react-query';
 import {
   metaMask,
   metaMaskHooks,
@@ -19,6 +20,8 @@ import {
 } from '@apollo/client';
 import theme from 'theme';
 import { graphQLURL } from 'config';
+
+const queryClient = new QueryClient();
 
 const connectors: [MetaMask | WalletConnect | CoinbaseWallet, Web3ReactHooks][] = [
   [metaMask, metaMaskHooks],
@@ -38,12 +41,14 @@ interface Props {
 const AppProvider = ({ children }:Props) => {
   return (
     <Web3ReactProvider connectors={connectors}>
-      <ApolloProvider client={client}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          { children }
-        </ThemeProvider>
-      </ApolloProvider>
+      <QueryClientProvider client={queryClient}>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            { children }
+          </ThemeProvider>
+        </ApolloProvider>
+      </QueryClientProvider>
     </Web3ReactProvider>
   );
 }

@@ -20,10 +20,14 @@ const ProjectSummary = ({
   showDescription=false,
   showMoreLink=false,
 }:Props) => {
-  const token = project.tokens[0];
+  if (!project) {
+    return null;
+  }
 
-  const startDate = project.minterConfiguration?.startTime
-    ? moment.unix(parseInt(project.minterConfiguration.startTime.toString()))
+  const token = project?.tokens[0];
+
+  const startDate = project?.minterConfiguration?.startTime
+    ? moment.unix(parseInt(project?.minterConfiguration?.startTime.toString()))
     : null;
 
   return (
@@ -33,7 +37,6 @@ const ProjectSummary = ({
           tokenId={token.tokenId}
           aspectRatio={parseAspectRatio(project.scriptJSON)}
           width={width}
-          thumb
         />
       </Link>
       {

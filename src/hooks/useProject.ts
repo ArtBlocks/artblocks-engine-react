@@ -9,6 +9,7 @@ const projectQuery = (id: string) => `
       id: "${id}"
     ) {
       id
+      projectId
       name
       description
       license

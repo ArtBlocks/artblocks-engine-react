@@ -84,7 +84,7 @@ const TokenDetails = ({ id }: Props) => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={2} mt={4}>
+      <Grid container spacing={2} mt={4} mb={4}>
         <Grid item md={6}>
           <Typography variant="h6" mb={2}>Features</Typography>
           <TokenTraits tokenId={token.tokenId} />

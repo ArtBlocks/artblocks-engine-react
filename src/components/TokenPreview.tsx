@@ -36,7 +36,7 @@ const TokenPreview = ({
       <Card>
         <iframe
           title={tokenId}
-          src={`${generatorUrl}/${coreContractAddress}/${tokenId}`}
+          src={`${generatorUrl}/${coreContractAddress?.toLowerCase()}/${tokenId}`}
           width={String(width) + 'px'}
           height={String(height)}
           frameBorder="0"
