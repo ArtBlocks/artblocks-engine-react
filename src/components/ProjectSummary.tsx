@@ -35,26 +35,29 @@ const ProjectSummary = ({
           tokenId={token.tokenId}
           aspectRatio={parseAspectRatio(project.scriptJSON)}
           width={width}
+          invocation={token.invocation}
         />
       </Link>
-      {
-        startDate && (
-          <Typography sx={{ marginTop: 3 }}>
-            { startDate.isBefore() ? 'Launched' : '' } { startDate.format('MMMM DD, YYYY') }
-          </Typography>
-        )
-      }
-      <Link href={`/project/${project.projectId}`} underline="hover" sx={{ marginTop: 1, fontSize: 32 }}>
-        { project.name }
-      </Link>
-      <Typography variant="h6">
-        { project.artistName }
-      </Typography>
-      {
-        showDescription && (
-          <Collapsible content={project.description} />
-        )
-      }
+      <Box mt={3}>
+        {
+          startDate && (
+            <Typography>
+              { startDate.isBefore() ? 'Launched' : '' } { startDate.format('MMMM DD, YYYY') }
+            </Typography>
+          )
+        }
+        <Link href={`/project/${project.projectId}`} underline="hover" sx={{ marginTop: 1, fontSize: 32 }}>
+          { project.name }
+        </Link>
+        <Typography variant="h6" mb={2}>
+          { project.artistName }
+        </Typography>
+        {
+          showDescription && (
+            <Collapsible content={project.description} />
+          )
+        }
+      </Box>
     </Box>
   )
 }
