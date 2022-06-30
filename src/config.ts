@@ -14,4 +14,3 @@ export const projectsPerPage = 8;
 export const tokensPerPage = 12;
 export const confirmations = 3;
 export const isDev = false;
-export const defaultMintGasLimit = 50000;

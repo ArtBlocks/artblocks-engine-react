@@ -12,7 +12,7 @@ import { GenArt721Minter__factory } from 'contracts';
 import MintSuccessDialog from './MintSuccessDialog';
 import RequiresBalance from './RequiresBalance';
 import ApproveERC20Token from './ApproveERC20Token';
-import { defaultMintGasLimit, expectedChainId, mintContractAddress } from 'config';
+import { expectedChainId, mintContractAddress } from 'config';
 
 interface Props {
   project: Project;
@@ -38,14 +38,9 @@ const PurchaseProject = ({ project }:Props) => {
       const signer = provider.getSigner(account);
       const abMinterContract = GenArt721Minter__factory.connect(mintContractAddress, signer);
 
-      let gasLimit = BigNumber.from(defaultMintGasLimit);
-      try {
-        gasLimit = await abMinterContract.estimateGas.purchase(BigNumber.from(project.projectId), {
-          value: usesCustomToken ? 0 : weiPrice,
-        });
-      } catch (e) {
-        console.log(e);
-      }
+      const gasLimit = await abMinterContract.estimateGas.purchase(BigNumber.from(project.projectId), {
+        value: usesCustomToken ? 0 : weiPrice,
+      });
 
       return abMinterContract.purchase(BigNumber.from(project.projectId), {
         value: usesCustomToken ? 0 : weiPrice,
