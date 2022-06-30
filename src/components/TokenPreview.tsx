@@ -46,9 +46,11 @@ const TokenPreview = ({
       <Box sx={{ marginTop: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
           { invocation && (
-            <Link href={`token/${id}`} sx={{ fontSize: '.8em' }}>
-              Showing mint #{invocation.toString()}
-            </Link>
+            <Box display={['none', 'none', 'block']}>
+              <Link href={`token/${id}`} sx={{ fontSize: '.8em' }}>
+                Showing mint #{invocation.toString()}
+              </Link>
+            </Box>
           ) }
           {
             owner && (
@@ -63,12 +65,19 @@ const TokenPreview = ({
             showLiveViewLink && (
               <Button
                 startIcon={<VisibilityIcon sx={{ color: '#666'}} />}
-                sx={{ fontSize: 14, textTransform: 'none' }}
+                sx={{
+                  fontSize: 14,
+                  textTransform: 'none',
+                  minWidth: [0, 0, '64px'],
+                  padding: [0, 0, 'default']
+                }}
                 onClick={() => {
                   window.open(`${generatorUrl}/${tokenId}`);
                 }}
               >
-                Live view
+                <Typography fontSize="14px" display={['none', 'none', 'block']}>
+                  Live view
+                </Typography>
               </Button>
             )
           }
@@ -76,12 +85,20 @@ const TokenPreview = ({
             showImageLink && ( 
               <Button
                 startIcon={<ImageIcon  sx={{ color: '#666'}} />}
-                sx={{ fontSize: 14, textTransform: 'none', marginLeft: 2 }}
+                sx={{
+                  fontSize: 14,
+                  textTransform: 'none',
+                  marginLeft: [1, 1, 2],
+                  minWidth: [0, 0, '64px'],
+                  padding: [0, 0, 'default']
+                }}
                 onClick={() => {
                   window.open(`${mediaUrl}/${tokenId}.png`);
                 }}
               >
-                Image
+                <Typography fontSize="14px" display={['none', 'none', 'block']}>
+                  Image
+                </Typography>
               </Button>
             )
           }

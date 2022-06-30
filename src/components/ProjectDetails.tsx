@@ -25,6 +25,7 @@ import PurchaseProject from './PurchaseProject';
 import { tokensPerPage } from 'config';
 import { parseScriptType, parseAspectRatio } from 'utils/scriptJSON';
 import { OrderDirection } from 'utils/types';
+import Collapsible from './Collapsible';
 
 interface Props {
   id: string;
@@ -133,7 +134,7 @@ const ProjectDetails = ({ id }: Props) => {
               { artistName }
             </Typography>
 
-            <Divider sx={{ display: ['block', 'none', 'none'], marginBottom: 2 }} />
+            <Divider sx={{ display: ['none', 'block', 'none'], marginBottom: 2 }} />
 
             <Box sx={{ fontWeight: 'bold' }}>
               { invocations } / { maxInvocations } minted
@@ -167,7 +168,7 @@ const ProjectDetails = ({ id }: Props) => {
             About { name }
           </Typography>
           <Box paddingRight={[0, 0, 4]}>
-            { description }
+            <Collapsible content={description} />
           </Box>
           
           <Box sx={{ display: 'flex', marginTop: 4 }}>
