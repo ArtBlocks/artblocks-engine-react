@@ -225,9 +225,14 @@ const ProjectDetails = ({ id }: Props) => {
 
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Stack mt={6} mb={8} spacing={2}>
-            <Pagination count={Math.ceil(invocations/tokensPerPage)} color="primary" onChange={(event, page) => {
-              setCurrentPage(page - 1);
-            }} />
+            <Pagination
+              count={Math.ceil(invocations/tokensPerPage)}
+              color="primary"
+              page={currentPage + 1}
+              onChange={(event, page) => {
+                setCurrentPage(page - 1);
+              }}
+            />
           </Stack>
         </Box>
 
