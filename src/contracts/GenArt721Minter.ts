@@ -14,7 +14,11 @@ import type {
   Signer,
   utils,
 } from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
@@ -26,93 +30,49 @@ import type {
 
 export interface GenArt721MinterInterface extends utils.Interface {
   functions: {
-    "artistSetBonusContractAddress(uint256,address)": FunctionFragment;
-    "artistToggleBonus(uint256)": FunctionFragment;
-    "checkYourAllowanceOfProjectERC20(uint256)": FunctionFragment;
-    "contractFilterProject(uint256)": FunctionFragment;
-    "genArtCoreContract()": FunctionFragment;
-    "getYourBalanceOfProjectERC20(uint256)": FunctionFragment;
-    "ownerAddress()": FunctionFragment;
-    "ownerPercentage()": FunctionFragment;
-    "projectIdToBonus(uint256)": FunctionFragment;
-    "projectIdToBonusContractAddress(uint256)": FunctionFragment;
+    "genArt721CoreAddress()": FunctionFragment;
+    "getPriceInfo(uint256)": FunctionFragment;
+    "minterFilterAddress()": FunctionFragment;
+    "minterType()": FunctionFragment;
     "projectMaxHasBeenInvoked(uint256)": FunctionFragment;
     "projectMaxInvocations(uint256)": FunctionFragment;
-    "projectMintCounter(address,uint256)": FunctionFragment;
-    "projectMintLimit(uint256)": FunctionFragment;
     "purchase(uint256)": FunctionFragment;
     "purchaseTo(address,uint256)": FunctionFragment;
-    "setOwnerAddress(address)": FunctionFragment;
-    "setOwnerPercentage(uint256)": FunctionFragment;
     "setProjectMaxInvocations(uint256)": FunctionFragment;
-    "setProjectMintLimit(uint256,uint8)": FunctionFragment;
-    "toggleContractFilter(uint256)": FunctionFragment;
+    "togglePurchaseToDisabled(uint256)": FunctionFragment;
+    "updatePricePerTokenInWei(uint256,uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "artistSetBonusContractAddress"
-      | "artistToggleBonus"
-      | "checkYourAllowanceOfProjectERC20"
-      | "contractFilterProject"
-      | "genArtCoreContract"
-      | "getYourBalanceOfProjectERC20"
-      | "ownerAddress"
-      | "ownerPercentage"
-      | "projectIdToBonus"
-      | "projectIdToBonusContractAddress"
+      | "genArt721CoreAddress"
+      | "getPriceInfo"
+      | "minterFilterAddress"
+      | "minterType"
       | "projectMaxHasBeenInvoked"
       | "projectMaxInvocations"
-      | "projectMintCounter"
-      | "projectMintLimit"
       | "purchase"
       | "purchaseTo"
-      | "setOwnerAddress"
-      | "setOwnerPercentage"
       | "setProjectMaxInvocations"
-      | "setProjectMintLimit"
-      | "toggleContractFilter"
+      | "togglePurchaseToDisabled"
+      | "updatePricePerTokenInWei"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "artistSetBonusContractAddress",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "artistToggleBonus",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "checkYourAllowanceOfProjectERC20",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "contractFilterProject",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "genArtCoreContract",
+    functionFragment: "genArt721CoreAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getYourBalanceOfProjectERC20",
+    functionFragment: "getPriceInfo",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "ownerAddress",
+    functionFragment: "minterFilterAddress",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "ownerPercentage",
+    functionFragment: "minterType",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "projectIdToBonus",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "projectIdToBonusContractAddress",
-    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "projectMaxHasBeenInvoked",
@@ -120,14 +80,6 @@ export interface GenArt721MinterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "projectMaxInvocations",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "projectMintCounter",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "projectMintLimit",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -139,66 +91,31 @@ export interface GenArt721MinterInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setOwnerAddress",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setOwnerPercentage",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setProjectMaxInvocations",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setProjectMintLimit",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    functionFragment: "togglePurchaseToDisabled",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "toggleContractFilter",
-    values: [PromiseOrValue<BigNumberish>]
+    functionFragment: "updatePricePerTokenInWei",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "artistSetBonusContractAddress",
+    functionFragment: "genArt721CoreAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "artistToggleBonus",
+    functionFragment: "getPriceInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "checkYourAllowanceOfProjectERC20",
+    functionFragment: "minterFilterAddress",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "contractFilterProject",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "genArtCoreContract",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getYourBalanceOfProjectERC20",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ownerAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ownerPercentage",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "projectIdToBonus",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "projectIdToBonusContractAddress",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "minterType", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "projectMaxHasBeenInvoked",
     data: BytesLike
@@ -207,39 +124,68 @@ export interface GenArt721MinterInterface extends utils.Interface {
     functionFragment: "projectMaxInvocations",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "projectMintCounter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "projectMintLimit",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "purchase", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "purchaseTo", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setOwnerAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setOwnerPercentage",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "setProjectMaxInvocations",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setProjectMintLimit",
+    functionFragment: "togglePurchaseToDisabled",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "toggleContractFilter",
+    functionFragment: "updatePricePerTokenInWei",
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "PricePerTokenInWeiUpdated(uint256,uint256)": EventFragment;
+    "ProjectCurrencyInfoUpdated(uint256,address,string)": EventFragment;
+    "PurchaseToDisabledUpdated(uint256,bool)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "PricePerTokenInWeiUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProjectCurrencyInfoUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PurchaseToDisabledUpdated"): EventFragment;
 }
+
+export interface PricePerTokenInWeiUpdatedEventObject {
+  _projectId: BigNumber;
+  _pricePerTokenInWei: BigNumber;
+}
+export type PricePerTokenInWeiUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  PricePerTokenInWeiUpdatedEventObject
+>;
+
+export type PricePerTokenInWeiUpdatedEventFilter =
+  TypedEventFilter<PricePerTokenInWeiUpdatedEvent>;
+
+export interface ProjectCurrencyInfoUpdatedEventObject {
+  _projectId: BigNumber;
+  _currencyAddress: string;
+  _currencySymbol: string;
+}
+export type ProjectCurrencyInfoUpdatedEvent = TypedEvent<
+  [BigNumber, string, string],
+  ProjectCurrencyInfoUpdatedEventObject
+>;
+
+export type ProjectCurrencyInfoUpdatedEventFilter =
+  TypedEventFilter<ProjectCurrencyInfoUpdatedEvent>;
+
+export interface PurchaseToDisabledUpdatedEventObject {
+  _projectId: BigNumber;
+  _purchaseToDisabled: boolean;
+}
+export type PurchaseToDisabledUpdatedEvent = TypedEvent<
+  [BigNumber, boolean],
+  PurchaseToDisabledUpdatedEventObject
+>;
+
+export type PurchaseToDisabledUpdatedEventFilter =
+  TypedEventFilter<PurchaseToDisabledUpdatedEvent>;
 
 export interface GenArt721Minter extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -268,47 +214,23 @@ export interface GenArt721Minter extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    artistSetBonusContractAddress(
-      _projectId: PromiseOrValue<BigNumberish>,
-      _bonusContractAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    genArt721CoreAddress(overrides?: CallOverrides): Promise<[string]>;
 
-    artistToggleBonus(
-      _projectId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    checkYourAllowanceOfProjectERC20(
+    getPriceInfo(
       _projectId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<
+      [boolean, BigNumber, string, string] & {
+        isConfigured: boolean;
+        tokenPriceInWei: BigNumber;
+        currencySymbol: string;
+        currencyAddress: string;
+      }
+    >;
 
-    contractFilterProject(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    minterFilterAddress(overrides?: CallOverrides): Promise<[string]>;
 
-    genArtCoreContract(overrides?: CallOverrides): Promise<[string]>;
-
-    getYourBalanceOfProjectERC20(
-      _projectId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    ownerAddress(overrides?: CallOverrides): Promise<[string]>;
-
-    ownerPercentage(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    projectIdToBonus(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    projectIdToBonusContractAddress(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    minterType(overrides?: CallOverrides): Promise<[string]>;
 
     projectMaxHasBeenInvoked(
       arg0: PromiseOrValue<BigNumberish>,
@@ -316,17 +238,6 @@ export interface GenArt721Minter extends BaseContract {
     ): Promise<[boolean]>;
 
     projectMaxInvocations(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    projectMintCounter(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    projectMintLimit(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -342,74 +253,40 @@ export interface GenArt721Minter extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setOwnerAddress(
-      _ownerAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setOwnerPercentage(
-      _ownerPercentage: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     setProjectMaxInvocations(
       _projectId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setProjectMintLimit(
+    togglePurchaseToDisabled(
       _projectId: PromiseOrValue<BigNumberish>,
-      _limit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[void]>;
 
-    toggleContractFilter(
+    updatePricePerTokenInWei(
       _projectId: PromiseOrValue<BigNumberish>,
+      _pricePerTokenInWei: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
-  artistSetBonusContractAddress(
-    _projectId: PromiseOrValue<BigNumberish>,
-    _bonusContractAddress: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  genArt721CoreAddress(overrides?: CallOverrides): Promise<string>;
 
-  artistToggleBonus(
-    _projectId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  checkYourAllowanceOfProjectERC20(
+  getPriceInfo(
     _projectId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<
+    [boolean, BigNumber, string, string] & {
+      isConfigured: boolean;
+      tokenPriceInWei: BigNumber;
+      currencySymbol: string;
+      currencyAddress: string;
+    }
+  >;
 
-  contractFilterProject(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  minterFilterAddress(overrides?: CallOverrides): Promise<string>;
 
-  genArtCoreContract(overrides?: CallOverrides): Promise<string>;
-
-  getYourBalanceOfProjectERC20(
-    _projectId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  ownerAddress(overrides?: CallOverrides): Promise<string>;
-
-  ownerPercentage(overrides?: CallOverrides): Promise<BigNumber>;
-
-  projectIdToBonus(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  projectIdToBonusContractAddress(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  minterType(overrides?: CallOverrides): Promise<string>;
 
   projectMaxHasBeenInvoked(
     arg0: PromiseOrValue<BigNumberish>,
@@ -417,17 +294,6 @@ export interface GenArt721Minter extends BaseContract {
   ): Promise<boolean>;
 
   projectMaxInvocations(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  projectMintCounter(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  projectMintLimit(
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -443,74 +309,40 @@ export interface GenArt721Minter extends BaseContract {
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setOwnerAddress(
-    _ownerAddress: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setOwnerPercentage(
-    _ownerPercentage: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   setProjectMaxInvocations(
     _projectId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setProjectMintLimit(
+  togglePurchaseToDisabled(
     _projectId: PromiseOrValue<BigNumberish>,
-    _limit: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<void>;
 
-  toggleContractFilter(
+  updatePricePerTokenInWei(
     _projectId: PromiseOrValue<BigNumberish>,
+    _pricePerTokenInWei: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    artistSetBonusContractAddress(
-      _projectId: PromiseOrValue<BigNumberish>,
-      _bonusContractAddress: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    genArt721CoreAddress(overrides?: CallOverrides): Promise<string>;
 
-    artistToggleBonus(
+    getPriceInfo(
       _projectId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<
+      [boolean, BigNumber, string, string] & {
+        isConfigured: boolean;
+        tokenPriceInWei: BigNumber;
+        currencySymbol: string;
+        currencyAddress: string;
+      }
+    >;
 
-    checkYourAllowanceOfProjectERC20(
-      _projectId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    minterFilterAddress(overrides?: CallOverrides): Promise<string>;
 
-    contractFilterProject(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    genArtCoreContract(overrides?: CallOverrides): Promise<string>;
-
-    getYourBalanceOfProjectERC20(
-      _projectId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ownerAddress(overrides?: CallOverrides): Promise<string>;
-
-    ownerPercentage(overrides?: CallOverrides): Promise<BigNumber>;
-
-    projectIdToBonus(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    projectIdToBonusContractAddress(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    minterType(overrides?: CallOverrides): Promise<string>;
 
     projectMaxHasBeenInvoked(
       arg0: PromiseOrValue<BigNumberish>,
@@ -518,17 +350,6 @@ export interface GenArt721Minter extends BaseContract {
     ): Promise<boolean>;
 
     projectMaxInvocations(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    projectMintCounter(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    projectMintLimit(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -544,77 +365,65 @@ export interface GenArt721Minter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    setOwnerAddress(
-      _ownerAddress: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setOwnerPercentage(
-      _ownerPercentage: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setProjectMaxInvocations(
       _projectId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setProjectMintLimit(
+    togglePurchaseToDisabled(
       _projectId: PromiseOrValue<BigNumberish>,
-      _limit: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    toggleContractFilter(
+    updatePricePerTokenInWei(
       _projectId: PromiseOrValue<BigNumberish>,
+      _pricePerTokenInWei: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "PricePerTokenInWeiUpdated(uint256,uint256)"(
+      _projectId?: PromiseOrValue<BigNumberish> | null,
+      _pricePerTokenInWei?: PromiseOrValue<BigNumberish> | null
+    ): PricePerTokenInWeiUpdatedEventFilter;
+    PricePerTokenInWeiUpdated(
+      _projectId?: PromiseOrValue<BigNumberish> | null,
+      _pricePerTokenInWei?: PromiseOrValue<BigNumberish> | null
+    ): PricePerTokenInWeiUpdatedEventFilter;
+
+    "ProjectCurrencyInfoUpdated(uint256,address,string)"(
+      _projectId?: PromiseOrValue<BigNumberish> | null,
+      _currencyAddress?: PromiseOrValue<string> | null,
+      _currencySymbol?: null
+    ): ProjectCurrencyInfoUpdatedEventFilter;
+    ProjectCurrencyInfoUpdated(
+      _projectId?: PromiseOrValue<BigNumberish> | null,
+      _currencyAddress?: PromiseOrValue<string> | null,
+      _currencySymbol?: null
+    ): ProjectCurrencyInfoUpdatedEventFilter;
+
+    "PurchaseToDisabledUpdated(uint256,bool)"(
+      _projectId?: PromiseOrValue<BigNumberish> | null,
+      _purchaseToDisabled?: null
+    ): PurchaseToDisabledUpdatedEventFilter;
+    PurchaseToDisabledUpdated(
+      _projectId?: PromiseOrValue<BigNumberish> | null,
+      _purchaseToDisabled?: null
+    ): PurchaseToDisabledUpdatedEventFilter;
+  };
 
   estimateGas: {
-    artistSetBonusContractAddress(
-      _projectId: PromiseOrValue<BigNumberish>,
-      _bonusContractAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    genArt721CoreAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    artistToggleBonus(
-      _projectId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    checkYourAllowanceOfProjectERC20(
+    getPriceInfo(
       _projectId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    contractFilterProject(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    minterFilterAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    genArtCoreContract(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getYourBalanceOfProjectERC20(
-      _projectId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ownerAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ownerPercentage(overrides?: CallOverrides): Promise<BigNumber>;
-
-    projectIdToBonus(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    projectIdToBonusContractAddress(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    minterType(overrides?: CallOverrides): Promise<BigNumber>;
 
     projectMaxHasBeenInvoked(
       arg0: PromiseOrValue<BigNumberish>,
@@ -622,17 +431,6 @@ export interface GenArt721Minter extends BaseContract {
     ): Promise<BigNumber>;
 
     projectMaxInvocations(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    projectMintCounter(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    projectMintLimit(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -648,77 +446,38 @@ export interface GenArt721Minter extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setOwnerAddress(
-      _ownerAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setOwnerPercentage(
-      _ownerPercentage: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     setProjectMaxInvocations(
       _projectId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setProjectMintLimit(
+    togglePurchaseToDisabled(
       _projectId: PromiseOrValue<BigNumberish>,
-      _limit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    toggleContractFilter(
+    updatePricePerTokenInWei(
       _projectId: PromiseOrValue<BigNumberish>,
+      _pricePerTokenInWei: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    artistSetBonusContractAddress(
-      _projectId: PromiseOrValue<BigNumberish>,
-      _bonusContractAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    genArt721CoreAddress(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    artistToggleBonus(
-      _projectId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    checkYourAllowanceOfProjectERC20(
+    getPriceInfo(
       _projectId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    contractFilterProject(
-      arg0: PromiseOrValue<BigNumberish>,
+    minterFilterAddress(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    genArtCoreContract(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getYourBalanceOfProjectERC20(
-      _projectId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ownerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    ownerPercentage(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    projectIdToBonus(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    projectIdToBonusContractAddress(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    minterType(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     projectMaxHasBeenInvoked(
       arg0: PromiseOrValue<BigNumberish>,
@@ -726,17 +485,6 @@ export interface GenArt721Minter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     projectMaxInvocations(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    projectMintCounter(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    projectMintLimit(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -752,29 +500,19 @@ export interface GenArt721Minter extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setOwnerAddress(
-      _ownerAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setOwnerPercentage(
-      _ownerPercentage: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     setProjectMaxInvocations(
       _projectId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setProjectMintLimit(
+    togglePurchaseToDisabled(
       _projectId: PromiseOrValue<BigNumberish>,
-      _limit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    toggleContractFilter(
+    updatePricePerTokenInWei(
       _projectId: PromiseOrValue<BigNumberish>,
+      _pricePerTokenInWei: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -17,170 +17,146 @@ const _abi = [
         name: "_genArt721Address",
         type: "address",
       },
+      {
+        internalType: "address",
+        name: "_minterFilter",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
   {
+    anonymous: false,
     inputs: [
       {
+        indexed: true,
         internalType: "uint256",
         name: "_projectId",
         type: "uint256",
       },
       {
+        indexed: true,
+        internalType: "uint256",
+        name: "_pricePerTokenInWei",
+        type: "uint256",
+      },
+    ],
+    name: "PricePerTokenInWeiUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "_projectId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
         internalType: "address",
-        name: "_bonusContractAddress",
+        name: "_currencyAddress",
         type: "address",
       },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "_currencySymbol",
+        type: "string",
+      },
     ],
-    name: "artistSetBonusContractAddress",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    name: "ProjectCurrencyInfoUpdated",
+    type: "event",
   },
   {
+    anonymous: false,
     inputs: [
       {
+        indexed: true,
         internalType: "uint256",
         name: "_projectId",
         type: "uint256",
       },
-    ],
-    name: "artistToggleBonus",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
       {
-        internalType: "uint256",
-        name: "_projectId",
-        type: "uint256",
-      },
-    ],
-    name: "checkYourAllowanceOfProjectERC20",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "contractFilterProject",
-    outputs: [
-      {
+        indexed: false,
         internalType: "bool",
-        name: "",
+        name: "_purchaseToDisabled",
         type: "bool",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    name: "PurchaseToDisabledUpdated",
+    type: "event",
   },
   {
     inputs: [],
-    name: "genArtCoreContract",
-    outputs: [
-      {
-        internalType: "contract IGenArt721CoreV2_PBAB",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_projectId",
-        type: "uint256",
-      },
-    ],
-    name: "getYourBalanceOfProjectERC20",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "ownerAddress",
-    outputs: [
-      {
-        internalType: "address payable",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "ownerPercentage",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "projectIdToBonus",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "projectIdToBonusContractAddress",
+    name: "genArt721CoreAddress",
     outputs: [
       {
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_projectId",
+        type: "uint256",
+      },
+    ],
+    name: "getPriceInfo",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isConfigured",
+        type: "bool",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenPriceInWei",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "currencySymbol",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "currencyAddress",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "minterFilterAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "minterType",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
       },
     ],
     stateMutability: "view",
@@ -227,49 +203,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "projectMintCounter",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "projectMintLimit",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
         name: "_projectId",
         type: "uint256",
@@ -279,7 +212,7 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
-        name: "_tokenId",
+        name: "tokenId",
         type: "uint256",
       },
     ],
@@ -303,37 +236,11 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
-        name: "_tokenId",
+        name: "tokenId",
         type: "uint256",
       },
     ],
     stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address payable",
-        name: "_ownerAddress",
-        type: "address",
-      },
-    ],
-    name: "setOwnerAddress",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_ownerPercentage",
-        type: "uint256",
-      },
-    ],
-    name: "setOwnerPercentage",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -356,15 +263,10 @@ const _abi = [
         name: "_projectId",
         type: "uint256",
       },
-      {
-        internalType: "uint8",
-        name: "_limit",
-        type: "uint8",
-      },
     ],
-    name: "setProjectMintLimit",
+    name: "togglePurchaseToDisabled",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -374,8 +276,13 @@ const _abi = [
         name: "_projectId",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "_pricePerTokenInWei",
+        type: "uint256",
+      },
     ],
-    name: "toggleContractFilter",
+    name: "updatePricePerTokenInWei",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
