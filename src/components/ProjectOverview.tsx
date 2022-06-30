@@ -58,7 +58,7 @@ const ProjectOverview = ({ project }:Props) => {
               startTime={project.minterConfiguration?.startTime}
             />
 
-            <Link href={`/project/${project.id}`} sx={{ display: 'block', marginTop: 3 }} underline="hover">
+            <Link href={`/project/${project.projectId}`} sx={{ display: 'block', marginTop: 3 }} underline="hover">
               <Typography variant="h4">
                 { project.name }
               </Typography>

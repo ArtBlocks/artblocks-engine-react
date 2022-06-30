@@ -30,7 +30,7 @@ const ProjectSummary = ({
 
   return (
     <Box sx={{ paddingBottom: 8 }}>
-      <Link href={`/project/${project.id}`}>
+      <Link href={`/project/${project.projectId}`}>
         <TokenImage
           tokenId={token.tokenId}
           aspectRatio={parseAspectRatio(project.scriptJSON)}
@@ -44,7 +44,7 @@ const ProjectSummary = ({
           </Typography>
         )
       }
-      <Link href={`/project/${project.id}`} underline="hover" sx={{ marginTop: 1, fontSize: 32 }}>
+      <Link href={`/project/${project.projectId}`} underline="hover" sx={{ marginTop: 1, fontSize: 32 }}>
         { project.name }
       </Link>
       <Typography variant="h6">
