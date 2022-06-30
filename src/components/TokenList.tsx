@@ -5,7 +5,7 @@ import Link from '@mui/material/Link';
 import { tokensPerPage } from 'config';
 import useTokens from 'hooks/useTokens';
 import Loading from './Loading';
-import { Token } from 'utils/types';
+import { OrderDirection, Token } from 'utils/types';
 import { useWindowSize } from 'hooks/useWindowSize';
 import useTheme from '@mui/material/styles/useTheme';
 import TokenImage from './TokenImage';
@@ -14,6 +14,7 @@ interface Props {
   projectId: string;
   first?: number;
   skip?: number;
+  orderDirection?: OrderDirection;
   aspectRatio?: number;
 }
 
@@ -21,11 +22,13 @@ const TokenList = ({
   projectId,
   first=tokensPerPage,
   skip=0,
+  orderDirection=OrderDirection.ASC,
   aspectRatio=1,
 }: Props) => {
   const {loading, error, data } = useTokens(projectId, {
     first,
     skip,
+    orderDirection,
   });
   const size = useWindowSize();
   const theme = useTheme();

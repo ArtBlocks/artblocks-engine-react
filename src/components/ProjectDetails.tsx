@@ -8,6 +8,9 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Stack from '@mui/material/Stack';
 import Pagination from '@mui/material/Pagination';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -21,6 +24,7 @@ import TokenList from './TokenList';
 import PurchaseProject from './PurchaseProject';
 import { tokensPerPage } from 'config';
 import { parseScriptType, parseAspectRatio } from 'utils/scriptJSON';
+import { OrderDirection } from 'utils/types';
 
 interface Props {
   id: string;
@@ -43,6 +47,7 @@ const Title = ({ children }: TitleProps) => (
 const ProjectDetails = ({ id }: Props) => {
   const { loading, error, data } = useProject(id);
   const [currentPage, setCurrentPage] = useState(0);
+  const [orderDirection, setOrderDirection] = useState(OrderDirection.ASC);
   const size = useWindowSize();
   const theme = useTheme();
 
@@ -211,8 +216,30 @@ const ProjectDetails = ({ id }: Props) => {
         <Box mt={4} mb={4} sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="h4">{ invocations} Item{ Number(invocations) === 1 ? '' : 's' }</Typography>
 
-          <Box>
-            Showing { Math.min(invocations, tokensPerPage) }
+          
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box>
+              <FormControl fullWidth>
+                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                  Sort
+                </InputLabel>
+                <NativeSelect
+                  value={orderDirection}
+                  sx={{ fontSize: '14px' }}
+                  onChange={(e) => {
+                    setCurrentPage(0);
+                    setOrderDirection(e.target.value as OrderDirection)
+                  }}
+                >
+                  <option value={OrderDirection.DESC}>Latest</option>
+                  <option value={OrderDirection.ASC}>Earliest</option>
+                </NativeSelect>
+              </FormControl>
+            </Box>
+                  
+            <Typography fontSize="14px" pt={2} ml={3}>
+              Showing  { Math.min(invocations, tokensPerPage) }
+            </Typography>
           </Box>
         </Box>
       
@@ -220,6 +247,7 @@ const ProjectDetails = ({ id }: Props) => {
           projectId={id}
           first={tokensPerPage}
           skip={currentPage*tokensPerPage}
+          orderDirection={orderDirection}
           aspectRatio={parseAspectRatio(scriptJSON)}
         />
 

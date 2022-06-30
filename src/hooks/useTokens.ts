@@ -3,11 +3,12 @@ import {
   gql
 } from '@apollo/client';
 import { tokensPerPage } from 'config';
+import { OrderDirection } from 'utils/types';
 
 interface TokensQueryParams {
   first?: number;
   skip?: number;
-  orderDirection?: 'asc' | 'desc';
+  orderDirection?: OrderDirection;
 }
 
 const tokensQuery = (projectId: string, {
@@ -33,7 +34,7 @@ const tokensQuery = (projectId: string, {
 const useTokens = (projectId: string, params: TokensQueryParams) => {
   const first = params?.first || tokensPerPage;
   const skip = params?.skip || 0;
-  const orderDirection = params?.orderDirection || 'asc'
+  const orderDirection = params?.orderDirection || OrderDirection.ASC;
 
   const { loading, error, data } = useQuery(gql(tokensQuery(projectId, {
     first,

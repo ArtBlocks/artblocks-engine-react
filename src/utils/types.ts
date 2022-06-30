@@ -50,3 +50,8 @@ export interface ERC20Token {
   decimals: number;
   symbol: string;
 }
+
+export enum OrderDirection {
+  ASC = 'asc',
+  DESC = 'desc',
+}

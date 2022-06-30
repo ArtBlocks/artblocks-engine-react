@@ -3,11 +3,12 @@ import {
   gql
 } from '@apollo/client';
 import { coreContractAddress, projectsPerPage } from 'config';
+import { OrderDirection } from 'utils/types';
 
 interface ProjectsQueryParams {
   first?: number;
   skip?: number;
-  orderDirection?: 'asc' | 'desc';
+  orderDirection?: OrderDirection;
 }
 
 const projectsQuery = ({ first, skip, orderDirection }: ProjectsQueryParams) => `
@@ -59,7 +60,7 @@ const projectsQuery = ({ first, skip, orderDirection }: ProjectsQueryParams) => 
 const useProjects = (params?: ProjectsQueryParams) => {
   const first = params?.first || projectsPerPage;
   const skip = params?.skip || 0;
-  const orderDirection = params?.orderDirection || 'desc'
+  const orderDirection = params?.orderDirection || OrderDirection.DESC
 
   const { loading, error, data } = useQuery(gql(projectsQuery({ first, skip, orderDirection })));
 
