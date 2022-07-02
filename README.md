@@ -1,6 +1,6 @@
 # pbab-react
 
-This project is meant ot be used as a template to build PBAB web apps.
+This project is meant ot be used as a template to build Art Blocks Engine web apps.
 It contains all of the pages and views necessary for users to browse projects, tokens and be able to purchase mints.
 
 ## Quick Start
@@ -21,7 +21,7 @@ After making any changes to the `.env` file, you will need to restart the app.
 
 ## Customizing your configuration
 
-In order to customize `pbab-react` for your specific PBAB implementation, you will need to edit the default configuration provided on the `sample.env` file.
+In order to customize `pbab-react` for your specific Art Blocks Engine implementation, you will need to edit the default configuration provided on the `sample.env` file.
 
 First of all, you will need to replace the contract addresses with your own.
 
