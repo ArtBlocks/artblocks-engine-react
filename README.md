@@ -1,4 +1,4 @@
-# pbab-react
+# abengine-react
 
 This project is meant ot be used as a template to build Art Blocks Engine web apps.
 It contains all of the pages and views necessary for users to browse projects, tokens and be able to purchase mints.
@@ -21,7 +21,7 @@ After making any changes to the `.env` file, you will need to restart the app.
 
 ## Customizing your configuration
 
-In order to customize `pbab-react` for your specific Art Blocks Engine implementation, you will need to edit the default configuration provided on the `sample.env` file.
+In order to customize `abengine-react` for your specific Art Blocks Engine implementation, you will need to edit the default configuration provided on the `sample.env` file.
 
 First of all, you will need to replace the contract addresses with your own.
 
@@ -31,7 +31,7 @@ There are additional configuration values you could customize like the number of
 
 ## Chains configuration
 
-By default, `pbab-react` supports Ethereum Mainnet, Ropsten and Goerli.
+By default, `abengine-react` supports Ethereum Mainnet, Ropsten and Goerli.
 
 You can find the chains configuration on `src/utils/chains.ts`
 In most cases, you won't need to change anything in that file, just set up the expected chainId on your `.env` file.
