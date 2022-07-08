@@ -1,4 +1,3 @@
-import moment from 'moment';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Project } from 'utils/types';
@@ -6,6 +5,7 @@ import TokenImage from 'components/TokenImage';
 import Link from '@mui/material/Link';
 import { parseAspectRatio } from 'utils/scriptJSON';
 import Collapsible from './Collapsible';
+import ProjectStats from './ProjectStats';
 
 interface Props {
   project: Project;
@@ -24,10 +24,6 @@ const ProjectSummary = ({
 
   const token = project?.tokens[0];
 
-  const startDate = project?.minterConfiguration?.startTime
-    ? moment.unix(parseInt(project?.minterConfiguration?.startTime.toString()))
-    : null;
-
   return (
     <Box sx={{ paddingBottom: 8 }}>
       <Link href={`/project/${project.projectId}`}>
@@ -39,13 +35,13 @@ const ProjectSummary = ({
         />
       </Link>
       <Box mt={3}>
-        {
-          startDate && (
-            <Typography>
-              { startDate.isBefore() ? 'Launched' : '' } { startDate.format('MMMM DD, YYYY') }
-            </Typography>
-          )
-        }
+        <ProjectStats
+          complete={project.complete}
+          paused={project.paused}
+          startTime={project.minterConfiguration?.startTime}
+        />
+      </Box>
+      <Box mt={2}>
         <Link href={`/project/${project.projectId}`} underline="hover" sx={{ marginTop: 1, fontSize: 32 }}>
           { project.name }
         </Link>
