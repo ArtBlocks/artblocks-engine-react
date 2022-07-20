@@ -20,7 +20,7 @@ export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainI
     url: jsonRpcProviderRopstenUrl,
     name: 'Ropsten',
   },
-  6284: {
+  5: {
     url: jsonRpcProviderGoerliUrl,
     name: 'Goerli',
   },

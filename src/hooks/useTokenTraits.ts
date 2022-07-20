@@ -24,7 +24,7 @@ const useTokenTraits = (tokenId: string) => {
     }
 
     fetchTokenData();
-  }, [ tokenId ]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ tokenId ]);
 
   const traits = tokenData?.traits?.filter((t:Trait) => t.value.indexOf('All') === -1);
 

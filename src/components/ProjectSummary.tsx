@@ -26,14 +26,12 @@ const ProjectSummary = ({
 
   return (
     <Box sx={{ paddingBottom: 8 }}>
-      <Link href={`/project/${project.projectId}`}>
-        <TokenImage
-          tokenId={token.tokenId}
-          aspectRatio={parseAspectRatio(project.scriptJSON)}
-          width={width}
-          invocation={token.invocation}
-        />
-      </Link>
+      <TokenImage
+        tokenId={token.tokenId}
+        aspectRatio={parseAspectRatio(project.scriptJSON)}
+        width={width}
+        invocation={token.invocation}
+      />
       <Box mt={3}>
         <ProjectStats
           complete={project.complete}
