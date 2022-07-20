@@ -259,6 +259,7 @@ const ProjectDetails = ({ id }: Props) => {
               color="primary"
               page={currentPage + 1}
               onChange={(event, page) => {
+                window.scrollTo(0, 0);
                 setCurrentPage(page - 1);
               }}
             />
