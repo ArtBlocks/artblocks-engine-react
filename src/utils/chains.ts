@@ -1,5 +1,5 @@
 import type { AddEthereumChainParameter } from '@web3-react/types';
-import { infuraKey } from 'config';
+import { jsonRpcProviderMainnetUrl, jsonRpcProviderRopstenUrl, jsonRpcProviderGoerliUrl } from 'config';
 
 interface BasicChainInformation {
   url: string;
@@ -13,15 +13,15 @@ interface ExtendedChainInformation extends BasicChainInformation {
 
 export const CHAINS: { [chainId: number]: BasicChainInformation | ExtendedChainInformation } = {
   1: {
-    url: `https://mainnet.infura.io/v3/${infuraKey}`,
+    url: jsonRpcProviderMainnetUrl,
     name: 'Mainnet',
   },
   3: {
-    url: `https://ropsten.infura.io/v3/${infuraKey}`,
+    url: jsonRpcProviderRopstenUrl,
     name: 'Ropsten',
   },
   6284: {
-    url: `https://goerli.infura.io/v3/${infuraKey}`,
+    url: jsonRpcProviderGoerliUrl,
     name: 'Goerli',
   },
 }

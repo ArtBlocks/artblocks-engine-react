@@ -1,9 +1,7 @@
-import { InfuraProvider } from "@ethersproject/providers";
-import { CHAINS } from './chains'; 
-import { expectedChainId, infuraProjectId } from 'config';
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { jsonRpcProviderMainnetUrl } from 'config';
 
-const networkName = CHAINS[expectedChainId]?.name.toLowerCase();
-const provider = new InfuraProvider(networkName, infuraProjectId);
+const provider = new JsonRpcProvider(jsonRpcProviderMainnetUrl);
 
 export const resolveName = async (address: string) : Promise<string | null> => {
   try {

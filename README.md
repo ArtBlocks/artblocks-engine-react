@@ -9,11 +9,11 @@ Run `npm install` or `yarn` to install dependencies.
 
 You will need to create a `.env` configuration file. You can get started by copying `sample.env` and renaming it as `.env`
 
-You will need to get a **Project ID** and a **Project Key** from Infura in order to run the project.
-To obtain these, you can create a free account at [infura.io](https://infura.io/)
+You will need a JSON RPC provider URL. 
+For instance, you could use infura: `https://mainnet.infura.io/v3/<API_KEY>`
+You will need to set up JSON RPC urls for each chain you need to support.
 
-
-Then set up those values as `REACT_APP_INFURA_PROJECT_ID` and `REACT_APP_INFURA_KEY` respectively.
+You can find the chains configuration in `src/utils/chains.ts`
 
 Run `npm start` or `yarn start` to run the project.
 
@@ -32,6 +32,3 @@ There are additional configuration values you could customize like the number of
 ## Chains configuration
 
 By default, `abengine-react` supports Ethereum Mainnet, Ropsten and Goerli.
-
-You can find the chains configuration on `src/utils/chains.ts`
-In most cases, you won't need to change anything in that file, just set up the expected chainId on your `.env` file.
