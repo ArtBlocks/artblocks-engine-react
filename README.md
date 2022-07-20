@@ -1,4 +1,4 @@
-# abengine-react
+# artblocks-engine-react
 
 This project is meant ot be used as a template to build Art Blocks Engine web apps.
 It contains all of the pages and views necessary for users to browse projects, tokens and be able to purchase mints.
@@ -31,4 +31,4 @@ There are additional configuration values you could customize like the number of
 
 ## Chains configuration
 
-By default, `abengine-react` supports Ethereum Mainnet, Ropsten and Goerli.
+By default, `artblocks-engine-react` supports Ethereum Mainnet, Ropsten and Goerli.
