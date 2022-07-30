@@ -6,7 +6,7 @@ import {
 const projectQuery = (id: string) => `
   query GetProject {
     project(
-      id: "${id}"
+      id: "${id.toLowerCase()}"
     ) {
       id
       projectId

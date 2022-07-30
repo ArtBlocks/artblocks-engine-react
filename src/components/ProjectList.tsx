@@ -27,9 +27,10 @@ const ProjectList = () => {
 
   useEffect(() => {
     if (data?.projects?.length) {
-      const { projectId } = data.projects[data.projects.length - 1];
-      if (projectId > highestProjectId) {
-        setHighestProjectId(projectId);
+      const projectIds = data.projects.map((project: Project) => Number(project.projectId));
+      const maxProjectId = Math.max(...projectIds);
+      if (maxProjectId > highestProjectId) {
+        setHighestProjectId(maxProjectId);
       }
     }
   }, [data, data?.projects, highestProjectId]);
