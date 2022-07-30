@@ -72,7 +72,7 @@ const TokenPreview = ({
                   padding: [0, 0, 'default']
                 }}
                 onClick={() => {
-                  window.open(`${generatorUrl}/${tokenId}`);
+                  window.open(`${generatorUrl}/${coreContractAddress?.toLowerCase()}/${tokenId}`);
                 }}
               >
                 <Typography fontSize="14px" display={['none', 'none', 'block']}>

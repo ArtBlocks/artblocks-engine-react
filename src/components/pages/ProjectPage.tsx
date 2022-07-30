@@ -11,7 +11,7 @@ const ProjectPage = () => {
     <Page>
       {
         projectId ? (
-          <ProjectDetails id={coreContractAddress + '-' + projectId} />
+          <ProjectDetails id={coreContractAddress?.toLowerCase() + '-' + projectId} />
         ) : (
           <Alert severity="info">
             Project not found
