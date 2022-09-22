@@ -32,3 +32,55 @@ There are additional configuration values you could customize like the number of
 ## Chains configuration
 
 By default, `artblocks-engine-react` supports Ethereum Mainnet, Ropsten and Goerli.
+  
+____
+
+# Sections and Features
+
+This project includes wallet connection with Metamask, Wallet Connect and coinbase Wallet, implemented using [web3-react](https://github.com/Uniswap/web3-react)
+
+In addition, there are different sections described below:
+
+## Main (Home Page)
+The main page includes the following features:
+- Header/subheader
+- Hero area with most recent project featured
+- Title/artist name/description blurb
+- Masonry grid of recent projects (max n = 6)
+
+## Project 
+Features:
+- Breadcrumb nav
+- Status/date launched
+- Cover image w/ links to live & img views
+- Link to token shown as cover
+- Title/artist name/# minted
+- Mint button
+- Description
+- License/library
+- Artist link/OS link
+- Display notes (optional field)
+- Code notes (optional field)
+- Masonry token grid 
+- Sort (by: Newest/oldest)
+- Pagination
+
+## Token
+Features:
+- Breadcrumb nav
+- Date minted
+- Token cover img w/ links to live & img views
+- Owned by: wallet/eth address
+- Title/artist name
+- Features table
+- Etherscan link/OS link
+
+## Project list
+Features:
+- Masonry grid of projects
+- Cover images
+- Link to token shown as cover
+- Title/artist name
+- Description blurb (ellipses after n chars/words)
+- Pagination
+
