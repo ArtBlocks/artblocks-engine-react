@@ -159,7 +159,7 @@ const PurchaseProject = ({ project }:Props) => {
           amount={BigNumber.from(parseInt(String(utils.formatEther(weiPrice))))}
           paymentToken={customToken}
           spendingContractAddress={mintContractAddress}
-          approveLabel={`Approve LEGEND`}
+          approveLabel={`Approve ${project.currencySymbol}`}
           chainId={chainId}
           expectedChainId={expectedChainId}
           useExact={false}
