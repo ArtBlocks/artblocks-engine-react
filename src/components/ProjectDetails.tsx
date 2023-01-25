@@ -19,6 +19,7 @@ import { useWindowSize } from 'hooks/useWindowSize';
 import useTheme from '@mui/material/styles/useTheme';
 import TokenPreview from './TokenPreview';
 import ProjectStats from './ProjectStats';
+import ProjectExplore from './ProjectExplore'
 import Loading from './Loading';
 import TokenList from './TokenList';
 import PurchaseProject from './PurchaseProject';
@@ -167,6 +168,9 @@ const ProjectDetails = ({ id }: Props) => {
           <Typography variant="h6" mb={2}>
             About { name }
           </Typography>
+
+          <ProjectExplore project={project} />
+
           <Box paddingRight={[0, 0, 4]}>
             <Collapsible content={description} />
           </Box>
