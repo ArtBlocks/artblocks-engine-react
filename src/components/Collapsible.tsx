@@ -1,31 +1,32 @@
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import ButtonBase from '@mui/material/ButtonBase';
+import { useState } from "react"
+import {
+  Box,
+  Typography,
+  ButtonBase
+} from "@mui/material"
 
 interface Props {
-  content: string;
-  maxWords?: number;
+  content: string
+  maxWords?: number
 }
 
 const Collapsible = ({ content, maxWords=100 }: Props) => {
-  const [open, setOpen] = useState(false);
-  const words = content ? content.split(' ') : [];
-  const truncated = words.slice(0, maxWords).join(' ');
-  const overflows = words.length > maxWords;
+  const [open, setOpen] = useState(false)
+  const words = content ? content.split(" ") : []
+  const truncated = words.slice(0, maxWords).join(" ")
+  const overflows = words.length > maxWords
 
   return (
     <>
       <Typography>
-        { open ? content : truncated } { overflows && !open && '...' }
+        {open ? content : truncated} {overflows && !open && "..."}
       </Typography>
-
       { overflows && (
         <Box mt={1}>
           { !open && (
             <ButtonBase
               onClick={() => setOpen(true)}
-              sx={{ textDecoration: 'underline', textTransform: 'none' }}
+              sx={{ textDecoration: "underline", textTransform: "none" }}
             >
               More
             </ButtonBase>
@@ -36,4 +37,4 @@ const Collapsible = ({ content, maxWords=100 }: Props) => {
   )
 }
 
-export default Collapsible;
+export default Collapsible
