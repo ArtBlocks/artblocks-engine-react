@@ -7,6 +7,7 @@ import {
   Modal
 } from "@mui/material"
 import { MINT_CONTRACT_ADDRESS, MULTIPLY_GAS_LIMIT } from "config"
+import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
 import GenArt721MintABI from "abi/GenArt721Mint.json"
 import TokenView from "components/TokenView"
 import MintingButtonEnabled from "components/MintingButtonEnabled"
@@ -20,16 +21,6 @@ interface Props {
   artistCanMint: boolean,
   anyoneCanMint: boolean,
   scriptAspectRatio: number
-}
-
-const multiplyBigNumberByFloat = function(x: BigNumber, y: number) {
-  return BigNumber.from(Math.floor(x.toNumber()*y))
-}
-
-const formatEtherFixed = function(priceWei: string, fractionDigits: number) {
-  const priceEther = utils.formatEther(priceWei)
-  const priceEtherFixed = parseFloat(priceEther).toFixed(fractionDigits)
-  return priceEtherFixed
 }
 
 const MintingInteraction = ({ 
