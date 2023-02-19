@@ -7,11 +7,9 @@ interface Props {
 
 const MintingCountdown = ({auctionStartFormatted, auctionStartCountdown}: Props) => {  
   return (
-    <>
-      <Box sx={{fontWeight: "bold", marginBottom: 0.5}}>
-        Live: {auctionStartFormatted} ({auctionStartCountdown})
-      </Box>
-    </>
+    <Box sx={{fontWeight: "bold", marginBottom: 0.5}}>
+      Live: {auctionStartFormatted} ({auctionStartCountdown})
+    </Box>
   )
 }
 
