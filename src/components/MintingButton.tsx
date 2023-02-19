@@ -117,8 +117,8 @@ const MintingInteraction = ({
         )
       }
       <Box marginTop={1}>
-        <Typography>
-          <i>{dialog}</i>
+        <Typography fontStyle="italic">
+          {dialog}
         </Typography>
       </Box>
       <Modal
