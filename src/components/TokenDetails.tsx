@@ -11,6 +11,7 @@ import {
   Breadcrumbs
 } from "@mui/material"
 import VisibilityIcon from "@mui/icons-material/Visibility"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import ImageIcon from "@mui/icons-material/Image"
 import useTheme from "@mui/material/styles/useTheme"
 import TokenTraits from "components/TokenTraits"
@@ -122,6 +123,32 @@ const TokenDetails = ({ id }: Props) => {
           <Typography variant="h6">
             {token.project.artistName}
           </Typography>
+          <Box>
+            <Box>
+              <Button
+                endIcon={<ArrowForwardIcon />}
+                onClick={() => {
+                  window.open(`https://etherscan.io/token/${CORE_CONTRACT_ADDRESS?.toLowerCase()}?a=${token.tokenId}`)
+                }}
+                >
+                <Typography fontSize="14px" sx={{textTransform: "none"}}>
+                  View on Etherscan
+                </Typography>
+              </Button>
+            </Box>
+            <Box>
+              <Button
+                endIcon={<ArrowForwardIcon />}
+                onClick={() => {
+                  window.open(`https://opensea.io/assets/ethereum/${CORE_CONTRACT_ADDRESS?.toLowerCase()}/${token.tokenId}`)
+                }}
+                >
+                <Typography fontSize="14px" sx={{textTransform: "none"}}>
+                  View on OpenSea
+                </Typography>
+              </Button>
+            </Box>
+          </Box>
         </Grid>
       </Grid>
       <Grid container spacing={2} mt={4} mb={4}>
