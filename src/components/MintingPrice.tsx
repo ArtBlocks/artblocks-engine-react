@@ -13,9 +13,9 @@ interface Props {
 }
 
 const MintingPrice = ({startPriceWei, currentPriceWei, endPriceWei, currencySymbol}: Props) => {
-  let fixedPrice = startPriceWei === endPriceWei
-  let startToEnd = Number(startPriceWei.toBigInt()-endPriceWei.toBigInt())
-  let startToCurrent = Number(startPriceWei.toBigInt()-currentPriceWei.toBigInt())
+  const fixedPrice = startPriceWei === endPriceWei
+  const startToEnd = Number(startPriceWei.toBigInt()-endPriceWei.toBigInt())
+  const startToCurrent = Number(startPriceWei.toBigInt()-currentPriceWei.toBigInt())
   return (
     <Box sx={{marginBottom: 3}}>
       <Box>

@@ -55,26 +55,26 @@ const MintingInterface = ({ projectId, artistAddress, scriptAspectRatio }: Props
     return null
   }
 
-  let invocations = projectData.invocations.toNumber()
-  let maxInvocations = projectData.maxInvocations.toNumber()
-  let maxHasBeenInvoked = projectAuction.maxHasBeenInvoked
-  let currencySymbol = projectPrice.currencySymbol
-  //let currencyAddress = projectPrice.currencyAddress
-  let currentPriceWei = projectPrice.tokenPriceInWei
-  let priceIsConfigured = projectPrice.isConfigured
-  let startPriceWei = projectAuction.startPrice
-  let endPriceWei = projectAuction.basePrice
-  let auctionStartUnix = projectAuction.timestampStart.toNumber()
-  let auctionHasStarted = auctionStartUnix <= moment().unix()
-  let auctionStartFormatted = moment.unix(auctionStartUnix).format("LLL")
-  let auctionStartCountdown = moment.unix(auctionStartUnix).fromNow()
-  //let priceDecayHalfLifeSeconds = projectAuction.priceDecayHalfLifeSeconds
-  let isSoldOut = maxHasBeenInvoked || invocations >= maxInvocations
-  let isPaused = projectData.paused
-  let isArtist = isConnected && address?.toLowerCase() === artistAddress?.toLowerCase()
-  let isNotArtist = isConnected && address?.toLowerCase() !== artistAddress?.toLowerCase()
-  let artistCanMint = isArtist && priceIsConfigured && !isSoldOut && auctionHasStarted
-  let anyoneCanMint = isNotArtist && priceIsConfigured && !isSoldOut && auctionHasStarted && !isPaused
+  const invocations = projectData.invocations.toNumber()
+  const maxInvocations = projectData.maxInvocations.toNumber()
+  const maxHasBeenInvoked = projectAuction.maxHasBeenInvoked
+  const currencySymbol = projectPrice.currencySymbol
+  //const currencyAddress = projectPrice.currencyAddress
+  const currentPriceWei = projectPrice.tokenPriceInWei
+  const priceIsConfigured = projectPrice.isConfigured
+  const startPriceWei = projectAuction.startPrice
+  const endPriceWei = projectAuction.basePrice
+  const auctionStartUnix = projectAuction.timestampStart.toNumber()
+  const auctionHasStarted = auctionStartUnix <= moment().unix()
+  const auctionStartFormatted = moment.unix(auctionStartUnix).format("LLL")
+  const auctionStartCountdown = moment.unix(auctionStartUnix).fromNow()
+  //const priceDecayHalfLifeSeconds = projectAuction.priceDecayHalfLifeSeconds
+  const isSoldOut = maxHasBeenInvoked || invocations >= maxInvocations
+  const isPaused = projectData.paused
+  const isArtist = isConnected && address?.toLowerCase() === artistAddress?.toLowerCase()
+  const isNotArtist = isConnected && address?.toLowerCase() !== artistAddress?.toLowerCase()
+  const artistCanMint = isArtist && priceIsConfigured && !isSoldOut && auctionHasStarted
+  const anyoneCanMint = isNotArtist && priceIsConfigured && !isSoldOut && auctionHasStarted && !isPaused
 
   return (
     <Box>

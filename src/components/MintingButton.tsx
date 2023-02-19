@@ -27,8 +27,8 @@ const multiplyBigNumberByFloat = function(x: BigNumber, y: number) {
 }
 
 const formatEtherFixed = function(priceWei: string, fractionDigits: number) {
-  let priceEther = utils.formatEther(priceWei)
-  let priceEtherFixed = parseFloat(priceEther).toFixed(fractionDigits)
+  const priceEther = utils.formatEther(priceWei)
+  const priceEtherFixed = parseFloat(priceEther).toFixed(fractionDigits)
   return priceEtherFixed
 }
 
