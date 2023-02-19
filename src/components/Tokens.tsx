@@ -47,6 +47,14 @@ const Tokens = ({
     )
   }
 
+  if (!data || !data.tokens) {
+    return (
+      <Alert severity="info">
+        No tokens found for this project.
+      </Alert>
+    )
+  }
+
   let width = 280
   if (windowSize && !isNaN(windowSize.width)) {
     width = windowSize.width > theme.breakpoints.values.md
@@ -55,32 +63,26 @@ const Tokens = ({
   }
 
   return (
-    data && data.tokens && (
-      data.tokens.length > 0 ? (
-        <Grid spacing={2} container>
-          {
-            data.tokens.map(((token:Token) => (
-              <Grid key={token.tokenId} item md={4} sm={6} xs={6}>
-                <Link href={`/token/${token.id}`}>
-                  <TokenView
-                    tokenId={token.tokenId}
-                    aspectRatio={aspectRatio}
-                    width={width}
-                  />
-                </Link>
-                <Typography mt={0.25} fontWeight="bold">
-                  #{token.invocation.toString()}
-                </Typography>
-              </Grid>
-            )))
-          }
-        </Grid>
-      ): (
-        <Alert severity="info">
-          No tokens found for this project.
-        </Alert>
-      )
-    )
+    data.tokens.length > 0 ? 
+      <Grid spacing={2} container>
+        {
+          data.tokens.map(((token:Token) => (
+            <Grid key={token.tokenId} item md={4} sm={6} xs={6}>
+              <Link href={`/token/${token.id}`}>
+                <TokenView
+                  tokenId={token.tokenId}
+                  aspectRatio={aspectRatio}
+                  width={width}
+                />
+              </Link>
+              <Typography mt={0.25} fontWeight="bold">
+                #{token.invocation.toString()}
+              </Typography>
+            </Grid>
+          )))
+        }
+      </Grid>
+    : null
   )
 }
 

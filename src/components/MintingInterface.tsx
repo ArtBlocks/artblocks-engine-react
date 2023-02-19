@@ -52,7 +52,7 @@ const MintingInterface = ({ projectId, artistAddress, scriptAspectRatio }: Props
   })
 
   if (!data || !projectData || !projectPrice || !projectAuction || isLoading || isError) {
-    return <></>
+    return null
   }
 
   let invocations = projectData.invocations.toNumber()
