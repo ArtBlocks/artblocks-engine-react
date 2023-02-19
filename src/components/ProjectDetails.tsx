@@ -19,6 +19,7 @@ import { TOKENS_PER_PAGE } from "config"
 import { OrderDirection } from "utils/types"
 import { parseScriptType, parseAspectRatio } from "utils/scriptJSON"
 import ProjectDate from "components/ProjectDate"
+import ProjectExplore from "components/ProjectExplore"
 import TokenView from "components/TokenView"
 import Tokens from "components/Tokens"
 import MintingInterface from "components/MintingInterface"
@@ -106,6 +107,7 @@ const ProjectDetails = ({ id }: Props) => {
           <Typography variant="h6" mb={2}>
             About {project.name}
           </Typography>
+          <ProjectExplore project={project}/>
           <Box paddingRight={[0, 0, 4]}>
             <Collapsible content={project.description}/>
           </Box>
