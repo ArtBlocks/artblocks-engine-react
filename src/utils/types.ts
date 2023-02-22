@@ -1,57 +1,53 @@
 export interface Project {
-  id: string;
-  projectId: BigInt;
-  name: string;
-  description: string;
-  artistName: string;
-  invocations: BigInt;
-  maxInvocations: BigInt;
-  activatedAt: BigInt;
-  scriptJSON: string;
-  active: boolean;
-  paused: boolean;
-  complete: boolean;
-  tokens: Token[];
-  pricePerTokenInWei: BigInt;
-  currencyAddress: string;
-  currencySymbol: string;
-  minterConfiguration?: MinterConfiguration;
+  id: string
+  projectId: BigInt
+  name: string
+  description: string
+  artistName: string
+  artistAddress: string
+  invocations: BigInt
+  maxInvocations: BigInt
+  activatedAt: BigInt
+  scriptJSON: string
+  active: boolean
+  paused: boolean
+  complete: boolean
+  tokens: Token[]
+  pricePerTokenInWei: BigInt
+  currencyAddress: string
+  currencySymbol: string
+  minterConfiguration?: MinterConfiguration
 }
 
 export interface Account {
-  id: string;
+  id: string
 }
+
 export interface Token {
-  id: string;
-  tokenId: string;
-  invocation: BigInt;
-  uri: string;
-  createdAt: BigInt;
-  owner?: Account;
+  id: string
+  tokenId: string
+  invocation: BigInt
+  uri: string
+  createdAt: BigInt
+  owner?: Account
 }
 
 export interface MinterConfiguration {
-  basePrice: BigInt;
-  startPrice: BigInt;
-  priceIsconfigured: boolean;
-  currencySymbol: string;
+  basePrice: BigInt
+  startPrice: BigInt
+  priceIsconfigured: boolean
+  currencySymbol: string
   currencyAddress: string,
   startTime: BigInt,
-  endTime: BigInt;
+  endTime: BigInt
 }
 
 export interface Trait {
-  trait_type: string;
-  value: string;
-}
-
-export interface ERC20Token {
-  address: string;
-  decimals: number;
-  symbol: string;
+  trait_type: string
+  value: string
 }
 
 export enum OrderDirection {
-  ASC = 'asc',
-  DESC = 'desc',
+  ASC = "asc",
+  DESC = "desc"
 }

@@ -1,15 +1,30 @@
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
+import { useState } from "react"
+import {
+  Box,
+  CircularProgress
+} from "@mui/material"
+import { Container } from "@mui/system"
+import useInterval from "hooks/useInterval"
 
-const Loading = () => (
-  <Box sx={{
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'center',
-    margin: 2,
-  }}>
-    <CircularProgress />
-  </Box>
-)
+const Loading = () => {
+  const [waitTime, setWaitTime] = useState(0)
 
-export default Loading;
+  useInterval(() => {
+    setWaitTime(waitTime+1)
+  }, 1000)
+
+  return (
+    <Container>
+      {
+        waitTime > 0 &&
+        (
+          <Box display="flex" alignItems="center" justifyContent="center" width="100%">
+            <CircularProgress/>
+          </Box>
+        )
+      }
+    </Container>
+  )
+}
+
+export default Loading

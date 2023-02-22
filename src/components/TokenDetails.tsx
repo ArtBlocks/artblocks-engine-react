@@ -1,119 +1,163 @@
-import moment from 'moment';
-import Box from '@mui/material/Box';
-import useToken from 'hooks/useToken';
-import Alert from '@mui/material/Alert';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import useTheme from '@mui/material/styles/useTheme';
-import { useWindowSize } from 'hooks/useWindowSize';
-import Loading from './Loading';
-import TokenPreview from './TokenPreview';
-import TokenTraits from './TokenTraits';
-import { coreContractAddress, openseaBaseUrl, etherscanBaseUrl } from 'config';
-import { parseAspectRatio } from 'utils/scriptJSON';
+import moment from "moment"
+import { CORE_CONTRACT_ADDRESS, GENERATOR_URL, MEDIA_URL } from "config"
+import { parseAspectRatio } from "utils/scriptJSON"
+import {
+  Box,
+  Typography,
+  Link,
+  Grid,
+  Alert,
+  Button,
+  Breadcrumbs
+} from "@mui/material"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
+import ImageIcon from "@mui/icons-material/Image"
+import useTheme from "@mui/material/styles/useTheme"
+import TokenTraits from "components/TokenTraits"
+import Address from "components/Address"
+import Loading from "components/Loading"
+import TokenView from "components/TokenView"
+import useToken from "hooks/useToken"
+import useWindowSize from "hooks/useWindowSize"
 
 interface Props {
-  id: string;
+  id: string
 }
 
 const TokenDetails = ({ id }: Props) => {
-  const { loading, error, data } = useToken(id);
-  const token = data?.token;
-  const size = useWindowSize();
-  const theme = useTheme();
+  const theme = useTheme()
+  const windowSize = useWindowSize()
+  const { loading, error, data } = useToken(id)
+  const token = data?.token
 
   if (loading) {
-    return <Loading />
+    return <Loading/>
   }
 
   if (error) {
-    return (
+    <Box>
       <Alert severity="error">
         Error loading token
       </Alert>
-    )
+    </Box>
   }
 
-  const width = size.width > theme.breakpoints.values.md
-    ? (Math.min(size.width, 1200)- 48)*0.666666
-      : size.width > theme.breakpoints.values.sm
-        ? size.width - 48
-        : size.width - 32;
+  const width = windowSize.width > theme.breakpoints.values.md
+    ? (Math.min(windowSize.width, 1200)- 48)*0.666666
+      : windowSize.width > theme.breakpoints.values.sm
+        ? windowSize.width - 48
+        : windowSize.width - 32
 
   return token && (
     <Box>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 4 }}>
-        <Link href="/" underline="hover" sx={{ color: '#666' }}>
+      <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
+        <Link href="/project" underline="hover" sx={{color: "#666"}}>
           Home
         </Link>
-        <Link href={`/project/${token.project.projectId}`} underline="hover" sx={{ color: '#666' }}>
-          { token.project.name }
+        <Link href={`/project/${token.project.projectId}`} underline="hover" sx={{color: "#666"}}>
+          {token.project.name}
         </Link>
         <Typography>
-          #{ token.invocation }
+          {token.invocation}
         </Typography>
       </Breadcrumbs>
-      
       <Grid container spacing={2}>
         <Grid item md={8}>
-          <TokenPreview
-            id={token.id}
+          <TokenView
             tokenId={token.tokenId}
-            owner={token.owner.id}
             width={width}
             aspectRatio={parseAspectRatio(token.project.scriptJSON)}
-            showLiveViewLink
-            showImageLink
+            live
           />
+          <Box sx={{marginTop: 1, display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <Box>
+              <Typography>
+                Owned by <Address address={token.owner.id}></Address>
+              </Typography>
+            </Box>
+            <Box sx={{display: "flex", justifyContent: "space-between"}}>
+              <Button
+                startIcon={<VisibilityIcon sx={{color: "#666"}}/>}
+                sx={{
+                  fontSize: 14,
+                  textTransform: "none",
+                  minWidth: [0, 0, "64px"],
+                  padding: [0, 0, "default"]
+                }}
+                onClick={() => {
+                  window.open(`${GENERATOR_URL}/${CORE_CONTRACT_ADDRESS?.toLowerCase()}/${token.tokenId}`)
+                }}
+                >
+                <Typography fontSize="14px" display={["none", "none", "block"]}>
+                  Live view
+                </Typography>
+              </Button>
+              <Button
+                startIcon={<ImageIcon sx={{color: "#666"}}/>}
+                sx={{
+                  fontSize: 14,
+                  textTransform: "none",
+                  marginLeft: [1, 1, 2],
+                  minWidth: [0, 0, "64px"],
+                  padding: [0, 0, "default"]
+                }}
+                onClick={() => {
+                  window.open(`${MEDIA_URL}/${token.tokenId}.png`)
+                }}
+                >
+                <Typography fontSize="14px" display={["none", "none", "block"]}>
+                  Image
+                </Typography>
+              </Button>
+            </Box>
+          </Box>
         </Grid>
-
         <Grid item md={4}>
-          <Typography fontSize="14px" mb={4}>
-            Minted { moment.unix(token.createdAt).format('MMM DD, YYYY') }
+          <Typography fontSize="16px" mb={4}>
+            Minted {moment.unix(token.createdAt).format("LL")}
           </Typography> 
-          <Typography variant="h4">
-            { token.project.name } #{ token.invocation }
+          <Typography variant="h1">
+            {token.project.name} #{token.invocation}
           </Typography>
           <Typography variant="h6">
-            { token.project.artistName }
+            {token.project.artistName}
           </Typography>
+          <Box>
+            <Box>
+              <Button
+                endIcon={<ArrowForwardIcon />}
+                onClick={() => {
+                  window.open(`https://etherscan.io/token/${CORE_CONTRACT_ADDRESS?.toLowerCase()}?a=${token.tokenId}`)
+                }}
+                >
+                <Typography fontSize="14px" sx={{textTransform: "none"}}>
+                  View on Etherscan
+                </Typography>
+              </Button>
+            </Box>
+            <Box>
+              <Button
+                endIcon={<ArrowForwardIcon />}
+                onClick={() => {
+                  window.open(`https://opensea.io/assets/ethereum/${CORE_CONTRACT_ADDRESS?.toLowerCase()}/${token.tokenId}`)
+                }}
+                >
+                <Typography fontSize="14px" sx={{textTransform: "none"}}>
+                  View on OpenSea
+                </Typography>
+              </Button>
+            </Box>
+          </Box>
         </Grid>
       </Grid>
-
       <Grid container spacing={2} mt={4} mb={4}>
         <Grid item md={6}>
-          <Typography variant="h6" mb={2}>Features</Typography>
-          <TokenTraits tokenId={token.tokenId} />
-        </Grid>
-
-        <Grid item md={6}>
-          <Box sx={{ display: 'flex' }}>
-            <Button
-              endIcon={<ArrowForwardIcon />}
-              sx={{ marginRight: 2}}
-              onClick={() => {
-                window.open(`${etherscanBaseUrl}/token/${coreContractAddress}?a=${token.tokenId}`);
-              }}
-            >
-              Etherscan
-            </Button>
-            <Button
-              endIcon={<ArrowForwardIcon />}
-              onClick={() => {
-                window.open(`${openseaBaseUrl}/${coreContractAddress}/${token.tokenId}`);
-              }}
-            >
-              View on Opensea
-            </Button>
-          </Box>
+          <TokenTraits tokenId={token.tokenId}/>
         </Grid>
       </Grid>
     </Box>
   )
 }
 
-export default TokenDetails;
+export default TokenDetails

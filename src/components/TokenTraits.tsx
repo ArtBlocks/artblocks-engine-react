@@ -1,23 +1,27 @@
-import Alert from '@mui/material/Alert';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import useTokenTraits from 'hooks/useTokenTraits';
-import Loading from './Loading';
-import { Trait } from 'utils/types';
+import { Trait } from "utils/types"
+import { 
+  Typography,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from "@mui/material"
+import Loading from "components/Loading"
+import useTokenTraits from "hooks/useTokenTraits"
 
 interface Props {
-  tokenId: string;
+  tokenId: string
 }
 
 const TokenTraits = ({ tokenId }: Props) => {
-  const { loading, error, traits } = useTokenTraits(tokenId);
+  const { loading, error, data } = useTokenTraits(tokenId)
+  const traits = data?.traits?.filter((t:Trait) => t.value.indexOf('All') === -1)
 
   if (loading) {
-    return <Loading />;
+    return <Loading/>
   }
 
   if (error) {
@@ -25,33 +29,49 @@ const TokenTraits = ({ tokenId }: Props) => {
       <Alert severity="error">
         Error loading traits
       </Alert>
-    );
+    )
   }
 
-  return traits && (
-    <TableContainer sx={{ marginBottom: 4 }}>
+  return traits && traits.length > 0 && (
+    <TableContainer sx={{marginBottom: 4}}>
+      <Typography variant="h6" mb={2}>Features</Typography>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Feature</TableCell>
-            <TableCell>Value</TableCell>
+            <TableCell>
+              <Typography fontWeight={600}>
+                Feature
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography fontWeight={600}>
+                Value
+              </Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {traits.map((trait:Trait) => {
-            const parts = trait.value.split(':');
-
+            const p = trait.value.split(":")
             return (
-              <TableRow key={parts[0]}>
-                <TableCell>{ parts[0] }</TableCell>
-                <TableCell>{ parts[1] }</TableCell>
+              <TableRow key={p[0]}>
+                <TableCell>
+                  <Typography>
+                    {p[0]}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography>
+                    {p[1]}
+                  </Typography>
+                </TableCell>
               </TableRow>
-            );
+            )
           })}
         </TableBody>
       </Table>
     </TableContainer>
   )
-} 
+}
 
-export default TokenTraits;
+export default TokenTraits

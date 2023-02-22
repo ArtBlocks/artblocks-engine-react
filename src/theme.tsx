@@ -1,73 +1,86 @@
-import * as React from 'react';
+import * as React from "react"
 import {
   Link as RouterLink,
-  LinkProps as RouterLinkProps,
-} from 'react-router-dom';
-import { createTheme, PaletteColor } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
-import { LinkProps } from '@mui/material/Link';
+  LinkProps as RouterLinkProps
+} from "react-router-dom"
+import { createTheme, PaletteColor } from "@mui/material/styles"
+import { LinkProps } from "@mui/material/Link"
 
 declare module "@mui/material/styles" {
   interface Palette {
-    upcoming: PaletteColor;
+    upcoming: PaletteColor
   }
   interface PaletteOptions {
-    upcoming: PaletteColor;
+    upcoming: PaletteColor
   }
 }
 
 declare module "@mui/material/Chip" {
   interface ChipPropsColorOverrides {
-    upcoming: true;
+    upcoming: true
   }
 }
 
 const LinkBehavior = React.forwardRef<
   any,
-  Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
+  Omit<RouterLinkProps, "to"> & { href: RouterLinkProps["to"] }
 >((props, ref) => {
-  const { href, ...other } = props;
+  const { href, ...other } = props
   // Map href (MUI) -> to (react-router)
-  return <RouterLink ref={ref} to={href} {...other} />;
-});
+  return <RouterLink ref={ref} to={href} {...other} />
+})
 
-const { palette } = createTheme();
+const { palette } = createTheme()
 
-// A custom theme for this app
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#000',
-      contrastText: 'white',
+      main: "#212121",
+      contrastText: "#ECF0F1"
     },
     secondary: {
-      main: '#333',
-      contrastText: 'white',
+      main: "#2C3E50",
+      contrastText: "#ECF0F1"
     },
     success: {
-      main: '#18CE26',
+      main: "#27AE60"
     },
     error: {
-      main: red.A400,
+      main: "#E74C3C"
     },
     upcoming: palette.augmentColor({
       color: {
-        main: '#CE7A18',
+        main: "#CE7A18"
       }
-    }),
+    })
+  },
+  typography: {
+    fontFamily: [
+      "Raleway",
+      "Geometric",
+      "Segoe UI",
+      "Helvetica Neue",
+      "Arial",
+      "sans-serif"
+    ].join(",")
   },
   components: {
     MuiLink: {
       defaultProps: {
-        component: LinkBehavior,
-      } as LinkProps,
+        component: LinkBehavior
+      } as LinkProps
     },
     MuiButtonBase: {
       defaultProps: {
-        LinkComponent: LinkBehavior,
-      },
-    },
-  },
-});
+        LinkComponent: LinkBehavior
+      }
+    }
+  }
+})
 
-export default theme;
+theme.typography.h1 = {
+  fontFamily: "Archivo Black",
+  fontWeight: "400"
+}
+
+export default theme
