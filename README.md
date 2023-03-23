@@ -1,5 +1,5 @@
 # Art Blocks Engine (React Template)
-[![GitPOAPs](https://public-api.gitpoap.io/v1/repo/ArtBlocks/artblocks-contracts/badge)](https://www.gitpoap.io/gh/ArtBlocks/artblocks-contracts)
+[![GitPOAPs](https://public-api.gitpoap.io/v1/repo/ArtBlocks/artblocks-engine-react/badge)](https://www.gitpoap.io/gh/ArtBlocks/artblocks-engine-react)
 
 This project is meant to be used as a template to build Art Blocks Engine web apps. It contains all of the pages and views necessary for users to browse projects, tokens and be able to purchase mints. This repository serves as a prototype or template. It assumes your core contract is `GenArt721CoreV3` and your minting contract is `MinterDAExpV2` with all sales priced in ETH. It is NOT intended for production use. Please modify for your needs and test extensively before using. Absolutely no warranty of any kind is provided. Please review from The MIT License:
 
