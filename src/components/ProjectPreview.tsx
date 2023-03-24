@@ -25,7 +25,7 @@ const ProjectPreview = ({project, width=280, showDescription=false}: Props) => {
   return (
     <Box>
       <Box>
-        <Link href={`/project/${project.projectId}`} underline="hover">
+        <Link href={`/project/${project.id.split('-')[0]}/${project.projectId}`} underline="hover">
           <Typography variant="h1" fontSize={36}>
             {project.name}
           </Typography>
@@ -35,7 +35,7 @@ const ProjectPreview = ({project, width=280, showDescription=false}: Props) => {
         </Typography>
       </Box>
       <TokenView
-        tokenId={token?.tokenId}
+        tokenId={token?.id}
         width={width}
         invocation={token?.invocation}
         aspectRatio={parseAspectRatio(project.scriptJSON)}
@@ -48,7 +48,7 @@ const ProjectPreview = ({project, width=280, showDescription=false}: Props) => {
             startTime={project.minterConfiguration?.startTime}
           />
         </Box>
-        { 
+        {
           showDescription && (
             <Box marginTop={2}>
               <Collapsible content={project.description}/>

@@ -14,8 +14,8 @@ function App() {
         <Routes>
           <Route index element={<LandingPage/>}/>
           <Route path="projects" element={<ProjectsPage/>}/>
-          <Route path="project/:projectId" element={<ProjectPage/>}/>
-          <Route path="token/:id" element={<TokenPage/>}/>
+          <Route path="project/:contractAddress/:projectId" element={<ProjectPage/>}/>
+          <Route path="token/:contractAddress/:id" element={<TokenPage/>}/>
         </Routes>
       </Router>
       <ToastContainer
