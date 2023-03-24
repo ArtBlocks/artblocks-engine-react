@@ -1,4 +1,3 @@
-import { CORE_CONTRACT_ADDRESS } from "config"
 import {
   Box,
   Card,
@@ -27,7 +26,7 @@ const TokenView = ({
     <Box width={String(width)+"px"} height={String(height)+"px"}>
       <Card sx={{borderRadius: 0, boxShadow: 0}}>
         {
-          live ? 
+          live ?
           (
             <TokenLive tokenId={tokenId} width={width} height={height}/>
           ) :
@@ -36,10 +35,10 @@ const TokenView = ({
           )
         }
       </Card>
-      { invocation !== undefined && 
+      { invocation !== undefined &&
         (
         <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-          <Link href={`/token/${CORE_CONTRACT_ADDRESS}-${tokenId}`} sx={{fontSize: "14px", textDecoration: "none"}}>
+          <Link href={`/token/${tokenId.split('-')[0]}/${tokenId.split('-')[1]}`} sx={{fontSize: "14px", textDecoration: "none"}}>
             No. { invocation?.toString() }
           </Link>
         </Box>

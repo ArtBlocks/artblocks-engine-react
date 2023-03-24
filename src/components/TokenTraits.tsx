@@ -1,5 +1,5 @@
 import { Trait } from "utils/types"
-import { 
+import {
   Typography,
   Alert,
   Table,
@@ -13,11 +13,12 @@ import Loading from "components/Loading"
 import useTokenTraits from "hooks/useTokenTraits"
 
 interface Props {
+  contractAddress: string
   tokenId: string
 }
 
-const TokenTraits = ({ tokenId }: Props) => {
-  const { loading, error, data } = useTokenTraits(tokenId)
+const TokenTraits = ({ contractAddress, tokenId }: Props) => {
+  const { loading, error, data } = useTokenTraits(contractAddress, tokenId)
   const traits = data?.traits?.filter((t:Trait) => t.value.indexOf('All') === -1)
 
   if (loading) {

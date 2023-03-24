@@ -29,13 +29,14 @@ import useProject from "hooks/useProject"
 import useWindowSize from "hooks/useWindowSize"
 
 interface Props {
+  contractAddress: string
   id: string
 }
 
-const ProjectDetails = ({ id }: Props) => {
+const ProjectDetails = ({ contractAddress, id }: Props) => {
   const theme = useTheme()
   const windowSize = useWindowSize()
-  const { loading, error, data } = useProject(id)
+  const { loading, error, data } = useProject(`${contractAddress}-${id}`)
   const [currentPage, setCurrentPage] = useState(0)
   const [orderDirection, setOrderDirection] = useState(OrderDirection.ASC)
   const project = data?.project
@@ -75,7 +76,7 @@ const ProjectDetails = ({ id }: Props) => {
           token && (
             <Grid item md={8}>
               <TokenView
-                tokenId={token.tokenId}
+                tokenId={token.id}
                 width={width}
                 invocation={token.invocation}
                 aspectRatio={parseAspectRatio(project.scriptJSON)}
@@ -88,14 +89,15 @@ const ProjectDetails = ({ id }: Props) => {
           <Box sx={{width: "100%", paddingLeft: [0, 0, 2]}}>
             <ProjectDate startTime={project?.minterConfiguration?.startTime}/>
             <Typography variant="h1" mt={3}>
-              {project.name} 
+              {project.name}
             </Typography>
             <Typography variant="h6" mb={2}>
               {project.artistName}
             </Typography>
             <Divider sx={{display: ["none", "block", "none"], marginBottom: 2}}/>
-            <MintingInterface 
-              projectId={project.projectId} 
+            <MintingInterface
+              contractAddress={contractAddress}
+              projectId={project.projectId}
               artistAddress={project.artistAddress}
               scriptAspectRatio={parseAspectRatio(project.scriptJSON)}
             />
@@ -170,7 +172,7 @@ const ProjectDetails = ({ id }: Props) => {
           </Box>
         </Box>
         <Tokens
-          projectId={id}
+          projectId={`${contractAddress}-${id}`}
           first={TOKENS_PER_PAGE}
           skip={currentPage*TOKENS_PER_PAGE}
           orderDirection={orderDirection}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
-import { GENERATOR_URL } from 'config'
+import { CONTRACT_INFO } from 'config'
 import { Project } from 'utils/types'
 
 interface TokenData {
@@ -28,7 +28,8 @@ const useGeneratorPreview = (project: Project) => {
     setLoading(true)
     try {
       const token = generateToken(Number(project.projectId))
-      const { data } = await axios.get(`${GENERATOR_URL}/${project.id}/${token.tokenId}/${token.hash}`)
+      const generatorUrl = CONTRACT_INFO[project.id.split('-')[0]].GENERATOR_URL
+      const { data } = await axios.get(`${generatorUrl}/${project.id}/${token.tokenId}/${token.hash}`)
       setContent(data)
       setError(false)
     } catch(error) {

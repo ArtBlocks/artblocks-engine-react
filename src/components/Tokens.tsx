@@ -1,7 +1,7 @@
 import useTheme from "@mui/material/styles/useTheme"
 import { TOKENS_PER_PAGE } from "config"
 import { OrderDirection, Token } from "utils/types"
-import { 
+import {
   Grid,
   Link,
   Alert,
@@ -28,7 +28,7 @@ const Tokens = ({
   aspectRatio=1
 }: Props) => {
   const theme = useTheme()
-  const windowSize = useWindowSize()  
+  const windowSize = useWindowSize()
   const {loading, error, data } = useTokens(projectId, {
     first,
     skip,
@@ -63,14 +63,14 @@ const Tokens = ({
   }
 
   return (
-    data.tokens.length > 0 ? 
+    data.tokens.length > 0 ?
       <Grid spacing={2} container>
         {
           data.tokens.map(((token:Token) => (
             <Grid key={token.tokenId} item md={4} sm={6} xs={6}>
-              <Link href={`/token/${token.id}`}>
+              <Link href={`/token/${token.id.split('-')[0]}/${token.id.split('-')[1]}`}>
                 <TokenView
-                  tokenId={token.tokenId}
+                  tokenId={token.id}
                   aspectRatio={aspectRatio}
                   width={width}
                 />

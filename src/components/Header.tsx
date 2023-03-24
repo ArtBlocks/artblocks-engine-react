@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { 
+import {
   Box,
   Link,
   AppBar,
@@ -19,11 +19,6 @@ const items = [
     label: "Projects",
     url: "/projects",
     enabled: true
-  },
-  {
-    label: "Mint",
-    url: "/mint",
-    enabled: false
   }
 ]
 
@@ -67,9 +62,9 @@ const Header = () => {
             </Box>
             <Box sx={{display: {xs: "none", sm: "block"}, marginTop: "5px"}}>
               {items.map((item) => (
-                  <Link 
-                  key={item.label} 
-                  href={item.url} 
+                  <Link
+                  key={item.label}
+                  href={item.url}
                   underline="hover"
                   sx={{fontSize: 18, fontWeight: 600, color: item.enabled ? "black" : "lightgrey", paddingRight: "25px", pointerEvents: item.enabled ? "auto" : "none"}}>
                   {item.label}

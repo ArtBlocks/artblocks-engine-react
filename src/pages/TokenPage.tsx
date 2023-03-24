@@ -3,11 +3,11 @@ import Page from "components/Page"
 import TokenDetails from "components/TokenDetails"
 
 const TokenPage = () => {
-  const { id } = useParams()
+  const { contractAddress, id } = useParams()
   return (
     <Page>
       {
-        id && <TokenDetails id={id}/> 
+        contractAddress && id && <TokenDetails contractAddress={contractAddress} id={id}/>
       }
     </Page>
   )

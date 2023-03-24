@@ -1,8 +1,8 @@
 import axios from "axios"
 import { useState } from "react"
-import { GENERATOR_URL, CORE_CONTRACT_ADDRESS } from "config"
-import { 
-  Box, 
+import { CONTRACT_INFO } from "config"
+import {
+  Box,
   Typography
 } from "@mui/material"
 import Loading from "components/Loading"
@@ -20,7 +20,8 @@ const TokenLive = ({tokenId, width, height}: Props) => {
   const [pollingTime, setPollingTime] = useState(0)
   const [pollingDelay, setPollingDelay] = useState(0)
   const [pollingAttempts, setPollingAttempts] = useState(0)
-  const endpoint = `${GENERATOR_URL}/${CORE_CONTRACT_ADDRESS?.toLowerCase()}/${tokenId}`
+  const generatorUrl = CONTRACT_INFO[tokenId.split('-')[0]].GENERATOR_URL
+  const endpoint = `${generatorUrl}/${tokenId.split('-')[0].toLowerCase()}/${tokenId.split('-')[1]}`
 
   useInterval(() => {
     setPollingTime(pollingTime+1)
@@ -70,10 +71,10 @@ const TokenLive = ({tokenId, width, height}: Props) => {
         ) :
         (
           <Box
-            display="flex" 
+            display="flex"
             alignItems="center"
             justifyContent="center"
-            width={String(width)+"px"} 
+            width={String(width)+"px"}
             height={String(height)+"px"}
           >
             <Box>

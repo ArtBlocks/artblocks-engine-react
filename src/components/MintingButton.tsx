@@ -6,7 +6,7 @@ import {
   Typography,
   Modal
 } from "@mui/material"
-import { MINT_CONTRACT_ADDRESS, MULTIPLY_GAS_LIMIT } from "config"
+import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
 import GenArt721MintABI from "abi/GenArt721Mint.json"
 import TokenView from "components/TokenView"
@@ -14,6 +14,7 @@ import MintingButtonEnabled from "components/MintingButtonEnabled"
 import useWindowSize from "hooks/useWindowSize"
 
 interface Props {
+  mintContractAddress: string,
   projectId: string,
   priceWei: BigNumber
   currencySymbol: string,
@@ -23,7 +24,8 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MintingInteraction = ({ 
+const MintingInteraction = ({
+  mintContractAddress,
   projectId,
   priceWei,
   currencySymbol,
@@ -40,7 +42,7 @@ const MintingInteraction = ({
   const handleMintingPreviewClose = () => setMintingPreview(false)
 
   const { config } = usePrepareContractWrite({
-    address: MINT_CONTRACT_ADDRESS,
+    address: mintContractAddress,
     abi: GenArt721MintABI,
     functionName: "purchase",
     overrides: {
@@ -50,7 +52,7 @@ const MintingInteraction = ({
       BigNumber.from(projectId)
     ]
   })
-  
+
   let customRequest = config.request ? {
     data: config.request?.data,
     from: config.request?.from,
@@ -71,7 +73,7 @@ const MintingInteraction = ({
     confirmations: 1,
     onSuccess(data) {
       let tokenId = data?.logs[0]?.topics[3]
-      if (tokenId) {  
+      if (tokenId) {
         setMintingTokenId(parseInt(tokenId, 16).toString())
         handleMintingPreviewOpen()
       }
@@ -82,19 +84,19 @@ const MintingInteraction = ({
   return (
     <>
       {
-        artistCanMint && 
+        artistCanMint &&
         (
-          <MintingButtonEnabled 
-            message={`Artist Mint for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`} 
+          <MintingButtonEnabled
+            message={`Artist Mint for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`}
             contractPurchase={write}
           />
         )
       }
       {
-        anyoneCanMint && 
+        anyoneCanMint &&
         (
-          <MintingButtonEnabled 
-            message={`Purchase for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`} 
+          <MintingButtonEnabled
+            message={`Purchase for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`}
             contractPurchase={write}
           />
         )
