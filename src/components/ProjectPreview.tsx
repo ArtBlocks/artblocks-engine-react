@@ -8,6 +8,7 @@ import { parseAspectRatio } from "utils/scriptJSON"
 import Collapsible from "components/Collapsible"
 import ProjectDate from "components/ProjectDate"
 import TokenView from "components/TokenView"
+import ProjectStatusBadge from "./ProjectStatusBadge"
 
 interface Props {
   project: Project
@@ -40,7 +41,9 @@ const ProjectPreview = ({project, width=280, showDescription=false}: Props) => {
         aspectRatio={parseAspectRatio(project.scriptJSON)}
       />
       <Box>
-        <Box>
+        <Box sx={{display: "flex", alignItems:"center"}}>
+
+          <ProjectStatusBadge complete={project.complete} paused={project.paused} startTime={project?.minterConfiguration?.startTime} />
           <ProjectDate
             startTime={project.minterConfiguration?.startTime}
           />
