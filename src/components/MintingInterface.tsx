@@ -26,7 +26,7 @@ const MintingInterface = ({ contractAddress, projectId, artistAddress, scriptAsp
   const { data, isError, isLoading } = useContractReads({
     contracts: [
       {
-        address: contractAddress,
+        address: contractAddress as `0x${string}`,
         abi: GenArt721CoreABI,
         functionName: "projectStateData",
         args: [BigNumber.from(projectId)]

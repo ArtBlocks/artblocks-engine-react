@@ -42,7 +42,7 @@ const MintingInteraction = ({
   const handleMintingPreviewClose = () => setMintingPreview(false)
 
   const { config } = usePrepareContractWrite({
-    address: mintContractAddress,
+    address: mintContractAddress as `0x${string}`,
     abi: GenArt721MintABI,
     functionName: "purchase",
     overrides: {
