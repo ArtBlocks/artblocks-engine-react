@@ -3,6 +3,7 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 import { utils, BigNumber } from "ethers"
 import {
   Box,
+  Link,
   Typography,
   Modal
 } from "@mui/material"
@@ -59,13 +60,11 @@ const MintingInteraction = ({
     value: config.request?.value
   } : undefined
 
-  const { data, isError, isLoading, write } = useContractWrite({
+  const { data, error, isError, isLoading, isSuccess, write } = useContractWrite({
     ...config,
     request: customRequest,
-    onSuccess(data) {
-      setDialog("Transaction pending...")
-    }
   })
+  
   const waitForTransaction = useWaitForTransaction({
     hash: data?.hash,
     confirmations: 1,
@@ -108,9 +107,9 @@ const MintingInteraction = ({
         )
       }
       <Box marginTop={1}>
-        <Typography fontStyle="italic">
-          {dialog}
-        </Typography>
+          {isLoading && <Typography fontStyle="italic">Check Wallet</Typography>}
+          {isSuccess && <Typography fontStyle="italic">Transaction: <span><Link target="_blank" href={`https://etherscan.io/tx/${data?.hash}`}>{"View transaction on Etherscan"}</Link></span></Typography>}
+          {isError && <Typography fontStyle="italic">Error while minting: {error?.message}</Typography>}
       </Box>
       <Modal
         open={mintingPreview}
