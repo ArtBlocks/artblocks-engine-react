@@ -3,7 +3,8 @@ import "@rainbow-me/rainbowkit/styles.css"
 import { ThemeProvider } from "@mui/material/styles"
 import theme from "theme"
 import { RainbowKitProvider, getDefaultWallets, midnightTheme } from "@rainbow-me/rainbowkit"
-import { chain, configureChains, createClient, WagmiConfig } from "wagmi"
+import {configureChains, createClient, WagmiConfig} from "wagmi"
+import { mainnet, goerli } from 'wagmi/chains'
 import { infuraProvider } from "wagmi/providers/infura"
 import { publicProvider } from "wagmi/providers/public"
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
@@ -15,8 +16,8 @@ const client = new ApolloClient({
 })
 
 // Defaults to goerli testing network if mainnet is not set
-const expectedChains = EXPECTED_CHAIN_ID === 1 ? [chain.mainnet] : [chain.goerli]
-const initialChain = EXPECTED_CHAIN_ID === 1 ? chain.mainnet : chain.goerli
+const expectedChains = [EXPECTED_CHAIN_ID === 1 ? mainnet : goerli]
+const initialChain = EXPECTED_CHAIN_ID === 1 ? mainnet : goerli
 
 const { chains, provider, webSocketProvider } = configureChains(
   expectedChains,
@@ -27,7 +28,7 @@ const { chains, provider, webSocketProvider } = configureChains(
 )
 
 const { connectors } = getDefaultWallets({
-  appName: "Engine", 
+  appName: "Engine",
   chains
 })
 
