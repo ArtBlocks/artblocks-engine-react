@@ -7,6 +7,7 @@ import TokenImage from "components/TokenImage"
 import TokenLive from "components/TokenLive"
 
 interface Props {
+  contractAddress: string
   tokenId: string
   width: number
   invocation?: BigInt
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const TokenView = ({
+  contractAddress,
   tokenId,
   width,
   invocation,
@@ -28,10 +30,10 @@ const TokenView = ({
         {
           live ?
           (
-            <TokenLive tokenId={tokenId} width={width} height={height}/>
+            <TokenLive contractAddress={contractAddress} tokenId={tokenId} width={width} height={height}/>
           ) :
           (
-            <TokenImage tokenId={tokenId} width={width} height={height}/>
+            <TokenImage contractAddress={contractAddress} tokenId={tokenId} width={width} height={height}/>
           )
         }
       </Card>

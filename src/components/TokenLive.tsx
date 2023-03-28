@@ -10,18 +10,22 @@ import TokenImage from "components/TokenImage"
 import useInterval from "hooks/useInterval"
 
 interface Props {
+  contractAddress: string
   tokenId: string
   width: number
   height: number
 }
 
-const TokenLive = ({tokenId, width, height}: Props) => {
+const TokenLive = ({contractAddress, tokenId, width, height}: Props) => {
   const [status, setStatus] = useState(404)
   const [pollingTime, setPollingTime] = useState(0)
   const [pollingDelay, setPollingDelay] = useState(0)
   const [pollingAttempts, setPollingAttempts] = useState(0)
-  const generatorUrl = CONTRACT_INFO[tokenId.split('-')[0]].GENERATOR_URL
-  const endpoint = `${generatorUrl}/${tokenId.split('-')[0].toLowerCase()}/${tokenId.split('-')[1]}`
+  const contractConfig = CONTRACT_INFO.filter(
+      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
+  )
+  const generatorUrl = contractConfig[0].GENERATOR_URL
+  const endpoint = `${generatorUrl}/${contractAddress.toLowerCase()}/${tokenId.split('-')[1]}`
 
   useInterval(() => {
     setPollingTime(pollingTime+1)
@@ -52,7 +56,7 @@ const TokenLive = ({tokenId, width, height}: Props) => {
 
   if (pollingTime > 500) {
     return (
-      <TokenImage tokenId={tokenId} width={width} height={height}/>
+      <TokenImage contractAddress={contractAddress} tokenId={tokenId} width={width} height={height}/>
     )
   }
 

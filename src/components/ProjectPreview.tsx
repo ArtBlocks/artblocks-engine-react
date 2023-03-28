@@ -35,6 +35,7 @@ const ProjectPreview = ({project, width=280, showDescription=false}: Props) => {
         </Typography>
       </Box>
       <TokenView
+        contractAddress={project.contract.id}
         tokenId={token?.id}
         width={width}
         invocation={token?.invocation}

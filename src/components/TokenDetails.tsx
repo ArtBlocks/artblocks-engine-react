@@ -31,6 +31,9 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
   const windowSize = useWindowSize()
   const { loading, error, data } = useToken(`${contractAddress}-${id}`)
   const token = data?.token
+  const contractConfig = CONTRACT_INFO.filter(
+      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
+  )
 
   if (loading) {
     return <Loading/>
@@ -66,6 +69,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
       <Grid container spacing={2}>
         <Grid item md={8}>
           <TokenView
+            contractAddress={contractAddress}
             tokenId={token.id}
             width={width}
             aspectRatio={parseAspectRatio(token.project.scriptJSON)}
@@ -87,7 +91,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                   padding: [0, 0, "default"]
                 }}
                 onClick={() => {
-                  const generatorUrl = CONTRACT_INFO[contractAddress?.toLowerCase()].GENERATOR_URL.toLowerCase()
+                  const generatorUrl = contractConfig[0].GENERATOR_URL
                   window.open(`${generatorUrl}/${contractAddress?.toLowerCase()}/${token.tokenId}`)
                 }}
                 >
@@ -105,7 +109,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                   padding: [0, 0, "default"]
                 }}
                 onClick={() => {
-                  const mediaUrl = CONTRACT_INFO[contractAddress?.toLowerCase()].MEDIA_URL
+                  const mediaUrl = contractConfig[0].MEDIA_URL
                   window.open(`${mediaUrl}/${token.tokenId}.png`)
                 }}
                 >

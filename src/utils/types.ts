@@ -1,5 +1,6 @@
 export interface Project {
   id: string
+  contract: Contract
   projectId: BigInt
   name: string
   description: string
@@ -17,6 +18,10 @@ export interface Project {
   currencyAddress: string
   currencySymbol: string
   minterConfiguration?: MinterConfiguration
+}
+
+export interface Contract {
+  id: string
 }
 
 export interface Account {

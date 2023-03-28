@@ -12,7 +12,7 @@ const projectsQuery = ({ first, skip, orderDirection }: ProjectsQueryParams) => 
   query GetProjects {
     projects(
         where: {
-          contract_in: ["${Object.keys(CONTRACT_INFO).join("\",\"").toLowerCase()}"]
+          contract_in: ["${CONTRACT_INFO.map(x => x.CORE_CONTRACT_ADDRESS).join("\",\"").toLowerCase()}"]
           active: true
         }
         first: ${first}
@@ -21,6 +21,9 @@ const projectsQuery = ({ first, skip, orderDirection }: ProjectsQueryParams) => 
         orderDirection: ${orderDirection}
     ) {
       id
+      contract {
+        id
+      }
       projectId
       name
       description
