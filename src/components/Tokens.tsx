@@ -70,10 +70,10 @@ const Tokens = ({
         {
           data.tokens.map(((token:Token) => (
             <Grid key={token.tokenId} item md={4} sm={6} xs={6}>
-              <Link href={`/token/${token.id.split('-')[0]}/${token.id.split('-')[1]}`}>
+              <Link href={`/token/${contractAddress}/${token.tokenId}`}>
                 <TokenView
                   contractAddress={contractAddress}
-                  tokenId={token.id}
+                  tokenId={token.tokenId}
                   aspectRatio={aspectRatio}
                   width={width}
                 />

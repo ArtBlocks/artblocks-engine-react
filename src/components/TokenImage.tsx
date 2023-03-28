@@ -14,7 +14,7 @@ const TokenImage = ({contractAddress, tokenId, width, height}: Props) => {
 
   return (
     <img
-      src={`${contractConfig[0].MEDIA_URL}/${tokenId.split('-')[1]}.png`}
+      src={`${contractConfig[0].MEDIA_URL}/${tokenId}.png`}
       alt={tokenId}
       width={width}
       height={height}

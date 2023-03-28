@@ -80,7 +80,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
             <Grid item md={8}>
               <TokenView
                 contractAddress={contractConfig[0].CORE_CONTRACT_ADDRESS}
-                tokenId={token.id}
+                tokenId={token.tokenId}
                 width={width}
                 invocation={token.invocation}
                 aspectRatio={parseAspectRatio(project.scriptJSON)}
