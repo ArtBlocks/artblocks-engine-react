@@ -70,7 +70,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
         <Grid item md={8}>
           <TokenView
             contractAddress={contractAddress}
-            tokenId={token.id}
+            tokenId={token.tokenId}
             width={width}
             aspectRatio={parseAspectRatio(token.project.scriptJSON)}
             live

@@ -25,7 +25,7 @@ const TokenLive = ({contractAddress, tokenId, width, height}: Props) => {
       x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
   )
   const generatorUrl = contractConfig[0].GENERATOR_URL
-  const endpoint = `${generatorUrl}/${contractAddress.toLowerCase()}/${tokenId.split('-')[1]}`
+  const endpoint = `${generatorUrl}/${contractAddress.toLowerCase()}/${tokenId}`
 
   useInterval(() => {
     setPollingTime(pollingTime+1)

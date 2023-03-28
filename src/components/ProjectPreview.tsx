@@ -36,7 +36,7 @@ const ProjectPreview = ({project, width=280, showDescription=false}: Props) => {
       </Box>
       <TokenView
         contractAddress={project.contract.id}
-        tokenId={token?.id}
+        tokenId={token?.tokenId}
         width={width}
         invocation={token?.invocation}
         aspectRatio={parseAspectRatio(project.scriptJSON)}

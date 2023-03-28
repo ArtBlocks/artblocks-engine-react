@@ -40,7 +40,7 @@ const TokenView = ({
       { invocation !== undefined &&
         (
         <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-          <Link href={`/token/${tokenId.split('-')[0]}/${tokenId.split('-')[1]}`} sx={{fontSize: "14px", textDecoration: "none"}}>
+          <Link href={`/token/${contractAddress}/${tokenId}`} sx={{fontSize: "14px", textDecoration: "none"}}>
             No. { invocation?.toString() }
           </Link>
         </Box>
