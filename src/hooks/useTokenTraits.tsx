@@ -6,13 +6,16 @@ const useTokenTraits = (contractAddress: string, tokenId: string) => {
   const [data, setData] = useState<any | null>(null)
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
+  const contractConfig = CONTRACT_INFO.filter(
+      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
+  )
 
   useEffect(() => {
     setLoading(true)
 
     const fetchData = async () => {
       try {
-        const tokenUrl = CONTRACT_INFO[contractAddress].TOKEN_URL
+        const tokenUrl = contractConfig[0].TOKEN_URL
         const r = await axios.get(`${tokenUrl}/${contractAddress}/${tokenId}`)
         setData(r.data)
       } catch (error) {

@@ -13,6 +13,7 @@ import useTokens from "hooks/useTokens"
 import useWindowSize from "hooks/useWindowSize"
 
 interface Props {
+  contractAddress: string
   projectId: string
   first?: number
   skip?: number
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const Tokens = ({
+  contractAddress,
   projectId,
   first=TOKENS_PER_PAGE,
   skip=0,
@@ -70,6 +72,7 @@ const Tokens = ({
             <Grid key={token.tokenId} item md={4} sm={6} xs={6}>
               <Link href={`/token/${token.id.split('-')[0]}/${token.id.split('-')[1]}`}>
                 <TokenView
+                  contractAddress={contractAddress}
                   tokenId={token.id}
                   aspectRatio={aspectRatio}
                   width={width}

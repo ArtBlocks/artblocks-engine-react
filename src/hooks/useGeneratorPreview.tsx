@@ -24,11 +24,15 @@ const useGeneratorPreview = (project: Project) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
 
+  const contractConfig = CONTRACT_INFO.filter(
+      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == project.contract.id.toLowerCase()
+  )
+
   const refreshPreview = useCallback(async () => {
     setLoading(true)
     try {
       const token = generateToken(Number(project.projectId))
-      const generatorUrl = CONTRACT_INFO[project.id.split('-')[0]].GENERATOR_URL
+      const generatorUrl = contractConfig[0].GENERATOR_URL
       const { data } = await axios.get(`${generatorUrl}/${project.id}/${token.tokenId}/${token.hash}`)
       setContent(data)
       setError(false)

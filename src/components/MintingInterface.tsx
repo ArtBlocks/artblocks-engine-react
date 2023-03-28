@@ -3,7 +3,6 @@ import moment from "moment-timezone"
 import { useAccount, useContractReads } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box } from "@mui/material"
-import { CONTRACT_INFO } from "config"
 import GenArt721CoreABI from "abi/GenArt721Core.json"
 import GenArt721MintABI from "abi/GenArt721Mint.json"
 import MintingCountdown from "components/MintingCountdown"
@@ -12,13 +11,14 @@ import MintingPrice from "components/MintingPrice"
 import MintingButton from "components/MintingButton"
 
 interface Props {
-  contractAddress: string,
+  coreContractAddress: string,
+  mintContractAddress: string,
   projectId: string,
   artistAddress: string,
   scriptAspectRatio: number
 }
 
-const MintingInterface = ({ contractAddress, projectId, artistAddress, scriptAspectRatio }: Props) => {
+const MintingInterface = ({ coreContractAddress, mintContractAddress, projectId, artistAddress, scriptAspectRatio }: Props) => {
   const [projectData, setProjectData] = useState<any | null>(null)
   const [projectPrice, setProjectPrice] = useState<any | null>(null)
   const [projectAuction, setProjectAuction] = useState<any | null>(null)
@@ -26,19 +26,19 @@ const MintingInterface = ({ contractAddress, projectId, artistAddress, scriptAsp
   const { data, isError, isLoading } = useContractReads({
     contracts: [
       {
-        address: contractAddress as `0x${string}`,
+        address: coreContractAddress as `0x${string}`,
         abi: GenArt721CoreABI,
         functionName: "projectStateData",
         args: [BigNumber.from(projectId)]
       },
       {
-        address: CONTRACT_INFO[contractAddress].MINT_CONTRACT_ADDRESS,
+        address: mintContractAddress as `0x${string}`,
         abi: GenArt721MintABI,
         functionName: "getPriceInfo",
         args: [BigNumber.from(projectId)]
       },
       {
-        address: CONTRACT_INFO[contractAddress].MINT_CONTRACT_ADDRESS,
+        address: mintContractAddress as `0x${string}`,
         abi: GenArt721MintABI,
         functionName: "projectConfig",
         args: [BigNumber.from(projectId)]
@@ -105,7 +105,8 @@ const MintingInterface = ({ contractAddress, projectId, artistAddress, scriptAsp
         )
       }
       <MintingButton
-        mintContractAddress={CONTRACT_INFO[contractAddress].MINT_CONTRACT_ADDRESS}
+        coreContractAddress={coreContractAddress}
+        mintContractAddress={mintContractAddress}
         projectId={projectId}
         priceWei={currentPriceWei}
         currencySymbol={currencySymbol}

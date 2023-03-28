@@ -15,7 +15,7 @@ import {
   Alert,
   Link
 } from "@mui/material"
-import { TOKENS_PER_PAGE } from "config"
+import {CONTRACT_INFO, TOKENS_PER_PAGE} from "config"
 import { OrderDirection } from "utils/types"
 import { parseScriptType, parseAspectRatio } from "utils/scriptJSON"
 import ProjectDate from "components/ProjectDate"
@@ -46,6 +46,9 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
       : windowSize.width > theme.breakpoints.values.sm
         ? windowSize.width - 48
         : windowSize.width - 32
+  const contractConfig = CONTRACT_INFO.filter(
+      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
+  )
 
   if (error) {
     return (
@@ -76,6 +79,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
           token && (
             <Grid item md={8}>
               <TokenView
+                contractAddress={contractConfig[0].CORE_CONTRACT_ADDRESS}
                 tokenId={token.id}
                 width={width}
                 invocation={token.invocation}
@@ -96,7 +100,8 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
             </Typography>
             <Divider sx={{display: ["none", "block", "none"], marginBottom: 2}}/>
             <MintingInterface
-              contractAddress={contractAddress}
+              coreContractAddress={contractAddress}
+              mintContractAddress={contractConfig[0].MINT_CONTRACT_ADDRESS}
               projectId={project.projectId}
               artistAddress={project.artistAddress}
               scriptAspectRatio={parseAspectRatio(project.scriptJSON)}
@@ -172,6 +177,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
           </Box>
         </Box>
         <Tokens
+          contractAddress={contractAddress}
           projectId={`${contractAddress}-${id}`}
           first={TOKENS_PER_PAGE}
           skip={currentPage*TOKENS_PER_PAGE}

@@ -6,6 +6,9 @@ const projectQuery = (id: string) => `
       id: "${id.toLowerCase()}"
     ) {
       id
+      contract {
+        id
+      }
       projectId
       name
       description

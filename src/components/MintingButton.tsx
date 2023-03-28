@@ -14,6 +14,7 @@ import MintingButtonEnabled from "components/MintingButtonEnabled"
 import useWindowSize from "hooks/useWindowSize"
 
 interface Props {
+  coreContractAddress: string,
   mintContractAddress: string,
   projectId: string,
   priceWei: BigNumber
@@ -25,6 +26,7 @@ interface Props {
 }
 
 const MintingInteraction = ({
+  coreContractAddress,
   mintContractAddress,
   projectId,
   priceWei,
@@ -137,6 +139,7 @@ const MintingInteraction = ({
             </Typography>
             <Box marginTop={1}>
               <TokenView
+                contractAddress={coreContractAddress}
                 tokenId={mintingTokenId}
                 width={windowSize.width*0.5}
                 aspectRatio={scriptAspectRatio}
