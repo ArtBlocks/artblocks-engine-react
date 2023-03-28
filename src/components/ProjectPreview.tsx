@@ -24,7 +24,7 @@ const ProjectPreview = ({project, width=280, showDescription=false}: Props) => {
   return (
     <Box>
       <Box>
-        <Link href={`/project/${project.id.split('-')[0]}/${project.projectId}`} underline="hover">
+        <Link href={`/project/${project.contract.id}/${project.projectId}`} underline="hover">
           <Typography variant="h1" fontSize={36}>
             {project.name}
           </Typography>
