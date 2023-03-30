@@ -1,4 +1,4 @@
-import { CONTRACT_INFO } from "config"
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface Props {
   contractAddress: string
@@ -8,13 +8,11 @@ interface Props {
 }
 
 const TokenImage = ({contractAddress, tokenId, width, height}: Props) => {
-  const contractConfig = CONTRACT_INFO.filter(
-      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
-  )
+  const contractConfig = getContractConfigByAddress(contractAddress)
 
   return (
     <img
-      src={`${contractConfig[0].MEDIA_URL}/${tokenId}.png`}
+      src={`${contractConfig?.MEDIA_URL}/${tokenId}.png`}
       alt={tokenId}
       width={width}
       height={height}

@@ -15,7 +15,7 @@ import {
   Alert,
   Link
 } from "@mui/material"
-import {CONTRACT_INFO, TOKENS_PER_PAGE} from "config"
+import { TOKENS_PER_PAGE } from "config"
 import { OrderDirection } from "utils/types"
 import { parseScriptType, parseAspectRatio } from "utils/scriptJSON"
 import ProjectDate from "components/ProjectDate"
@@ -27,6 +27,7 @@ import Loading from "components/Loading"
 import Collapsible from "components/Collapsible"
 import useProject from "hooks/useProject"
 import useWindowSize from "hooks/useWindowSize"
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface Props {
   contractAddress: string
@@ -46,9 +47,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
       : windowSize.width > theme.breakpoints.values.sm
         ? windowSize.width - 48
         : windowSize.width - 32
-  const contractConfig = CONTRACT_INFO.filter(
-      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
-  )
+  const contractConfig = getContractConfigByAddress(contractAddress)
 
   if (error) {
     return (
@@ -64,7 +63,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
     return <Loading/>
   }
 
-  return project && (
+  return project && contractConfig && (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
         <Link href="/projects" underline="hover" sx={{color: "#666"}}>
@@ -79,7 +78,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
           token && (
             <Grid item md={8}>
               <TokenView
-                contractAddress={contractConfig[0].CORE_CONTRACT_ADDRESS}
+                contractAddress={contractConfig?.CORE_CONTRACT_ADDRESS}
                 tokenId={token.tokenId}
                 width={width}
                 invocation={token.invocation}
@@ -101,7 +100,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
             <Divider sx={{display: ["none", "block", "none"], marginBottom: 2}}/>
             <MintingInterface
               coreContractAddress={contractAddress}
-              mintContractAddress={contractConfig[0].MINT_CONTRACT_ADDRESS}
+              mintContractAddress={contractConfig?.MINT_CONTRACT_ADDRESS}
               projectId={project.projectId}
               artistAddress={project.artistAddress}
               scriptAspectRatio={parseAspectRatio(project.scriptJSON)}

@@ -1,6 +1,5 @@
 import axios from "axios"
 import { useState } from "react"
-import { CONTRACT_INFO } from "config"
 import {
   Box,
   Typography
@@ -8,6 +7,7 @@ import {
 import Loading from "components/Loading"
 import TokenImage from "components/TokenImage"
 import useInterval from "hooks/useInterval"
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface Props {
   contractAddress: string
@@ -21,10 +21,8 @@ const TokenLive = ({contractAddress, tokenId, width, height}: Props) => {
   const [pollingTime, setPollingTime] = useState(0)
   const [pollingDelay, setPollingDelay] = useState(0)
   const [pollingAttempts, setPollingAttempts] = useState(0)
-  const contractConfig = CONTRACT_INFO.filter(
-      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
-  )
-  const generatorUrl = contractConfig[0].GENERATOR_URL
+  const contractConfig = getContractConfigByAddress(contractAddress)
+  const generatorUrl = contractConfig?.GENERATOR_URL
   const endpoint = `${generatorUrl}/${contractAddress.toLowerCase()}/${tokenId}`
 
   useInterval(() => {
