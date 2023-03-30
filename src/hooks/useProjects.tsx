@@ -1,6 +1,7 @@
 import { useQuery, gql } from "@apollo/client"
-import { CONTRACT_INFO, PROJECTS_PER_PAGE } from "config"
+import { PROJECTS_PER_PAGE } from "config"
 import { OrderDirection } from "utils/types"
+import { getConfiguredContractAddresses } from "utils/contractInfoHelper";
 
 interface ProjectsQueryParams {
   first?: number
@@ -12,7 +13,7 @@ const projectsQuery = ({ first, skip, orderDirection }: ProjectsQueryParams) => 
   query GetProjects {
     projects(
         where: {
-          contract_in: ["${CONTRACT_INFO.map(x => x.CORE_CONTRACT_ADDRESS).join("\",\"").toLowerCase()}"]
+          contract_in: ["${getConfiguredContractAddresses().join("\",\"").toLowerCase()}"]
           active: true
         }
         first: ${first}

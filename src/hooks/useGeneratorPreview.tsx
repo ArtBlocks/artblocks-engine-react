@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
-import { CONTRACT_INFO } from 'config'
 import { Project } from 'utils/types'
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface TokenData {
   tokenId: number
@@ -23,16 +23,13 @@ const useGeneratorPreview = (project: Project) => {
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
-
-  const contractConfig = CONTRACT_INFO.filter(
-      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == project.contract.id.toLowerCase()
-  )
+  const contractConfig = getContractConfigByAddress(project.contract.id)
 
   const refreshPreview = useCallback(async () => {
     setLoading(true)
     try {
       const token = generateToken(Number(project.projectId))
-      const generatorUrl = contractConfig[0].GENERATOR_URL
+      const generatorUrl = contractConfig?.GENERATOR_URL
       const { data } = await axios.get(`${generatorUrl}/${project.id}/${token.tokenId}/${token.hash}`)
       setContent(data)
       setError(false)
@@ -41,7 +38,7 @@ const useGeneratorPreview = (project: Project) => {
     } finally {
       setLoading(false)
     }
-  }, [project])
+  }, [project, contractConfig?.GENERATOR_URL])
 
   useEffect(() => {
     refreshPreview()

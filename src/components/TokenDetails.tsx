@@ -1,5 +1,4 @@
 import moment from "moment"
-import { CONTRACT_INFO } from "config"
 import { parseAspectRatio } from "utils/scriptJSON"
 import {
   Box,
@@ -20,6 +19,7 @@ import Loading from "components/Loading"
 import TokenView from "components/TokenView"
 import useToken from "hooks/useToken"
 import useWindowSize from "hooks/useWindowSize"
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface Props {
   contractAddress: string
@@ -31,20 +31,20 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
   const windowSize = useWindowSize()
   const { loading, error, data } = useToken(`${contractAddress}-${id}`)
   const token = data?.token
-  const contractConfig = CONTRACT_INFO.filter(
-      x => x.CORE_CONTRACT_ADDRESS.toLowerCase() == contractAddress.toLowerCase()
-  )
+  const contractConfig = getContractConfigByAddress(contractAddress)
 
   if (loading) {
     return <Loading/>
   }
 
   if (error) {
-    <Box>
-      <Alert severity="error">
-        Error loading token
-      </Alert>
-    </Box>
+    return (
+      <Box>
+        <Alert severity="error">
+          Error loading token
+        </Alert>
+      </Box>
+    )
   }
 
   const width = windowSize.width > theme.breakpoints.values.md
@@ -53,7 +53,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
         ? windowSize.width - 48
         : windowSize.width - 32
 
-  return token && (
+  return token && contractConfig && (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
         <Link href="/projects" underline="hover" sx={{color: "#666"}}>
@@ -91,7 +91,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                   padding: [0, 0, "default"]
                 }}
                 onClick={() => {
-                  const generatorUrl = contractConfig[0].GENERATOR_URL
+                  const generatorUrl = contractConfig?.GENERATOR_URL
                   window.open(`${generatorUrl}/${contractAddress?.toLowerCase()}/${token.tokenId}`)
                 }}
                 >
@@ -109,7 +109,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
                   padding: [0, 0, "default"]
                 }}
                 onClick={() => {
-                  const mediaUrl = contractConfig[0].MEDIA_URL
+                  const mediaUrl = contractConfig?.MEDIA_URL
                   window.open(`${mediaUrl}/${token.tokenId}.png`)
                 }}
                 >
