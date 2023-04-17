@@ -6,9 +6,9 @@ import {
   FormControl,
   InputLabel,
   NativeSelect,
-  Pagination
+  Pagination,
+  Grid
 } from "@mui/material"
-import Masonry from "@mui/lab/Masonry"
 import useTheme from "@mui/material/styles/useTheme"
 import { PROJECTS_PER_PAGE } from "config"
 import { OrderDirection, Project } from "utils/types"
@@ -79,44 +79,45 @@ const Projects = () => {
       </Box>
       <Box sx={{marginTop: "-100px"}}>
         {
-          loading ? 
+          loading ?
           (
             <Box marginTop={10}>
               <Loading/>
             </Box>
-          ) : 
-          error ? 
+          ) :
+          error ?
           (
             <Box marginTop={10}>
               <Alert severity="error">
                 Error loading projects
               </Alert>
             </Box>
-          ) : 
-          data?.projects?.length > 0 ? 
+          ) :
+          data?.projects?.length > 0 ?
           (
-            <Masonry columns={[1, 1, 2]} spacing={3} sx={{margin: "32px 0"}}>
+            <Grid container spacing={3} sx={{margin: "32px 0"}}>
               {
-              data?.projects && (
-                data.projects.map((project: Project) => (
-                  <ProjectPreview
-                    key={project.id}
-                    project={project}
-                    width={width}
-                    showDescription
-                  />
-                ))
-              )
-            }
-            </Masonry>
-          ) : 
+                data?.projects && (
+                  data.projects.map((project: Project) => (
+                    <Grid item md={6} key={project.id}>
+                      <ProjectPreview
+                        project={project}
+                        width={width}
+                        showDescription
+                      />
+                    </Grid>
+                  ))
+                )
+              }
+            </Grid>
+          ) :
           data?.projects?.length === 0 ? (
             <Box marginTop={10}>
               <Alert severity="info">
                 No projects found
               </Alert>
             </Box>
-          ) : 
+          ) :
           null
         }
         {
