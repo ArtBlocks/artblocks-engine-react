@@ -22,12 +22,12 @@ import ProjectDate from "components/ProjectDate"
 import ProjectExplore from "components/ProjectExplore"
 import TokenView from "components/TokenView"
 import Tokens from "components/Tokens"
-import MintingInterface from "components/MintingInterface"
 import Loading from "components/Loading"
 import Collapsible from "components/Collapsible"
 import useProject from "hooks/useProject"
 import useWindowSize from "hooks/useWindowSize"
-import { getContractConfigByAddress } from "utils/contractInfoHelper";
+import { getContractConfigByAddress } from "utils/contractInfoHelper"
+import { getMintingInterface } from "utils/mintingInterface";
 
 interface Props {
   contractAddress: string
@@ -48,6 +48,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
         ? windowSize.width - 48
         : windowSize.width - 32
   const contractConfig = getContractConfigByAddress(contractAddress)
+  const MintingInterface = getMintingInterface(contractConfig?.CONTRACT_VERSION!)
 
   if (error) {
     return (
@@ -63,7 +64,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
     return <Loading/>
   }
 
-  return project && contractConfig && (
+  return project && contractConfig && MintingInterface && (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
         <Link href="/projects" underline="hover" sx={{color: "#666"}}>
@@ -99,11 +100,11 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
             </Typography>
             <Divider sx={{display: ["none", "block", "none"], marginBottom: 2}}/>
             <MintingInterface
-              coreContractAddress={contractAddress}
-              mintContractAddress={contractConfig?.MINT_CONTRACT_ADDRESS}
-              projectId={project.projectId}
-              artistAddress={project.artistAddress}
-              scriptAspectRatio={parseAspectRatio(project.scriptJSON)}
+                coreContractAddress={contractAddress}
+                mintContractAddress={contractConfig?.MINT_CONTRACT_ADDRESS}
+                projectId={project.projectId}
+                artistAddress={project.artistAddress}
+                scriptAspectRatio={parseAspectRatio(project.scriptJSON)}
             />
           </Box>
         </Grid>

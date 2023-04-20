@@ -3,12 +3,12 @@ import moment from "moment-timezone"
 import { useAccount, useContractReads } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box } from "@mui/material"
-import GenArt721CoreABI from "abi/GenArt721Core.json"
-import GenArt721MintABI from "abi/GenArt721Mint.json"
+import GenArt721CoreABI from "abi/GenArt721CoreV3.json"
+import GenArt721MintABI from "abi/GenArt721MintV3.json"
 import MintingCountdown from "components/MintingCountdown"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
-import MintingButton from "components/MintingButton"
+import MintingButton from "components/MintingButtonV3"
 
 interface Props {
   coreContractAddress: string,
@@ -18,7 +18,7 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MintingInterface = ({ coreContractAddress, mintContractAddress, projectId, artistAddress, scriptAspectRatio }: Props) => {
+const MintingInterfaceV3 = ({ coreContractAddress, mintContractAddress, projectId, artistAddress, scriptAspectRatio }: Props) => {
   const [projectData, setProjectData] = useState<any | null>(null)
   const [projectPrice, setProjectPrice] = useState<any | null>(null)
   const [projectAuction, setProjectAuction] = useState<any | null>(null)
@@ -119,4 +119,4 @@ const MintingInterface = ({ coreContractAddress, mintContractAddress, projectId,
   )
 }
 
-export default MintingInterface
+export default MintingInterfaceV3

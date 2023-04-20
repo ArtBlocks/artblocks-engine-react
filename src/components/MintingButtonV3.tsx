@@ -3,13 +3,12 @@ import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from
 import { utils, BigNumber } from "ethers"
 import {
   Box,
-  Link,
   Typography,
   Modal
 } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import GenArt721MintABI from "abi/MinterDAExpV4.json"
+import GenArt721MintABI from "abi/GenArt721MintV3.json"
 import TokenView from "components/TokenView"
 import MintingButtonEnabled from "components/MintingButtonEnabled"
 import useWindowSize from "hooks/useWindowSize"
@@ -64,11 +63,13 @@ const MintingInteraction = ({
     value: config.request?.value
   } : undefined
 
-  const { data, error, isError, isLoading, isSuccess, write } = useContractWrite({
+  const { data, isError, isLoading, write } = useContractWrite({
     ...config,
     request: customRequest,
+    onSuccess(data) {
+      setDialog("Transaction pending...")
+    }
   })
-  
   const waitForTransaction = useWaitForTransaction({
     hash: data?.hash,
     confirmations: 1,
@@ -111,9 +112,9 @@ const MintingInteraction = ({
         )
       }
       <Box marginTop={1}>
-          {isLoading && <Typography fontStyle="italic">Check Wallet</Typography>}
-          {isSuccess && <Typography fontStyle="italic">Transaction: <span><Link target="_blank" href={`https://etherscan.io/tx/${data?.hash}`}>{"View transaction on Etherscan"}</Link></span></Typography>}
-          {isError && <Typography fontStyle="italic">Error while minting: {error?.message}</Typography>}
+        <Typography fontStyle="italic">
+          {dialog}
+        </Typography>
       </Box>
       <Modal
         open={mintingPreview}
