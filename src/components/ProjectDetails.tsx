@@ -28,6 +28,8 @@ import useProject from "hooks/useProject"
 import useWindowSize from "hooks/useWindowSize"
 import { getContractConfigByAddress } from "utils/contractInfoHelper"
 import { getMintingInterface } from "utils/mintingInterface";
+import EditProjectButton from "./EditProjectButton";
+import { useAccount } from "wagmi";
 
 interface Props {
   contractAddress: string
@@ -37,6 +39,7 @@ interface Props {
 const ProjectDetails = ({ contractAddress, id }: Props) => {
   const theme = useTheme()
   const windowSize = useWindowSize()
+  const { address } = useAccount()
   const { loading, error, data } = useProject(`${contractAddress}-${id}`)
   const [currentPage, setCurrentPage] = useState(0)
   const [orderDirection, setOrderDirection] = useState(OrderDirection.ASC)
@@ -99,6 +102,16 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
               {project.artistName}
             </Typography>
             <Divider sx={{display: ["none", "block", "none"], marginBottom: 2}}/>
+            {
+              contractConfig.EDIT_PROJECT_URL && address?.toLowerCase() === project.artistAddress &&
+              (
+                <EditProjectButton
+                    contractAddress={contractAddress}
+                    projectId={project.projectId}
+                    editProjectUrl={contractConfig?.EDIT_PROJECT_URL}
+                />
+              )
+            }
             <MintingInterface
                 coreContractAddress={contractAddress}
                 mintContractAddress={contractConfig?.MINT_CONTRACT_ADDRESS}
