@@ -6,8 +6,6 @@ import GenArt721CoreABI from "abi/GenArt721CoreV2.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
 import MintingButton from "components/MintingButtonV2"
-import EditProjectButton from "components/EditProjectButton";
-import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface Props {
   coreContractAddress: string,
@@ -21,7 +19,6 @@ const MintingInterfaceV2 = ({ coreContractAddress, mintContractAddress, projectI
   const [projectDetails, setProjectDetails] = useState<any | null>(null)
   const [projectTokenInfo, setProjectTokenInfo] = useState<any | null>(null)
   const [projectScriptInfo, setProjectScriptInfo] = useState<any | null>(null)
-  const contractConfig = getContractConfigByAddress(coreContractAddress)
   const { address, isConnected } = useAccount()
   const { data, isError, isLoading } = useContractReads({
     contracts: [
@@ -93,16 +90,6 @@ const MintingInterfaceV2 = ({ coreContractAddress, mintContractAddress, projectI
         anyoneCanMint={anyoneCanMint}
         scriptAspectRatio={scriptAspectRatio}
       />
-      {
-        artistCanMint && contractConfig?.EDIT_PROJECT_URL &&
-        (
-          <EditProjectButton
-            contractAddress={coreContractAddress}
-            projectId={projectId}
-            editProjectUrl={contractConfig?.EDIT_PROJECT_URL}
-          />
-        )
-      }
     </Box>
   )
 }
