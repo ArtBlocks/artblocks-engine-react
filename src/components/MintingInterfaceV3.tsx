@@ -9,6 +9,8 @@ import MintingCountdown from "components/MintingCountdown"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
 import MintingButton from "components/MintingButtonV3"
+import EditProjectButton from "components/EditProjectButton";
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface Props {
   coreContractAddress: string,
@@ -22,6 +24,7 @@ const MintingInterfaceV3 = ({ coreContractAddress, mintContractAddress, projectI
   const [projectData, setProjectData] = useState<any | null>(null)
   const [projectPrice, setProjectPrice] = useState<any | null>(null)
   const [projectAuction, setProjectAuction] = useState<any | null>(null)
+  const contractConfig = getContractConfigByAddress(coreContractAddress)
   const { address, isConnected } = useAccount()
   const { data, isError, isLoading } = useContractReads({
     contracts: [
@@ -115,6 +118,16 @@ const MintingInterfaceV3 = ({ coreContractAddress, mintContractAddress, projectI
         anyoneCanMint={anyoneCanMint}
         scriptAspectRatio={scriptAspectRatio}
       />
+      {
+          artistCanMint && contractConfig?.EDIT_PROJECT_URL &&
+          (
+              <EditProjectButton
+                  contractAddress={coreContractAddress}
+                  projectId={projectId}
+                  editProjectUrl={contractConfig?.EDIT_PROJECT_URL}
+              />
+          )
+      }
     </Box>
   )
 }
