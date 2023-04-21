@@ -86,7 +86,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
                 tokenId={token.tokenId}
                 width={width}
                 invocation={token.invocation}
-                aspectRatio={parseAspectRatio(project.scriptJSON)}
+                aspectRatio={parseAspectRatio(project.scriptJSON) || project.aspectRatio}
                 live
               />
             </Grid>
@@ -117,7 +117,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
                 mintContractAddress={contractConfig?.MINT_CONTRACT_ADDRESS}
                 projectId={project.projectId}
                 artistAddress={project.artistAddress}
-                scriptAspectRatio={parseAspectRatio(project.scriptJSON)}
+                scriptAspectRatio={parseAspectRatio(project.scriptJSON) || project.aspectRatio}
             />
           </Box>
         </Grid>
@@ -145,7 +145,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
                 Library
               </Typography>
               <Typography>
-                {parseScriptType(project.scriptJSON)}
+                {parseScriptType(project.scriptJSON) || project.scriptTypeAndVersion}
               </Typography>
             </Box>
           </Box>
@@ -191,11 +191,11 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
         </Box>
         <Tokens
           contractAddress={contractAddress}
-          projectId={`${contractAddress}-${id}`}
+          projectId={`${contractAddress.toLowerCase()}-${id}`}
           first={TOKENS_PER_PAGE}
           skip={currentPage*TOKENS_PER_PAGE}
           orderDirection={orderDirection}
-          aspectRatio={parseAspectRatio(project.scriptJSON)}
+          aspectRatio={parseAspectRatio(project.scriptJSON) || project.aspectRatio}
         />
         <Box sx={{display: "flex", justifyContent: "center"}}>
           <Stack mt={6} mb={8} spacing={2}>

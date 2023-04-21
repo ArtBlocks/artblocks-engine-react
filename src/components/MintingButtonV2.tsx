@@ -15,7 +15,7 @@ import {
 } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import GenArt721MintABI from "abi/GenArt721MintV2.json"
+import GenArt721MintABI from "abi/V2/GenArt721MintV2.json"
 import TokenView from "components/TokenView"
 import MintingButtonEnabled from "components/MintingButtonEnabled"
 import useWindowSize from "hooks/useWindowSize"

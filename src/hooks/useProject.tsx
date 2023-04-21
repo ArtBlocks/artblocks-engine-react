@@ -23,6 +23,8 @@ const projectQuery = (id: string) => `
       invocations
       maxInvocations
       scriptJSON
+      scriptTypeAndVersion
+      aspectRatio
       currencyAddress
       currencySymbol
       createdAt

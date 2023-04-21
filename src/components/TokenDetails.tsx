@@ -29,7 +29,7 @@ interface Props {
 const TokenDetails = ({ contractAddress, id }: Props) => {
   const theme = useTheme()
   const windowSize = useWindowSize()
-  const { loading, error, data } = useToken(`${contractAddress}-${id}`)
+  const { loading, error, data } = useToken(`${contractAddress.toLowerCase()}-${id}`)
   const token = data?.token
   const contractConfig = getContractConfigByAddress(contractAddress)
 

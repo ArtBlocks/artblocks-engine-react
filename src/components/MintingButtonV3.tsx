@@ -8,7 +8,7 @@ import {
 } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import GenArt721MintABI from "abi/GenArt721MintV3.json"
+import PurchaseABI from "abi/V3/Purchase.json"
 import TokenView from "components/TokenView"
 import MintingButtonEnabled from "components/MintingButtonEnabled"
 import useWindowSize from "hooks/useWindowSize"
@@ -45,7 +45,7 @@ const MintingInteraction = ({
 
   const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: GenArt721MintABI,
+    abi: PurchaseABI,
     functionName: "purchase",
     overrides: {
       value: priceWei
