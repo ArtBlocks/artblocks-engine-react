@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useAccount, useContractReads } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box } from "@mui/material"
-import GenArt721CoreABI from "abi/GenArt721CoreV2.json"
+import GenArt721CoreV2ABI from "abi/V2/GenArt721CoreV2.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
 import MintingButton from "components/MintingButtonV2"
@@ -24,19 +24,19 @@ const MintingInterfaceV2 = ({ coreContractAddress, mintContractAddress, projectI
     contracts: [
       {
         address: coreContractAddress as `0x${string}`,
-        abi: GenArt721CoreABI,
+        abi: GenArt721CoreV2ABI,
         functionName: "projectDetails",
         args: [BigNumber.from(projectId)]
       },
       {
         address: coreContractAddress as `0x${string}`,
-        abi: GenArt721CoreABI,
+        abi: GenArt721CoreV2ABI,
         functionName: "projectTokenInfo",
         args: [BigNumber.from(projectId)]
       },
       {
         address: coreContractAddress as `0x${string}`,
-        abi: GenArt721CoreABI,
+        abi: GenArt721CoreV2ABI,
         functionName: "projectScriptInfo",
         args: [BigNumber.from(projectId)]
       }
