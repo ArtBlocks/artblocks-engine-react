@@ -19,11 +19,6 @@ const items = [
     label: "Projects",
     url: "/projects",
     enabled: true
-  },
-  {
-    label: "Mint",
-    url: "/mint",
-    enabled: false
   }
 ]
 

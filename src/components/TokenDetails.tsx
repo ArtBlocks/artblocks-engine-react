@@ -103,7 +103,7 @@ const TokenDetails = ({ id }: Props) => {
                   padding: [0, 0, "default"]
                 }}
                 onClick={() => {
-                  window.open(`${MEDIA_URL}/${token.tokenId}.png`)
+                  window.open(`${MEDIA_URL}/${CORE_CONTRACT_ADDRESS}/${token.tokenId}.png`)
                 }}
                 >
                 <Typography fontSize="14px" display={["none", "none", "block"]}>

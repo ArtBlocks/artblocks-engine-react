@@ -1,4 +1,4 @@
-import { MEDIA_URL } from "config"
+import { MEDIA_URL, CORE_CONTRACT_ADDRESS } from "config"
 
 interface Props {
   tokenId: string
@@ -9,7 +9,7 @@ interface Props {
 const TokenImage = ({tokenId, width, height}: Props) => {
   return (
     <img
-      src={`${MEDIA_URL}/${tokenId}.png`}
+      src={`${MEDIA_URL}/${CORE_CONTRACT_ADDRESS}/${tokenId}.png`}
       alt={tokenId}
       width={width}
       height={height}
