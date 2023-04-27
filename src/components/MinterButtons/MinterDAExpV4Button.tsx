@@ -1,17 +1,13 @@
 import { useState } from "react"
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi"
-import { utils, BigNumber } from "ethers"
-import {
-  Box,
-  Typography,
-  Modal
-} from "@mui/material"
+import { BigNumber } from "ethers"
+import { Box, Typography, Modal } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import PurchaseABI from "abi/V3/Purchase.json"
+import MinterDAExpV4ABI from "abi/V3/MinterDAExpV4.json"
 import TokenView from "components/TokenView"
-import MintingButtonEnabled from "components/MintingButtonEnabled"
 import useWindowSize from "hooks/useWindowSize"
+import MintingButton from "components/MintingButton"
 
 interface Props {
   coreContractAddress: string,
@@ -22,20 +18,28 @@ interface Props {
   isConnected: boolean,
   artistCanMint: boolean,
   anyoneCanMint: boolean,
-  scriptAspectRatio: number
+  scriptAspectRatio: number,
+  verifyBalance: boolean,
+  isPaused: boolean,
+  isSoldOut: boolean
 }
 
-const MintingInteraction = ({
-  coreContractAddress,
-  mintContractAddress,
-  projectId,
-  priceWei,
-  currencySymbol,
-  isConnected,
-  artistCanMint,
-  anyoneCanMint,
-  scriptAspectRatio
-  }: Props) => {
+const MinterDAExpV4Button = (
+  {
+    coreContractAddress,
+    mintContractAddress,
+    projectId,
+    priceWei,
+    currencySymbol,
+    isConnected,
+    artistCanMint,
+    anyoneCanMint,
+    scriptAspectRatio,
+    verifyBalance,
+    isPaused,
+    isSoldOut
+  }: Props
+) => {
   const windowSize = useWindowSize()
   const [dialog, setDialog] = useState("")
   const [mintingTokenId, setMintingTokenId] = useState<any | null>(null)
@@ -45,11 +49,12 @@ const MintingInteraction = ({
 
   const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: PurchaseABI,
+    abi: MinterDAExpV4ABI,
     functionName: "purchase",
     overrides: {
       value: priceWei
     },
+    enabled: (!isPaused || artistCanMint) && !isSoldOut && verifyBalance,
     args: [
       BigNumber.from(projectId)
     ]
@@ -63,14 +68,15 @@ const MintingInteraction = ({
     value: config.request?.value
   } : undefined
 
-  const { data, isError, isLoading, write } = useContractWrite({
+  const { data, write } = useContractWrite({
     ...config,
     request: customRequest,
-    onSuccess(data) {
+    onSuccess() {
       setDialog("Transaction pending...")
     }
   })
-  const waitForTransaction = useWaitForTransaction({
+
+  useWaitForTransaction({
     hash: data?.hash,
     confirmations: 1,
     onSuccess(data) {
@@ -83,34 +89,20 @@ const MintingInteraction = ({
     }
   })
 
+  const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyBalance
+  let mintingMessage = `${artistCanMint ? "Artist Mint " : "Purchase "} for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`
+  if (isPaused && !artistCanMint) mintingMessage = "minting paused"
+  else if (isSoldOut) mintingMessage = "sold out"
+  else if (!isConnected) mintingMessage = "connect to purchase"
+  else if (!verifyBalance) mintingMessage = "insufficient funds"
+
   return (
     <>
-      {
-        artistCanMint &&
-        (
-          <MintingButtonEnabled
-            message={`Artist Mint for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`}
-            contractPurchase={write}
-          />
-        )
-      }
-      {
-        anyoneCanMint &&
-        (
-          <MintingButtonEnabled
-            message={`Purchase for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`}
-            contractPurchase={write}
-          />
-        )
-      }
-      {
-        anyoneCanMint && !isConnected &&
-        (
-          <Typography fontWeight={800} fontStyle="italic">
-            Connect to purchase...
-          </Typography>
-        )
-      }
+      <MintingButton
+        disabled={mintingDisabled && !artistCanMint}
+        message={mintingMessage}
+        contractPurchase={write}
+      />
       <Box marginTop={1}>
         <Typography fontStyle="italic">
           {dialog}
@@ -153,4 +145,4 @@ const MintingInteraction = ({
   )
 }
 
-export default MintingInteraction
+export default MinterDAExpV4Button

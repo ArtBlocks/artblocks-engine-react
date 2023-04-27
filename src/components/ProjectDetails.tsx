@@ -27,9 +27,9 @@ import Collapsible from "components/Collapsible"
 import useProject from "hooks/useProject"
 import useWindowSize from "hooks/useWindowSize"
 import { getContractConfigByAddress } from "utils/contractInfoHelper"
-import { getMintingInterface } from "utils/mintingInterface";
-import EditProjectButton from "./EditProjectButton";
-import { useAccount } from "wagmi";
+import EditProjectButton from "components/EditProjectButton"
+import { useAccount } from "wagmi"
+import MintingInterfaceFilter from "components/MintingInterfaceFilter"
 
 interface Props {
   contractAddress: string
@@ -51,7 +51,6 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
         ? windowSize.width - 48
         : windowSize.width - 32
   const contractConfig = getContractConfigByAddress(contractAddress)
-  const MintingInterface = getMintingInterface(contractConfig?.CONTRACT_VERSION!)
 
   if (error) {
     return (
@@ -67,7 +66,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
     return <Loading/>
   }
 
-  return project && contractConfig && MintingInterface && (
+  return project && contractConfig && (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
         <Link href="/projects" underline="hover" sx={{color: "#666"}}>
@@ -94,7 +93,7 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
         }
         <Grid item md={4} xs={12} sm={12}>
           <Box sx={{width: "100%", paddingLeft: [0, 0, 2]}}>
-            <ProjectDate startTime={project?.minterConfiguration?.startTime}/>
+            <ProjectDate startTime={project?.minterConfiguration?.startTime!}/>
             <Typography variant="h1" mt={3}>
               {project.name}
             </Typography>
@@ -112,7 +111,8 @@ const ProjectDetails = ({ contractAddress, id }: Props) => {
                 />
               )
             }
-            <MintingInterface
+            <MintingInterfaceFilter
+                contractVersion={contractConfig?.CONTRACT_VERSION}
                 coreContractAddress={contractAddress}
                 mintContractAddress={contractConfig?.MINT_CONTRACT_ADDRESS}
                 projectId={project.projectId}
