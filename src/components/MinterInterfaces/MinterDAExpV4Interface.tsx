@@ -1,14 +1,14 @@
 import { useState } from "react"
 import moment from "moment-timezone"
-import { useAccount, useContractReads } from "wagmi"
-import { BigNumber } from "ethers"
+import { useAccount, useBalance, useContractReads } from "wagmi"
+import { BigNumber, utils } from "ethers"
 import { Box } from "@mui/material"
 import GenArt721CoreV3_EngineABI from "abi/V3/GenArt721CoreV3_Engine.json"
 import MinterDAExpV4ABI from "abi/V3/MinterDAExpV4.json"
 import MintingCountdown from "components/MintingCountdown"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
-import MintingButton from "components/MintingButtonV3"
+import MinterDAExpV4Button from "components/MinterButtons/MinterDAExpV4Button"
 
 interface Props {
   coreContractAddress: string,
@@ -18,11 +18,25 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MinterDAExpV4 = ({ coreContractAddress, mintContractAddress, projectId, artistAddress, scriptAspectRatio }: Props) => {
-  const [projectData, setProjectData] = useState<any | null>(null)
-  const [projectPrice, setProjectPrice] = useState<any | null>(null)
-  const [projectAuction, setProjectAuction] = useState<any | null>(null)
-  const { address, isConnected } = useAccount()
+const MinterDAExpV4Interface = (
+  {
+    coreContractAddress,
+    mintContractAddress,
+    projectId,
+    artistAddress,
+    scriptAspectRatio
+  }: Props
+) => {
+
+  const account = useAccount()
+  const balance = useBalance({
+    address: account.address
+  })
+
+  const [projectStateData, setProjectStateData] = useState<any | null>(null)
+  const [projectPriceInfo, setProjectPriceInfo] = useState<any | null>(null)
+  const [projectConfig, setProjectConfig] = useState<any | null>(null)
+
   const { data, isError, isLoading } = useContractReads({
     contracts: [
       {
@@ -46,34 +60,34 @@ const MinterDAExpV4 = ({ coreContractAddress, mintContractAddress, projectId, ar
     ],
     watch: true,
     onSuccess(data) {
-      setProjectData(data[0])
-      setProjectPrice(data[1])
-      setProjectAuction(data[2])
+      setProjectStateData(data[0])
+      setProjectPriceInfo(data[1])
+      setProjectConfig(data[2])
     }
   })
 
-  if (!data || !projectData || !projectPrice || !projectAuction || isLoading || isError) {
+  if (!data || !projectStateData || !projectPriceInfo || !projectConfig || isLoading || isError) {
     return null
   }
 
-  const invocations = projectData.invocations.toNumber()
-  const maxInvocations = projectData.maxInvocations.toNumber()
-  const maxHasBeenInvoked = projectAuction.maxHasBeenInvoked
-  const currencySymbol = projectPrice.currencySymbol
+  const invocations = projectStateData.invocations.toNumber()
+  const maxInvocations = projectStateData.maxInvocations.toNumber()
+  const maxHasBeenInvoked = projectConfig.maxHasBeenInvoked
+  const currencySymbol = projectPriceInfo.currencySymbol
   //const currencyAddress = projectPrice.currencyAddress
-  const currentPriceWei = projectPrice.tokenPriceInWei
-  const priceIsConfigured = projectPrice.isConfigured
-  const startPriceWei = projectAuction.startPrice
-  const endPriceWei = projectAuction.basePrice
-  const auctionStartUnix = projectAuction.timestampStart.toNumber()
+  const currentPriceWei = projectPriceInfo.tokenPriceInWei
+  const priceIsConfigured = projectPriceInfo.isConfigured
+  const startPriceWei = projectConfig.startPrice
+  const endPriceWei = projectConfig.basePrice
+  const auctionStartUnix = projectConfig.timestampStart.toNumber()
   const auctionHasStarted = auctionStartUnix <= moment().unix()
   const auctionStartFormatted = moment.unix(auctionStartUnix).format("LLL")
   const auctionStartCountdown = moment.unix(auctionStartUnix).fromNow()
   //const priceDecayHalfLifeSeconds = projectAuction.priceDecayHalfLifeSeconds
   const isSoldOut = maxHasBeenInvoked || invocations >= maxInvocations
-  const isPaused = projectData.paused
-  const isArtist = isConnected && address?.toLowerCase() === artistAddress?.toLowerCase()
-  const isNotArtist = isConnected && address?.toLowerCase() !== artistAddress?.toLowerCase()
+  const isPaused = projectStateData.paused
+  const isArtist = account.isConnected && account.address?.toLowerCase() === artistAddress?.toLowerCase()
+  const isNotArtist = account.isConnected && account.address?.toLowerCase() !== artistAddress?.toLowerCase()
   const artistCanMint = isArtist && priceIsConfigured && !isSoldOut && auctionHasStarted
   const anyoneCanMint = isNotArtist && priceIsConfigured && !isSoldOut && auctionHasStarted && !isPaused
 
@@ -104,19 +118,22 @@ const MinterDAExpV4 = ({ coreContractAddress, mintContractAddress, projectId, ar
           />
         )
       }
-      <MintingButton
+      <MinterDAExpV4Button
         coreContractAddress={coreContractAddress}
         mintContractAddress={mintContractAddress}
         projectId={projectId}
         priceWei={currentPriceWei}
         currencySymbol={currencySymbol}
-        isConnected={isConnected}
+        isConnected={account.isConnected}
         artistCanMint={artistCanMint}
         anyoneCanMint={anyoneCanMint}
         scriptAspectRatio={scriptAspectRatio}
+        verifyBalance={balance?.data?.value! >= BigNumber.from(utils.formatEther(projectPriceInfo.tokenPriceInWei.toString()))}
+        isPaused={isPaused}
+        isSoldOut={isSoldOut}
       />
     </Box>
   )
 }
 
-export default MinterDAExpV4
+export default MinterDAExpV4Interface

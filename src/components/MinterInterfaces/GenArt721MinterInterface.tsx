@@ -2,10 +2,10 @@ import { useState } from "react"
 import { useAccount, useContractReads } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box } from "@mui/material"
-import GenArt721CoreV2ABI from "abi/V2/GenArt721CoreV2.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
-import MintingButton from "components/MintingButtonV2"
+import GenArt721CoreV2ABI from "abi/V2/GenArt721CoreV2.json"
+import GenArt721MinterButton from "components/MinterButtons/GenArt721MinterButton"
 
 interface Props {
   coreContractAddress: string,
@@ -15,11 +15,22 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MintingInterfaceV2 = ({ coreContractAddress, mintContractAddress, projectId, artistAddress, scriptAspectRatio }: Props) => {
+const GenArt721MinterInterface = (
+  {
+    coreContractAddress,
+    mintContractAddress,
+    projectId,
+    artistAddress,
+    scriptAspectRatio
+  }: Props
+) => {
+
+  const account = useAccount()
+
   const [projectDetails, setProjectDetails] = useState<any | null>(null)
   const [projectTokenInfo, setProjectTokenInfo] = useState<any | null>(null)
   const [projectScriptInfo, setProjectScriptInfo] = useState<any | null>(null)
-  const { address, isConnected } = useAccount()
+
   const { data, isError, isLoading } = useContractReads({
     contracts: [
       {
@@ -60,8 +71,8 @@ const MintingInterfaceV2 = ({ coreContractAddress, mintContractAddress, projectI
   const currencyAddress = projectTokenInfo.currencyAddress
   const currentPriceWei = projectTokenInfo.pricePerTokenInWei
   const isPaused = projectScriptInfo.paused
-  const isArtist = isConnected && address?.toLowerCase() === artistAddress?.toLowerCase()
-  const isNotArtist = isConnected && address?.toLowerCase() !== artistAddress?.toLowerCase()
+  const isArtist = account.isConnected && account.address?.toLowerCase() === artistAddress?.toLowerCase()
+  const isNotArtist = account.isConnected && account.address?.toLowerCase() !== artistAddress?.toLowerCase()
   const artistCanMint = isArtist && !maxHasBeenInvoked
   const anyoneCanMint = isNotArtist && !maxHasBeenInvoked && !isPaused
 
@@ -78,20 +89,22 @@ const MintingInterfaceV2 = ({ coreContractAddress, mintContractAddress, projectI
         endPriceWei={currentPriceWei}
         currencySymbol={currencySymbol}
       />
-      <MintingButton
+      <GenArt721MinterButton
         coreContractAddress={coreContractAddress}
         mintContractAddress={mintContractAddress}
         projectId={projectId}
         priceWei={currentPriceWei}
         currencySymbol={currencySymbol}
         currencyAddress={currencyAddress}
-        isConnected={isConnected}
+        isConnected={account.isConnected}
         artistCanMint={artistCanMint}
         anyoneCanMint={anyoneCanMint}
         scriptAspectRatio={scriptAspectRatio}
+        isPaused={isPaused}
+        isSoldOut={maxHasBeenInvoked}
       />
     </Box>
   )
 }
 
-export default MintingInterfaceV2
+export default GenArt721MinterInterface

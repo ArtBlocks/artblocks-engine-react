@@ -1,12 +1,12 @@
 import { useState } from "react"
-import { useAccount, useContractReads } from "wagmi"
-import { BigNumber } from "ethers"
+import { useAccount, useBalance, useContractReads } from "wagmi"
+import { BigNumber, utils } from "ethers"
 import { Box } from "@mui/material"
 import GenArt721CoreV3_EngineABI from "abi/V3/GenArt721CoreV3_Engine.json"
-import MinterMerkleV5ABI from "abi/V3/MinterMerkleV5.json"
+import MinterSetPriceV4ABI from "abi/V3/MinterSetPriceV4.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
-import MintingButton from "components/MintingButtonV3"
+import MinterSetPriceV4Button from "components/MinterButtons/MinterSetPriceV4Button"
 
 interface Props {
   coreContractAddress: string,
@@ -16,11 +16,25 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MinterMerkleV5 = ({ coreContractAddress, mintContractAddress, projectId, artistAddress, scriptAspectRatio }: Props) => {
+const MinterSetPriceV4Interface = (
+  {
+    coreContractAddress,
+    mintContractAddress,
+    projectId,
+    artistAddress,
+    scriptAspectRatio
+  }: Props
+) => {
+
+  const account = useAccount()
+  const balance = useBalance({
+    address: account.address
+  })
+
   const [projectStateData, setProjectStateData] = useState<any | null>(null)
   const [projectPriceInfo, setProjectPriceInfo] = useState<any | null>(null)
   const [projectConfig, setProjectConfig] = useState<any | null>(null)
-  const { address, isConnected } = useAccount()
+
   const { data, isError, isLoading } = useContractReads({
     contracts: [
       {
@@ -31,13 +45,13 @@ const MinterMerkleV5 = ({ coreContractAddress, mintContractAddress, projectId, a
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterMerkleV5ABI,
+        abi: MinterSetPriceV4ABI,
         functionName: "getPriceInfo",
         args: [BigNumber.from(projectId)]
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterMerkleV5ABI,
+        abi: MinterSetPriceV4ABI,
         functionName: "projectConfig",
         args: [BigNumber.from(projectId)]
       }
@@ -62,8 +76,8 @@ const MinterMerkleV5 = ({ coreContractAddress, mintContractAddress, projectId, a
   const priceIsConfigured = projectPriceInfo.isConfigured
   const isSoldOut = maxHasBeenInvoked || invocations >= maxInvocations
   const isPaused = projectStateData.paused
-  const isArtist = isConnected && address?.toLowerCase() === artistAddress?.toLowerCase()
-  const isNotArtist = isConnected && address?.toLowerCase() !== artistAddress?.toLowerCase()
+  const isArtist = account.isConnected && account.address?.toLowerCase() === artistAddress?.toLowerCase()
+  const isNotArtist = account.isConnected && account.address?.toLowerCase() !== artistAddress?.toLowerCase()
   const artistCanMint = isArtist && priceIsConfigured && !isSoldOut
   const anyoneCanMint = isNotArtist && priceIsConfigured && !isSoldOut && !isPaused
 
@@ -85,19 +99,22 @@ const MinterMerkleV5 = ({ coreContractAddress, mintContractAddress, projectId, a
           />
         )
       }
-      <MintingButton
+      <MinterSetPriceV4Button
         coreContractAddress={coreContractAddress}
         mintContractAddress={mintContractAddress}
         projectId={projectId}
         priceWei={currentPriceWei}
         currencySymbol={currencySymbol}
-        isConnected={isConnected}
+        isConnected={account.isConnected}
         artistCanMint={artistCanMint}
         anyoneCanMint={anyoneCanMint}
         scriptAspectRatio={scriptAspectRatio}
+        verifyBalance={balance?.data?.formatted! >= utils.formatEther(projectPriceInfo.tokenPriceInWei.toString())}
+        isPaused={isPaused}
+        isSoldOut={isSoldOut}
       />
     </Box>
   )
 }
 
-export default MinterMerkleV5
+export default MinterSetPriceV4Interface
