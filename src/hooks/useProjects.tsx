@@ -39,6 +39,7 @@ const projectsQuery = ({ first, skip, orderDirection }: ProjectsQueryParams) => 
       invocations
       maxInvocations
       scriptJSON
+      aspectRatio
       currencyAddress
       currencySymbol
       createdAt

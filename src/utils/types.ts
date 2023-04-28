@@ -10,6 +10,7 @@ export interface Project {
   maxInvocations: BigInt
   activatedAt: BigInt
   scriptJSON: string
+  aspectRatio: number
   active: boolean
   paused: boolean
   complete: boolean

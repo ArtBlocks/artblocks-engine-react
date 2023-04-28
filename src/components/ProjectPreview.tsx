@@ -38,7 +38,7 @@ const ProjectPreview = ({project, width=280, showDescription=false}: Props) => {
         tokenId={token?.tokenId}
         width={width}
         invocation={token?.invocation}
-        aspectRatio={parseAspectRatio(project.scriptJSON)}
+        aspectRatio={project.aspectRatio || parseAspectRatio(project.scriptJSON)}
       />
       <Box>
         <Box>

@@ -72,7 +72,7 @@ const TokenDetails = ({ contractAddress, id }: Props) => {
             contractAddress={contractAddress}
             tokenId={token.tokenId}
             width={width}
-            aspectRatio={parseAspectRatio(token.project.scriptJSON)}
+            aspectRatio={token.project.aspectRatio || parseAspectRatio(token.project.scriptJSON)}
             live
           />
           <Box sx={{marginTop: 1, display: "flex", justifyContent: "space-between", alignItems: "center"}}>
