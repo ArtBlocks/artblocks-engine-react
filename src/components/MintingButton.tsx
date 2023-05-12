@@ -9,7 +9,7 @@ import {
 } from "@mui/material"
 import { MINT_CONTRACT_ADDRESS, MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import GenArt721MintABI from "abi/GenArt721Mint.json"
+import GenArt721MintABI from "abi/MinterDAExpV4.json"
 import TokenView from "components/TokenView"
 import MintingButtonEnabled from "components/MintingButtonEnabled"
 import useWindowSize from "hooks/useWindowSize"

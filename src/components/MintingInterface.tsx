@@ -4,8 +4,8 @@ import { useAccount, useContractReads } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box } from "@mui/material"
 import { CORE_CONTRACT_ADDRESS, MINT_CONTRACT_ADDRESS } from "config"
-import GenArt721CoreABI from "abi/GenArt721Core.json"
-import GenArt721MintABI from "abi/GenArt721Mint.json"
+import GenArt721CoreABI from "abi/GenArt721CoreV3.json"
+import GenArt721MintABI from "abi/MinterDAExpV4.json"
 import MintingCountdown from "components/MintingCountdown"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
@@ -57,19 +57,20 @@ const MintingInterface = ({ projectId, artistAddress, scriptAspectRatio }: Props
 
   const invocations = projectData.invocations.toNumber()
   const maxInvocations = projectData.maxInvocations.toNumber()
-  const maxHasBeenInvoked = projectAuction.maxHasBeenInvoked
   const currencySymbol = projectPrice.currencySymbol
   //const currencyAddress = projectPrice.currencyAddress
   const currentPriceWei = projectPrice.tokenPriceInWei
   const priceIsConfigured = projectPrice.isConfigured
+  const maxHasBeenInvoked = projectAuction.maxHasBeenInvoked
   const startPriceWei = projectAuction.startPrice
   const endPriceWei = projectAuction.basePrice
   const auctionStartUnix = projectAuction.timestampStart.toNumber()
   const auctionHasStarted = auctionStartUnix <= moment().unix()
   const auctionStartFormatted = moment.unix(auctionStartUnix).format("LLL")
   const auctionStartCountdown = moment.unix(auctionStartUnix).fromNow()
+  const minterMaxInvocations = projectAuction.maxInvocations.toNumber()
   //const priceDecayHalfLifeSeconds = projectAuction.priceDecayHalfLifeSeconds
-  const isSoldOut = maxHasBeenInvoked || invocations >= maxInvocations
+  const isSoldOut = maxHasBeenInvoked || invocations >= minterMaxInvocations
   const isPaused = projectData.paused
   const isArtist = isConnected && address?.toLowerCase() === artistAddress?.toLowerCase()
   const isNotArtist = isConnected && address?.toLowerCase() !== artistAddress?.toLowerCase()
