@@ -1,12 +1,13 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { useAccount, useBalance, useContractReads } from "wagmi"
 import { BigNumber, utils } from "ethers"
 import { Box } from "@mui/material"
 import GenArt721CoreV3_EngineABI from "abi/V3/GenArt721CoreV3_Engine.json"
-import MinterSetPriceV4ABI from "abi/V3/MinterSetPriceV4.json"
+import MinterHolderV4ABI from "abi/V3/MinterHolderV4.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
 import MinterHolderV4Button from "components/MinterButtons/MinterHolderV4Button"
+import { HOLDER_PROOF_API_URL } from "config"
 
 interface Props {
   coreContractAddress: string,
@@ -34,6 +35,15 @@ const MinterHolderV4Interface = (
   const [projectStateData, setProjectStateData] = useState<any | null>(null)
   const [projectPriceInfo, setProjectPriceInfo] = useState<any | null>(null)
   const [projectConfig, setProjectConfig] = useState<any | null>(null)
+  const [holderProof, setHolderProof] = useState<any | null>(null)
+
+  useEffect(() => {
+    if (account.isConnected) {
+      fetch(`${HOLDER_PROOF_API_URL}?contractAddress=${coreContractAddress}&projectId=${projectId}&walletAddress=${account.address}&isMainnet=0`)
+        .then(response => response.json())
+        .then(data => setHolderProof(data))
+    }
+  }, [account.isConnected, account.address, coreContractAddress, projectId])
 
   const { data, isError, isLoading } = useContractReads({
     contracts: [
@@ -45,13 +55,13 @@ const MinterHolderV4Interface = (
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterSetPriceV4ABI,
+        abi: MinterHolderV4ABI,
         functionName: "getPriceInfo",
         args: [BigNumber.from(projectId)]
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterSetPriceV4ABI,
+        abi: MinterHolderV4ABI,
         functionName: "projectConfig",
         args: [BigNumber.from(projectId)]
       }
@@ -112,6 +122,8 @@ const MinterHolderV4Interface = (
         verifyBalance={balance?.data?.formatted! >= utils.formatEther(projectPriceInfo.tokenPriceInWei.toString())}
         isPaused={isPaused}
         isSoldOut={isSoldOut}
+        holderContractAddress={holderProof?.contractAddress}
+        holderTokenId={holderProof?.tokenId}
       />
     </Box>
   )
