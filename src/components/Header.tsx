@@ -13,12 +13,18 @@ import {
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import Connect from "components/Connect"
+import { useAccount } from "wagmi"
 
-const items = [
+let items = [
   {
     label: "Projects",
     url: "/projects",
     enabled: true
+  },
+  {
+    label: "Owned",
+    url: "/user",
+    enabled: false
   },
   {
     label: "Mint",
@@ -28,7 +34,23 @@ const items = [
 ]
 
 const Header = () => {
+  const { address, isConnected } = useAccount()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  let userItem = items.find((item) => {
+    return item.label === "Owned"
+  })
+  if (isConnected) {
+    if (userItem) {
+      userItem.enabled = true
+      userItem.url = `/user/${address}`
+    }
+  } else {
+    if (userItem) {
+      userItem.enabled = false
+      userItem.url = `/user`
+    }
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
