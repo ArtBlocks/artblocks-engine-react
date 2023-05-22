@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import {useEffect, useState} from "react"
 import {
   usePrepareContractWrite,
   useContractWrite,
@@ -7,22 +7,21 @@ import {
   useBalance,
   useContractRead
 } from "wagmi"
-import { BigNumber, ethers } from "ethers"
+import { BigNumber } from "ethers"
 import { Box, Typography, Modal } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
+import MinterSetPriceERC20V4ABI from "abi/V3/MinterSetPriceERC20V4.json"
 import TokenView from "components/TokenView"
 import useWindowSize from "hooks/useWindowSize"
 import MintingButton from "components/MintingButton"
-import GenArt721MintV2ABI from "abi/V2/GenArt721MintV2.json"
-import GenArt721CoreV2ABI from "abi/V2/GenArt721CoreV2.json"
-import ERC20ABI from "abi/ERC20.json"
+import ERC20ABI from "../../abi/ERC20.json";
 
 interface Props {
   coreContractAddress: string,
   mintContractAddress: string,
   projectId: string,
-  priceWei: BigNumber,
+  priceWei: BigNumber
   currencySymbol: string,
   currencyAddress: string,
   isConnected: boolean,
@@ -33,7 +32,7 @@ interface Props {
   isSoldOut: boolean
 }
 
-const GenArt721MinterButton = (
+const MinterSetPriceERC20V4Button = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -49,7 +48,6 @@ const GenArt721MinterButton = (
     isSoldOut
   }: Props
 ) => {
-
   const windowSize = useWindowSize()
   const [dialog, setDialog] = useState("")
   const [mintingTokenId, setMintingTokenId] = useState<any | null>(null)
@@ -57,18 +55,19 @@ const GenArt721MinterButton = (
   const handleMintingPreviewOpen = () => setMintingPreview(true)
   const handleMintingPreviewClose = () => setMintingPreview(false)
 
-  const projectUsesErc20 = currencyAddress !== "0x0000000000000000000000000000000000000000"
-
   const account = useAccount()
-  const ethBalance = useBalance({
-    address: account.address
-  })
-  const erc20Balance = useBalance({
+  const balance = useBalance({
     address: account.address,
-    token: projectUsesErc20 ? currencyAddress as `0x${string}` : undefined
+    token: currencyAddress as `0x${string}`
   })
-  const [isAllowanceVerified, setIsAllowanceVerified] = useState(!projectUsesErc20)
   const [isBalanceVerified, setIsBalanceVerified] = useState(false)
+  const [isAllowanceVerified, setIsAllowanceVerified] = useState(false)
+
+  useEffect(() => {
+    if (balance?.data?.value! >= priceWei) {
+      setIsBalanceVerified(true)
+    }
+  }, [balance, priceWei])
 
   useContractRead({
     address: currencyAddress as `0x${string}`,
@@ -76,29 +75,17 @@ const GenArt721MinterButton = (
     functionName: "allowance",
     args: [account.address, mintContractAddress],
     watch: true,
-    enabled: !isPaused && !isSoldOut && projectUsesErc20,
+    enabled: (!isPaused || artistCanMint) && !isSoldOut,
     onSuccess(data: BigNumber) {
       setIsAllowanceVerified(data >= priceWei)
     }
   })
 
-  useEffect(() => {
-    if (projectUsesErc20) {
-      if (erc20Balance?.data?.value! >= priceWei) {
-        setIsBalanceVerified(true)
-      }
-    } else {
-      if (ethBalance?.data?.value! >= priceWei) {
-        setIsBalanceVerified(true)
-      }
-    }
-  }, [erc20Balance, ethBalance])
-
   const erc20PrepareApprove = usePrepareContractWrite({
     address: currencyAddress as `0x${string}`,
     abi: ERC20ABI,
     functionName: "approve",
-    enabled: (!isPaused || artistCanMint) && !isSoldOut && projectUsesErc20 && !isAllowanceVerified && isBalanceVerified,
+    enabled: (!isPaused || artistCanMint) && !isSoldOut && !isAllowanceVerified && isBalanceVerified,
     args: [
       mintContractAddress, BigNumber.from(priceWei)
     ]
@@ -117,68 +104,59 @@ const GenArt721MinterButton = (
     }
   })
 
-  const mintPrepare = usePrepareContractWrite({
+  const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: GenArt721MintV2ABI,
+    abi: MinterSetPriceERC20V4ABI,
     functionName: "purchase",
-    overrides: projectUsesErc20 ? undefined : {
-      value: priceWei
-    },
     enabled: (!isPaused || artistCanMint) && !isSoldOut && isBalanceVerified && isAllowanceVerified,
     args: [
       BigNumber.from(projectId)
     ]
   })
-  let customRequest = mintPrepare.config.request ? {
-    data: mintPrepare.config.request?.data,
-    from: mintPrepare.config.request?.from,
-    gasLimit: multiplyBigNumberByFloat(mintPrepare.config.request?.gasLimit, MULTIPLY_GAS_LIMIT),
-    to: mintPrepare.config.request?.to,
-    value: mintPrepare.config.request?.value
+
+  let customRequest = config.request ? {
+    data: config.request?.data,
+    from: config.request?.from,
+    gasLimit: multiplyBigNumberByFloat(config.request?.gasLimit, MULTIPLY_GAS_LIMIT),
+    to: config.request?.to,
+    value: config.request?.value
   } : undefined
-  const mintWrite = useContractWrite({
-    ...mintPrepare.config,
+
+  const { data, write } = useContractWrite({
+    ...config,
     request: customRequest,
     onSuccess() {
       setDialog("Transaction pending...")
     }
   })
+
   useWaitForTransaction({
-    hash: mintWrite.data?.hash,
+    hash: data?.hash,
     confirmations: 1,
     onSuccess(data) {
-      const mintInterface = new ethers.utils.Interface(GenArt721CoreV2ABI)
-      const mintEvent = (data.logs || []).find(
-        (receiptEvent: { topics: string[] }) => {
-          const event = mintInterface.getEvent(receiptEvent.topics[0]);
-          return event && event.name === "Mint";
-        }
-      )
-      const mintEventDecoded = mintInterface.decodeEventLog("Mint", mintEvent?.data!, mintEvent?.topics)
-      const tokenId = mintEventDecoded["_tokenId"].toString()
+      let tokenId = data?.logs[0]?.topics[3]
       if (tokenId) {
-        setMintingTokenId(tokenId)
+        setMintingTokenId(parseInt(tokenId, 16).toString())
         handleMintingPreviewOpen()
       }
       setDialog("")
     }
   })
 
-  const mintingDisabled = isPaused || isSoldOut || !isConnected || !isAllowanceVerified || !isBalanceVerified
-
+  const mintingDisabled = isPaused || isSoldOut || !isConnected || !isBalanceVerified
   let mintingMessage = `${artistCanMint ? "Artist Mint " : "Purchase "} for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`
   if (isPaused && !artistCanMint) mintingMessage = "minting paused"
   else if (isSoldOut) mintingMessage = "sold out"
   else if (!isConnected) mintingMessage = "connect to purchase"
   else if (!isBalanceVerified) mintingMessage = "insufficient funds"
-  else if (projectUsesErc20 && !isAllowanceVerified) mintingMessage = "set ERC20 allowance"
+  else if (!isAllowanceVerified) mintingMessage = "set ERC20 allowance"
 
   return (
     <>
       <MintingButton
         disabled={mintingDisabled && !artistCanMint}
         message={mintingMessage}
-        contractPurchase={projectUsesErc20 && !isAllowanceVerified ? erc20WriteApprove.write : mintWrite.write}
+        contractPurchase={!isAllowanceVerified ? erc20WriteApprove.write : write}
       />
       <Box marginTop={1}>
         <Typography fontStyle="italic">
@@ -222,4 +200,4 @@ const GenArt721MinterButton = (
   )
 }
 
-export default GenArt721MinterButton
+export default MinterSetPriceERC20V4Button
