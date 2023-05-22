@@ -7,43 +7,39 @@ import {
   InputLabel,
   NativeSelect,
   Pagination,
-  Grid
+  Grid,
+  Link
 } from "@mui/material"
-import useTheme from "@mui/material/styles/useTheme"
 import { PROJECTS_PER_PAGE } from "config"
 import { OrderDirection, Project } from "utils/types"
-import ProjectPreview from "components/ProjectPreview"
 import Loading from "components/Loading"
-import useProjects from "hooks/useProjects"
-import useWindowSize from "hooks/useWindowSize"
-import useCountProjects from "hooks/useCountProjects"
+import OwnedTokens from "components/OwnedTokens"
+import useOwnedProjects from "hooks/useOwnedProjects"
+import useCountOwnedProjects from "hooks/useCountOwnedProjects"
+import { parseAspectRatio } from "utils/scriptJSON"
 
-const Projects = () => {
-  const theme = useTheme()
-  const windowSize = useWindowSize()
-  const [countProjects, setCountProjects] = useState(0)
+interface Props {
+  walletAddress: string
+}
+
+const OwnedProjects = ({ walletAddress }: Props) => {
+  const [countOwnedProjects, setCountOwnedProjects] = useState(0)
   const [currentPage, setCurrentPage] = useState(0)
   const skip = currentPage * PROJECTS_PER_PAGE
   const first = PROJECTS_PER_PAGE
   const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.DESC)
-  const { loading, error, data } = useProjects({skip, first, orderDirection})
-  const countProjectsResponse = useCountProjects()
+  const { loading, error, data } = useOwnedProjects(walletAddress, {skip, first, orderDirection})
+  const [filteredProjects, setFilteredProjects] = useState<any[]>([])
+  const countOwnedProjectsResponse = useCountOwnedProjects(walletAddress)
 
   useEffect(() => {
-    if (countProjectsResponse.data?.projects?.length) {
-      setCountProjects(countProjectsResponse.data?.projects?.length)
-    }
-  }, [countProjectsResponse.data?.projects?.length])
-
-  let width = 280
-  const maxColumns = 2
-  if (windowSize && !isNaN(windowSize.width)) {
-    width = windowSize.width > theme.breakpoints.values.md
-      ? (Math.min(windowSize.width, 1200)- 96)/maxColumns
-        : windowSize.width > theme.breakpoints.values.sm
-          ? windowSize.width - 64
-          : windowSize.width - 48
-  }
+    setFilteredProjects(data?.projects?.filter((project: { tokens: string | any[] }) => {
+      return project.tokens.length > 0
+    }))
+    setCountOwnedProjects(countOwnedProjectsResponse.data?.projects?.filter((project: { tokens: string | any[] }) => {
+      return project.tokens.length > 0
+    }).length)
+  }, [data, countOwnedProjectsResponse])
 
   return (
     <Box>
@@ -52,7 +48,7 @@ const Projects = () => {
         <Box sx={{display: "flex", alignItems: "center", marginTop:"25px", marginRight: "25px"}}>
           <Box>
             {
-              !error && !loading && data?.projects?.length > 0 &&
+              !error && !loading && filteredProjects?.length > 0 &&
               (
               <FormControl fullWidth>
                 <InputLabel variant="standard" htmlFor="uncontrolled-native">
@@ -91,25 +87,24 @@ const Projects = () => {
               </Alert>
             </Box>
           ) :
-          data?.projects?.length > 0 ?
+          filteredProjects?.length > 0 ?
           (
             <Grid container spacing={3} sx={{margin: "32px 0"}}>
               {
-                data?.projects && (
-                  data.projects.map((project: Project) => (
-                    <Grid item md={6} key={project.id}>
-                      <ProjectPreview
-                        project={project}
-                        width={width}
-                        showDescription
-                      />
+                filteredProjects && (
+                  filteredProjects.map((project: Project) => (
+                    <Grid item md={12} key={project.id}>
+                      <Link href={`/project/${project.contract.id}/${project.projectId}`} underline="hover">
+                        <Typography variant="h1" fontSize={36}>{project.name} by {project.artistName}</Typography>
+                      </Link>
+                      <OwnedTokens contractAddress={project.contract.id} projectId={project.id} walletAddress={walletAddress} aspectRatio={project.aspectRatio || parseAspectRatio(project.scriptJSON)}/>
                     </Grid>
                   ))
                 )
               }
             </Grid>
           ) :
-          data?.projects?.length === 0 ? (
+          filteredProjects?.length === 0 ? (
             <Box marginTop={10}>
               <Alert severity="info">
                 No projects found
@@ -119,10 +114,10 @@ const Projects = () => {
           null
         }
         {
-          !error && !loading && data?.projects?.length > 0 && (
+          !error && !loading && filteredProjects?.length > 0 && (
             <Box sx={{display: "flex", justifyContent: "center", marginBottom: "50px"}}>
               <Pagination
-                count={Math.ceil(countProjects/PROJECTS_PER_PAGE)}
+                count={Math.ceil(countOwnedProjects/PROJECTS_PER_PAGE)}
                 color="primary"
                 page={currentPage + 1}
                 onChange={(event, page) => {
@@ -137,4 +132,4 @@ const Projects = () => {
   )
 }
 
-export default Projects
+export default OwnedProjects
