@@ -7,7 +7,7 @@ import MinterHolderV4ABI from "abi/V3/MinterHolderV4.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
 import MinterHolderV4Button from "components/MinterButtons/MinterHolderV4Button"
-import { HOLDER_PROOF_API_URL } from "config"
+import {EXPECTED_CHAIN_ID, HOLDER_PROOF_API_URL} from "config"
 
 interface Props {
   coreContractAddress: string,
@@ -39,7 +39,7 @@ const MinterHolderV4Interface = (
 
   useEffect(() => {
     if (account.isConnected) {
-      fetch(`${HOLDER_PROOF_API_URL}?contractAddress=${coreContractAddress}&projectId=${projectId}&walletAddress=${account.address}&isMainnet=0`)
+      fetch(`${HOLDER_PROOF_API_URL}?contractAddress=${coreContractAddress}&projectId=${projectId}&walletAddress=${account.address}&isMainnet=${EXPECTED_CHAIN_ID === 0 ? 1 : 0}`)
         .then(response => response.json())
         .then(data => setHolderProof(data))
     }
