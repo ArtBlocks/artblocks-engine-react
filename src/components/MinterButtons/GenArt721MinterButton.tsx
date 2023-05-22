@@ -84,11 +84,11 @@ const GenArt721MinterButton = (
 
   useEffect(() => {
     if (projectUsesErc20) {
-      if (erc20Balance?.data?.value! >= priceWei) {
+      if (erc20Balance?.data?.value.gt(priceWei)) {
         setIsBalanceVerified(true)
       }
     } else {
-      if (ethBalance?.data?.value! >= priceWei) {
+      if (ethBalance?.data?.value.gt(priceWei)) {
         setIsBalanceVerified(true)
       }
     }

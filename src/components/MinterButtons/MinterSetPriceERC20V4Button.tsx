@@ -64,7 +64,7 @@ const MinterSetPriceERC20V4Button = (
   const [isAllowanceVerified, setIsAllowanceVerified] = useState(false)
 
   useEffect(() => {
-    if (balance?.data?.value! >= priceWei) {
+    if (balance?.data?.value.gt(priceWei)) {
       setIsBalanceVerified(true)
     }
   }, [balance, priceWei])
