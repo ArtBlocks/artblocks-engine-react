@@ -1,10 +1,10 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box, Typography, Modal } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import MinterDAExpV4ABI from "abi/V3/MinterDAExpV4.json"
+import MinterDAExpSettlementV1ABI from "abi/V3/MinterDAExpSettlementV1.json"
 import TokenView from "components/TokenView"
 import useWindowSize from "hooks/useWindowSize"
 import MintingButton from "components/MintingButton"
@@ -22,10 +22,11 @@ interface Props {
   verifyBalance: boolean,
   isPaused: boolean,
   isSoldOut: boolean,
+  excessSettlementFunds: BigNumber,
   auctionHasStarted: boolean
 }
 
-const MinterDAExpV4Button = (
+const MinterDAExpSettlementV1Button = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -39,6 +40,7 @@ const MinterDAExpV4Button = (
     verifyBalance,
     isPaused,
     isSoldOut,
+    excessSettlementFunds,
     auctionHasStarted
   }: Props
 ) => {
@@ -49,9 +51,15 @@ const MinterDAExpV4Button = (
   const handleMintingPreviewOpen = () => setMintingPreview(true)
   const handleMintingPreviewClose = () => setMintingPreview(false)
 
+  useEffect(() => {
+    if (excessSettlementFunds.gt(BigNumber.from(0))) {
+      setDialog(`${formatEtherFixed(excessSettlementFunds.toString(), 3)} ETH available`)
+    }
+  }, [excessSettlementFunds])
+
   const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: MinterDAExpV4ABI,
+    abi: MinterDAExpSettlementV1ABI,
     functionName: "purchase",
     overrides: {
       value: priceWei
@@ -91,9 +99,35 @@ const MinterDAExpV4Button = (
     }
   })
 
+  const prepareClaimSettlementFunds = usePrepareContractWrite({
+    address: mintContractAddress as `0x${string}`,
+    abi: MinterDAExpSettlementV1ABI,
+    functionName: "reclaimProjectExcessSettlementFunds",
+    enabled: excessSettlementFunds.gt(BigNumber.from(0)),
+    args: [
+      BigNumber.from(projectId)
+    ]
+  })
+  const writeClaimSettlementFunds = useContractWrite({
+    ...prepareClaimSettlementFunds.config,
+    onSuccess() {
+      setDialog("Claiming settlement funds...")
+    }
+  })
+  useWaitForTransaction({
+    hash: writeClaimSettlementFunds?.data?.hash,
+    confirmations: 1,
+    onSuccess() {
+      setDialog("Settlement funds claimed...")
+    }
+  })
+
+  const isSettlementAvailable = excessSettlementFunds.gt(BigNumber.from(0))
+
   const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyBalance || !auctionHasStarted
   let mintingMessage = `Purchase for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`
-  if (isPaused) mintingMessage = "minting paused"
+  if (isSettlementAvailable) mintingMessage = "claim settlement funds"
+  else if (isPaused) mintingMessage = "minting paused"
   else if (!auctionHasStarted) mintingMessage = "auction not live"
   else if (isSoldOut) mintingMessage = "sold out"
   else if (!isConnected) mintingMessage = "connect to purchase"
@@ -102,9 +136,9 @@ const MinterDAExpV4Button = (
   return (
     <>
       <MintingButton
-        disabled={mintingDisabled}
+        disabled={mintingDisabled && !isSettlementAvailable}
         message={mintingMessage}
-        contractPurchase={write}
+        contractPurchase={isSettlementAvailable ? writeClaimSettlementFunds.write : write}
       />
       <Box marginTop={1}>
         <Typography fontStyle="italic">
@@ -148,4 +182,4 @@ const MinterDAExpV4Button = (
   )
 }
 
-export default MinterDAExpV4Button
+export default MinterDAExpSettlementV1Button
