@@ -4,7 +4,6 @@ import {
   Typography,
   Alert,
   FormControl,
-  InputLabel,
   NativeSelect,
   Pagination,
   Grid,
@@ -45,15 +44,12 @@ const OwnedProjects = ({ walletAddress }: Props) => {
     <Box>
       <Box sx={{display:"flex", justifyContent: "space-between", alignItems: "flex-end"}}>
         <Typography></Typography>
-        <Box sx={{display: "flex", alignItems: "center", marginTop:"25px", marginRight: "25px"}}>
+        <Box sx={{display: "flex", alignItems: "center", marginRight: "25px"}}>
           <Box>
             {
               !error && !loading && filteredProjects?.length > 0 &&
               (
-              <FormControl fullWidth>
-                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                  <Typography fontWeight={600}>Sort</Typography>
-                </InputLabel>
+              <FormControl fullWidth sx={{marginBottom: "50px"}}>
                 <NativeSelect
                   value={orderDirection}
                   sx={{fontSize: 14}}
@@ -62,8 +58,8 @@ const OwnedProjects = ({ walletAddress }: Props) => {
                     setOrderDirection(e.target.value as OrderDirection)
                   }}
                 >
-                  <option value={OrderDirection.DESC}>Latest</option>
-                  <option value={OrderDirection.ASC}>Earliest</option>
+                  <option value={OrderDirection.DESC}>Newest</option>
+                  <option value={OrderDirection.ASC}>Oldest</option>
                 </NativeSelect>
               </FormControl>
               )
