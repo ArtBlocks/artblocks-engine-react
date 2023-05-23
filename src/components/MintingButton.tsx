@@ -6,7 +6,7 @@ interface Props {
   contractPurchase: any
 }
 
-const MintingButtonEnabled = ({disabled, message, contractPurchase}: Props) => {
+const MintingButton = ({disabled, message, contractPurchase}: Props) => {
   return (
     <Button
       variant="contained"
@@ -29,4 +29,4 @@ const MintingButtonEnabled = ({disabled, message, contractPurchase}: Props) => {
   )
 }
 
-export default MintingButtonEnabled
+export default MintingButton
