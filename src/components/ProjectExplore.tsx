@@ -32,7 +32,7 @@ const ProjectExplore = ({project}: Props) => {
     setDialogOpen(false)
   }
 
-  const aspectRatio = parseAspectRatio(project?.scriptJSON) || 1
+  const aspectRatio = project?.aspectRatio || parseAspectRatio(project?.scriptJSON) || 1
   const width = 280
   const height = width / aspectRatio
 

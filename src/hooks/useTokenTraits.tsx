@@ -1,18 +1,20 @@
 import axios from "axios"
 import { useState, useEffect } from "react"
-import { CORE_CONTRACT_ADDRESS, TOKEN_URL } from "config"
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
-const useTokenTraits = (tokenId: string) => {
+const useTokenTraits = (contractAddress: string, tokenId: string) => {
   const [data, setData] = useState<any | null>(null)
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
+  const contractConfig = getContractConfigByAddress(contractAddress)
 
   useEffect(() => {
     setLoading(true)
 
     const fetchData = async () => {
       try {
-        const r = await axios.get(`${TOKEN_URL}/${CORE_CONTRACT_ADDRESS}/${tokenId}`)
+        const tokenUrl = contractConfig?.TOKEN_URL
+        const r = await axios.get(`${tokenUrl}/${contractAddress}/${tokenId}`)
         setData(r.data)
       } catch (error) {
         setError(true)
@@ -22,7 +24,7 @@ const useTokenTraits = (tokenId: string) => {
     }
 
     fetchData()
-  }, [tokenId])
+  }, [tokenId, contractAddress])
 
   return {
     loading,

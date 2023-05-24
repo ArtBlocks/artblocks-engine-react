@@ -1,15 +1,18 @@
-import { MEDIA_URL, CORE_CONTRACT_ADDRESS } from "config"
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface Props {
+  contractAddress: string
   tokenId: string
   width: number
   height: number
 }
 
-const TokenImage = ({tokenId, width, height}: Props) => {
+const TokenImage = ({contractAddress, tokenId, width, height}: Props) => {
+  const contractConfig = getContractConfigByAddress(contractAddress)
+
   return (
     <img
-      src={`${MEDIA_URL}/${CORE_CONTRACT_ADDRESS}/${tokenId}.png`}
+      src={`${contractConfig?.MEDIA_URL}/${tokenId}.png`}
       alt={tokenId}
       width={width}
       height={height}

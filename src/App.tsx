@@ -5,6 +5,7 @@ import LandingPage from "pages/LandingPage"
 import ProjectsPage from "pages/ProjectsPage"
 import ProjectPage from "pages/ProjectPage"
 import TokenPage from "pages/TokenPage"
+import UserPage from "pages/UserPage"
 import Providers from "components/Providers"
 
 function App() {
@@ -14,8 +15,9 @@ function App() {
         <Routes>
           <Route index element={<LandingPage/>}/>
           <Route path="projects" element={<ProjectsPage/>}/>
-          <Route path="project/:projectId" element={<ProjectPage/>}/>
-          <Route path="token/:id" element={<TokenPage/>}/>
+          <Route path="project/:contractAddress/:projectId" element={<ProjectPage/>}/>
+          <Route path="token/:contractAddress/:id" element={<TokenPage/>}/>
+          <Route path="user/:walletAddress" element={<UserPage/>}/>
         </Routes>
       </Router>
       <ToastContainer

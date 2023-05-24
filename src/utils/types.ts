@@ -1,5 +1,6 @@
 export interface Project {
   id: string
+  contract: Contract
   projectId: BigInt
   name: string
   description: string
@@ -9,6 +10,7 @@ export interface Project {
   maxInvocations: BigInt
   activatedAt: BigInt
   scriptJSON: string
+  aspectRatio: number
   active: boolean
   paused: boolean
   complete: boolean
@@ -17,6 +19,10 @@ export interface Project {
   currencyAddress: string
   currencySymbol: string
   minterConfiguration?: MinterConfiguration
+}
+
+export interface Contract {
+  id: string
 }
 
 export interface Account {

@@ -1,5 +1,4 @@
 import moment from "moment"
-import { CORE_CONTRACT_ADDRESS, GENERATOR_URL, MEDIA_URL } from "config"
 import { parseAspectRatio } from "utils/scriptJSON"
 import {
   Box,
@@ -20,27 +19,32 @@ import Loading from "components/Loading"
 import TokenView from "components/TokenView"
 import useToken from "hooks/useToken"
 import useWindowSize from "hooks/useWindowSize"
+import { getContractConfigByAddress } from "utils/contractInfoHelper";
 
 interface Props {
+  contractAddress: string
   id: string
 }
 
-const TokenDetails = ({ id }: Props) => {
+const TokenDetails = ({ contractAddress, id }: Props) => {
   const theme = useTheme()
   const windowSize = useWindowSize()
-  const { loading, error, data } = useToken(id)
+  const { loading, error, data } = useToken(`${contractAddress.toLowerCase()}-${id}`)
   const token = data?.token
+  const contractConfig = getContractConfigByAddress(contractAddress)
 
   if (loading) {
     return <Loading/>
   }
 
   if (error) {
-    <Box>
-      <Alert severity="error">
-        Error loading token
-      </Alert>
-    </Box>
+    return (
+      <Box>
+        <Alert severity="error">
+          Error loading token
+        </Alert>
+      </Box>
+    )
   }
 
   const width = windowSize.width > theme.breakpoints.values.md
@@ -49,13 +53,13 @@ const TokenDetails = ({ id }: Props) => {
         ? windowSize.width - 48
         : windowSize.width - 32
 
-  return token && (
+  return token && contractConfig && (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
-        <Link href="/project" underline="hover" sx={{color: "#666"}}>
+        <Link href="/projects" underline="hover" sx={{color: "#666"}}>
           Home
         </Link>
-        <Link href={`/project/${token.project.projectId}`} underline="hover" sx={{color: "#666"}}>
+        <Link href={`/project/${contractAddress}/${token.project.projectId}`} underline="hover" sx={{color: "#666"}}>
           {token.project.name}
         </Link>
         <Typography>
@@ -65,9 +69,10 @@ const TokenDetails = ({ id }: Props) => {
       <Grid container spacing={2}>
         <Grid item md={8}>
           <TokenView
+            contractAddress={contractAddress}
             tokenId={token.tokenId}
             width={width}
-            aspectRatio={parseAspectRatio(token.project.scriptJSON)}
+            aspectRatio={token.project.aspectRatio || parseAspectRatio(token.project.scriptJSON)}
             live
           />
           <Box sx={{marginTop: 1, display: "flex", justifyContent: "space-between", alignItems: "center"}}>
@@ -86,7 +91,8 @@ const TokenDetails = ({ id }: Props) => {
                   padding: [0, 0, "default"]
                 }}
                 onClick={() => {
-                  window.open(`${GENERATOR_URL}/${CORE_CONTRACT_ADDRESS?.toLowerCase()}/${token.tokenId}`)
+                  const generatorUrl = contractConfig?.GENERATOR_URL
+                  window.open(`${generatorUrl}/${contractAddress?.toLowerCase()}/${token.tokenId}`)
                 }}
                 >
                 <Typography fontSize="14px" display={["none", "none", "block"]}>
@@ -103,7 +109,8 @@ const TokenDetails = ({ id }: Props) => {
                   padding: [0, 0, "default"]
                 }}
                 onClick={() => {
-                  window.open(`${MEDIA_URL}/${CORE_CONTRACT_ADDRESS}/${token.tokenId}.png`)
+                  const mediaUrl = contractConfig?.MEDIA_URL
+                  window.open(`${mediaUrl}/${token.tokenId}.png`)
                 }}
                 >
                 <Typography fontSize="14px" display={["none", "none", "block"]}>
@@ -116,7 +123,7 @@ const TokenDetails = ({ id }: Props) => {
         <Grid item md={4}>
           <Typography fontSize="16px" mb={4}>
             Minted {moment.unix(token.createdAt).format("LL")}
-          </Typography> 
+          </Typography>
           <Typography variant="h1">
             {token.project.name} #{token.invocation}
           </Typography>
@@ -128,7 +135,7 @@ const TokenDetails = ({ id }: Props) => {
               <Button
                 endIcon={<ArrowForwardIcon />}
                 onClick={() => {
-                  window.open(`https://etherscan.io/token/${CORE_CONTRACT_ADDRESS?.toLowerCase()}?a=${token.tokenId}`)
+                  window.open(`https://etherscan.io/token/${contractAddress?.toLowerCase()}?a=${token.tokenId}`)
                 }}
                 >
                 <Typography fontSize="14px" sx={{textTransform: "none"}}>
@@ -140,7 +147,7 @@ const TokenDetails = ({ id }: Props) => {
               <Button
                 endIcon={<ArrowForwardIcon />}
                 onClick={() => {
-                  window.open(`https://opensea.io/assets/ethereum/${CORE_CONTRACT_ADDRESS?.toLowerCase()}/${token.tokenId}`)
+                  window.open(`https://opensea.io/assets/ethereum/${contractAddress?.toLowerCase()}/${token.tokenId}`)
                 }}
                 >
                 <Typography fontSize="14px" sx={{textTransform: "none"}}>
@@ -153,7 +160,7 @@ const TokenDetails = ({ id }: Props) => {
       </Grid>
       <Grid container spacing={2} mt={4} mb={4}>
         <Grid item md={6}>
-          <TokenTraits tokenId={token.tokenId}/>
+          <TokenTraits contractAddress={contractAddress} tokenId={token.tokenId}/>
         </Grid>
       </Grid>
     </Box>

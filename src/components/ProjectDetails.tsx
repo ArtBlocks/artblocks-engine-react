@@ -22,20 +22,25 @@ import ProjectDate from "components/ProjectDate"
 import ProjectExplore from "components/ProjectExplore"
 import TokenView from "components/TokenView"
 import Tokens from "components/Tokens"
-import MintingInterface from "components/MintingInterface"
 import Loading from "components/Loading"
 import Collapsible from "components/Collapsible"
 import useProject from "hooks/useProject"
 import useWindowSize from "hooks/useWindowSize"
+import { getContractConfigByAddress } from "utils/contractInfoHelper"
+import EditProjectButton from "components/EditProjectButton"
+import { useAccount } from "wagmi"
+import MintingInterfaceFilter from "components/MintingInterfaceFilter"
 
 interface Props {
+  contractAddress: string
   id: string
 }
 
-const ProjectDetails = ({ id }: Props) => {
+const ProjectDetails = ({ contractAddress, id }: Props) => {
   const theme = useTheme()
   const windowSize = useWindowSize()
-  const { loading, error, data } = useProject(id)
+  const { address } = useAccount()
+  const { loading, error, data } = useProject(`${contractAddress}-${id}`)
   const [currentPage, setCurrentPage] = useState(0)
   const [orderDirection, setOrderDirection] = useState(OrderDirection.ASC)
   const project = data?.project
@@ -45,6 +50,7 @@ const ProjectDetails = ({ id }: Props) => {
       : windowSize.width > theme.breakpoints.values.sm
         ? windowSize.width - 48
         : windowSize.width - 32
+  const contractConfig = getContractConfigByAddress(contractAddress)
 
   if (error) {
     return (
@@ -60,7 +66,7 @@ const ProjectDetails = ({ id }: Props) => {
     return <Loading/>
   }
 
-  return project && (
+  return project && contractConfig && (
     <Box>
       <Breadcrumbs aria-label="breadcrumb" sx={{marginBottom: 4}}>
         <Link href="/projects" underline="hover" sx={{color: "#666"}}>
@@ -75,10 +81,11 @@ const ProjectDetails = ({ id }: Props) => {
           token && (
             <Grid item md={8}>
               <TokenView
+                contractAddress={contractConfig?.CORE_CONTRACT_ADDRESS}
                 tokenId={token.tokenId}
                 width={width}
                 invocation={token.invocation}
-                aspectRatio={parseAspectRatio(project.scriptJSON)}
+                aspectRatio={project.aspectRatio || parseAspectRatio(project.scriptJSON)}
                 live
               />
             </Grid>
@@ -86,18 +93,31 @@ const ProjectDetails = ({ id }: Props) => {
         }
         <Grid item md={4} xs={12} sm={12}>
           <Box sx={{width: "100%", paddingLeft: [0, 0, 2]}}>
-            <ProjectDate startTime={project?.minterConfiguration?.startTime}/>
+            <ProjectDate startTime={project?.minterConfiguration?.startTime!}/>
             <Typography variant="h1" mt={3}>
-              {project.name} 
+              {project.name}
             </Typography>
             <Typography variant="h6" mb={2}>
               {project.artistName}
             </Typography>
             <Divider sx={{display: ["none", "block", "none"], marginBottom: 2}}/>
-            <MintingInterface 
-              projectId={project.projectId} 
-              artistAddress={project.artistAddress}
-              scriptAspectRatio={parseAspectRatio(project.scriptJSON)}
+            {
+              contractConfig.EDIT_PROJECT_URL && address?.toLowerCase() === project.artistAddress &&
+              (
+                <EditProjectButton
+                    contractAddress={contractAddress}
+                    projectId={project.projectId}
+                    editProjectUrl={contractConfig?.EDIT_PROJECT_URL}
+                />
+              )
+            }
+            <MintingInterfaceFilter
+                contractVersion={contractConfig?.CONTRACT_VERSION}
+                coreContractAddress={contractAddress}
+                mintContractAddress={contractConfig?.MINT_CONTRACT_ADDRESS}
+                projectId={project.projectId}
+                artistAddress={project.artistAddress}
+                scriptAspectRatio={project.aspectRatio || parseAspectRatio(project.scriptJSON)}
             />
           </Box>
         </Grid>
@@ -125,7 +145,7 @@ const ProjectDetails = ({ id }: Props) => {
                 Library
               </Typography>
               <Typography>
-                {parseScriptType(project.scriptJSON)}
+                {parseScriptType(project.scriptJSON) || project.scriptTypeAndVersion}
               </Typography>
             </Box>
           </Box>
@@ -170,11 +190,12 @@ const ProjectDetails = ({ id }: Props) => {
           </Box>
         </Box>
         <Tokens
-          projectId={id}
+          contractAddress={contractAddress}
+          projectId={`${contractAddress.toLowerCase()}-${id}`}
           first={TOKENS_PER_PAGE}
           skip={currentPage*TOKENS_PER_PAGE}
           orderDirection={orderDirection}
-          aspectRatio={parseAspectRatio(project.scriptJSON)}
+          aspectRatio={project.aspectRatio || parseAspectRatio(project.scriptJSON)}
         />
         <Box sx={{display: "flex", justifyContent: "center"}}>
           <Stack mt={6} mb={8} spacing={2}>

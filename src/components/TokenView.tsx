@@ -1,4 +1,3 @@
-import { CORE_CONTRACT_ADDRESS } from "config"
 import {
   Box,
   Card,
@@ -8,6 +7,7 @@ import TokenImage from "components/TokenImage"
 import TokenLive from "components/TokenLive"
 
 interface Props {
+  contractAddress: string
   tokenId: string
   width: number
   invocation?: BigInt
@@ -16,6 +16,7 @@ interface Props {
 }
 
 const TokenView = ({
+  contractAddress,
   tokenId,
   width,
   invocation,
@@ -27,19 +28,19 @@ const TokenView = ({
     <Box width={String(width)+"px"} height={String(height)+"px"}>
       <Card sx={{borderRadius: 0, boxShadow: 0}}>
         {
-          live ? 
+          live ?
           (
-            <TokenLive tokenId={tokenId} width={width} height={height}/>
+            <TokenLive contractAddress={contractAddress} tokenId={tokenId} width={width} height={height}/>
           ) :
           (
-            <TokenImage tokenId={tokenId} width={width} height={height}/>
+            <TokenImage contractAddress={contractAddress} tokenId={tokenId} width={width} height={height}/>
           )
         }
       </Card>
-      { invocation !== undefined && 
+      { invocation !== undefined &&
         (
         <Box sx={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-          <Link href={`/token/${CORE_CONTRACT_ADDRESS}-${tokenId}`} sx={{fontSize: "14px", textDecoration: "none"}}>
+          <Link href={`/token/${contractAddress}/${tokenId}`} sx={{fontSize: "14px", textDecoration: "none"}}>
             No. { invocation?.toString() }
           </Link>
         </Box>

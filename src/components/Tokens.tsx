@@ -1,7 +1,7 @@
 import useTheme from "@mui/material/styles/useTheme"
 import { TOKENS_PER_PAGE } from "config"
 import { OrderDirection, Token } from "utils/types"
-import { 
+import {
   Grid,
   Link,
   Alert,
@@ -13,6 +13,7 @@ import useTokens from "hooks/useTokens"
 import useWindowSize from "hooks/useWindowSize"
 
 interface Props {
+  contractAddress: string
   projectId: string
   first?: number
   skip?: number
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const Tokens = ({
+  contractAddress,
   projectId,
   first=TOKENS_PER_PAGE,
   skip=0,
@@ -28,7 +30,7 @@ const Tokens = ({
   aspectRatio=1
 }: Props) => {
   const theme = useTheme()
-  const windowSize = useWindowSize()  
+  const windowSize = useWindowSize()
   const {loading, error, data } = useTokens(projectId, {
     first,
     skip,
@@ -63,13 +65,14 @@ const Tokens = ({
   }
 
   return (
-    data.tokens.length > 0 ? 
+    data.tokens.length > 0 ?
       <Grid spacing={2} container>
         {
           data.tokens.map(((token:Token) => (
             <Grid key={token.tokenId} item md={4} sm={6} xs={6}>
-              <Link href={`/token/${token.id}`}>
+              <Link href={`/token/${contractAddress}/${token.tokenId}`}>
                 <TokenView
+                  contractAddress={contractAddress}
                   tokenId={token.tokenId}
                   aspectRatio={aspectRatio}
                   width={width}

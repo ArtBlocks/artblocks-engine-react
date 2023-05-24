@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { 
+import {
   Box,
   Link,
   AppBar,
@@ -13,17 +13,44 @@ import {
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import Connect from "components/Connect"
+import { useAccount } from "wagmi"
 
-const items = [
+let items = [
   {
     label: "Projects",
     url: "/projects",
     enabled: true
+  },
+  {
+    label: "Owned",
+    url: "/user",
+    enabled: false
+  },
+  {
+    label: "Mint",
+    url: "/mint",
+    enabled: false
   }
 ]
 
 const Header = () => {
+  const { address, isConnected } = useAccount()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  let userItem = items.find((item) => {
+    return item.label === "Owned"
+  })
+  if (isConnected) {
+    if (userItem) {
+      userItem.enabled = true
+      userItem.url = `/user/${address}`
+    }
+  } else {
+    if (userItem) {
+      userItem.enabled = false
+      userItem.url = `/user`
+    }
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -62,9 +89,9 @@ const Header = () => {
             </Box>
             <Box sx={{display: {xs: "none", sm: "block"}, marginTop: "5px"}}>
               {items.map((item) => (
-                  <Link 
-                  key={item.label} 
-                  href={item.url} 
+                  <Link
+                  key={item.label}
+                  href={item.url}
                   underline="hover"
                   sx={{fontSize: 18, fontWeight: 600, color: item.enabled ? "black" : "lightgrey", paddingRight: "25px", pointerEvents: item.enabled ? "auto" : "none"}}>
                   {item.label}

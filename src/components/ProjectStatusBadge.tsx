@@ -18,7 +18,7 @@ const ProjectStatusBadge = ({ complete, paused, startTime }: Props) => {
       alignItems: 'center',
     }}>
       {
-        startDate?.isAfter() ? 
+        startDate?.isAfter() ?
         <Chip
           label="Upcoming"
           color="upcoming"
@@ -33,13 +33,21 @@ const ProjectStatusBadge = ({ complete, paused, startTime }: Props) => {
             sx={{ color: 'white', marginRight: 2, }}
           />
         ) : !complete ? (
-          <Chip 
+          <Chip
             label="Live"
             color="success"
             size="small"
             sx={{ color: 'white', marginRight: 2 }}
           />
-        ) : null
+        ) : (
+          <Chip
+            label="Complete"
+            color="primary"
+            size="small"
+            variant="outlined"
+            sx={{ color: 'black', marginRight: 2 }}
+          />
+        )
       }
 
       {
