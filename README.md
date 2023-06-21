@@ -48,7 +48,10 @@ In order to customize your specific implementation, you will need to edit the de
 
 You must specify an API key from [Infura](https://www.infura.io/) as well as a chain id in your environment file. Use
 `1` for mainnet or `5` for goerli. Alternative providers can be used by modifying the `src/components/Providers.tsx`
-file. Use multiple `.env` fiels to set up `development` or `staging` environments on `testnet` if you wish to do so.
+file. Use multiple `.env` fields to set up `development` or `staging` environments on `testnet` if you wish to do so.
+
+You must also obtain and supply a projectId from [WalletConnect Cloud](https://cloud.walletconnect.com/). This is free 
+and only takes a few minutes.
 
 Additionally, you will need to edit the default configuration in the `src/contractConfig.ts` file -
 here you will find arrays for your mainnet and testnet contracts. Further configuration values like the number of

@@ -8,7 +8,7 @@ import { mainnet, goerli } from 'wagmi/chains'
 import { infuraProvider } from "wagmi/providers/infura"
 import { publicProvider } from "wagmi/providers/public"
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client"
-import { GRAPHQL_URL, INFURA_KEY, EXPECTED_CHAIN_ID } from "config"
+import { GRAPHQL_URL, INFURA_KEY, EXPECTED_CHAIN_ID, WALLET_CONNECT_PROJECT_ID } from "config"
 
 const client = new ApolloClient({
   uri: GRAPHQL_URL,
@@ -29,7 +29,8 @@ const { chains, provider, webSocketProvider } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: "Engine",
-  chains
+  chains,
+  projectId: WALLET_CONNECT_PROJECT_ID
 })
 
 const wagmiClient = createClient({
