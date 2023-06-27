@@ -2,6 +2,7 @@ import { mainnetContractConfig, testnetContractConfig } from "./contractConfig";
 
 export const EXPECTED_CHAIN_ID = Number(process.env.REACT_APP_EXPECTED_CHAIN_ID)
 export const GRAPHQL_URL = process.env.REACT_APP_GRAPHQL_URL
+export const WALLET_CONNECT_PROJECT_ID = process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID || ""
 export const INFURA_KEY = process.env.REACT_APP_INFURA_KEY || ""
 export const PROJECTS_PER_PAGE = 8
 export const TOKENS_PER_PAGE = 9
