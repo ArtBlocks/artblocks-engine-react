@@ -56,12 +56,9 @@ const ownedProjectsQuery = (walletAddress: string, { first, skip, orderDirection
       }
       minterConfiguration {
         basePrice
-        startPrice
         priceIsConfigured
         currencySymbol
         currencyAddress
-        startTime
-        endTime
       }
     }
   }`
