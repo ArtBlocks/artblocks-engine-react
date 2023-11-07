@@ -38,7 +38,7 @@ const OwnedProjects = ({ walletAddress }: Props) => {
     setCountOwnedProjects(countOwnedProjectsResponse.data?.projects?.filter((project: { tokens: string | any[] }) => {
       return project.tokens.length > 0
     }).length)
-  }, [data, countOwnedProjectsResponse])
+  }, [JSON.stringify(data), JSON.stringify(filteredProjects), JSON.stringify(countOwnedProjectsResponse)])
 
   return (
     <Box>
