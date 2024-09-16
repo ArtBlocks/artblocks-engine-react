@@ -8,7 +8,7 @@ import {
 } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import MinterMerkleV5ABI from "abi/V3/MinterMerkleV5.json"
+import MinterSetPricePolyptychV5 from "abi/V5/MinterSetPricePolyptychV5.json"
 import TokenView from "components/TokenView"
 import useWindowSize from "hooks/useWindowSize"
 import MintingButton from "components/MintingButton"
@@ -31,7 +31,7 @@ interface Props {
   isSoldOut: boolean
 }
 
-const MinterMerkleV5Button = (
+const MinterSetPricePolyptychV5Button = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -59,7 +59,7 @@ const MinterMerkleV5Button = (
 
   const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: MinterMerkleV5ABI,
+    abi: MinterSetPricePolyptychV5,
     functionName: "purchase",
     overrides: {
       value: priceWei
@@ -158,4 +158,4 @@ const MinterMerkleV5Button = (
   )
 }
 
-export default MinterMerkleV5Button
+export default MinterSetPricePolyptychV5Button;

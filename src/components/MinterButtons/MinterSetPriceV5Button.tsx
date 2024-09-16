@@ -1,10 +1,10 @@
-import {useEffect, useState} from "react"
+import { useState } from "react"
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box, Typography, Modal } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import MinterDAExpSettlementV1ABI from "abi/V3/MinterDAExpSettlementV1.json"
+import MinterSetPriceV5ABI from "abi/V5/MinterSetPriceV5.json"
 import TokenView from "components/TokenView"
 import useWindowSize from "hooks/useWindowSize"
 import MintingButton from "components/MintingButton"
@@ -21,12 +21,10 @@ interface Props {
   scriptAspectRatio: number,
   verifyBalance: boolean,
   isPaused: boolean,
-  isSoldOut: boolean,
-  excessSettlementFunds: BigNumber,
-  auctionHasStarted: boolean
+  isSoldOut: boolean
 }
 
-const MinterDAExpSettlementV1Button = (
+const MinterSetPriceV5Button = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -39,9 +37,7 @@ const MinterDAExpSettlementV1Button = (
     scriptAspectRatio,
     verifyBalance,
     isPaused,
-    isSoldOut,
-    excessSettlementFunds,
-    auctionHasStarted
+    isSoldOut
   }: Props
 ) => {
   const windowSize = useWindowSize()
@@ -51,20 +47,14 @@ const MinterDAExpSettlementV1Button = (
   const handleMintingPreviewOpen = () => setMintingPreview(true)
   const handleMintingPreviewClose = () => setMintingPreview(false)
 
-  useEffect(() => {
-    if (excessSettlementFunds.gt(BigNumber.from(0))) {
-      setDialog(`${formatEtherFixed(excessSettlementFunds.toString(), 3)} ETH available`)
-    }
-  }, [excessSettlementFunds])
-
   const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: MinterDAExpSettlementV1ABI,
+    abi: MinterSetPriceV5ABI,
     functionName: "purchase",
     overrides: {
       value: priceWei
     },
-    enabled: !isPaused && !isSoldOut && verifyBalance && auctionHasStarted,
+    enabled: (!isPaused || artistCanMint) && !isSoldOut && verifyBalance,
     args: [
       BigNumber.from(projectId)
     ]
@@ -99,36 +89,9 @@ const MinterDAExpSettlementV1Button = (
     }
   })
 
-  const prepareClaimSettlementFunds = usePrepareContractWrite({
-    address: mintContractAddress as `0x${string}`,
-    abi: MinterDAExpSettlementV1ABI,
-    functionName: "reclaimProjectExcessSettlementFunds",
-    enabled: excessSettlementFunds.gt(BigNumber.from(0)),
-    args: [
-      BigNumber.from(projectId)
-    ]
-  })
-  const writeClaimSettlementFunds = useContractWrite({
-    ...prepareClaimSettlementFunds.config,
-    onSuccess() {
-      setDialog("Claiming settlement funds...")
-    }
-  })
-  useWaitForTransaction({
-    hash: writeClaimSettlementFunds?.data?.hash,
-    confirmations: 1,
-    onSuccess() {
-      setDialog("Settlement funds claimed...")
-    }
-  })
-
-  const isSettlementAvailable = excessSettlementFunds.gt(BigNumber.from(0))
-
-  const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyBalance || !auctionHasStarted
-  let mintingMessage = `Purchase for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`
-  if (isSettlementAvailable) mintingMessage = "claim settlement funds"
-  else if (isPaused) mintingMessage = "minting paused"
-  else if (!auctionHasStarted) mintingMessage = "auction not live"
+  const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyBalance
+  let mintingMessage = `${artistCanMint ? "Artist Mint " : "Purchase "} for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`
+  if (isPaused && !artistCanMint) mintingMessage = "minting paused"
   else if (isSoldOut) mintingMessage = "sold out"
   else if (!isConnected) mintingMessage = "connect to purchase"
   else if (!verifyBalance) mintingMessage = "insufficient funds"
@@ -136,9 +99,9 @@ const MinterDAExpSettlementV1Button = (
   return (
     <>
       <MintingButton
-        disabled={mintingDisabled && !isSettlementAvailable}
+        disabled={mintingDisabled && !artistCanMint}
         message={mintingMessage}
-        contractPurchase={isSettlementAvailable ? writeClaimSettlementFunds.write : write}
+        contractPurchase={write}
       />
       <Box marginTop={1}>
         <Typography fontStyle="italic">
@@ -182,4 +145,4 @@ const MinterDAExpSettlementV1Button = (
   )
 }
 
-export default MinterDAExpSettlementV1Button
+export default MinterSetPriceV5Button

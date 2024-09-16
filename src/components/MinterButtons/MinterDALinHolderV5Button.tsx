@@ -1,21 +1,13 @@
-import {useEffect, useState} from "react"
-import {
-  usePrepareContractWrite,
-  useContractWrite,
-  useWaitForTransaction,
-  useAccount,
-  useBalance,
-  useContractRead
-} from "wagmi"
+import { useState } from "react"
+import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box, Typography, Modal } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import MinterSetPriceERC20V4ABI from "abi/V3/MinterSetPriceERC20V4.json"
+import MinterDALinHolderV5ABI from "abi/V5/MinterDALinHolderV5.json"
 import TokenView from "components/TokenView"
 import useWindowSize from "hooks/useWindowSize"
 import MintingButton from "components/MintingButton"
-import ERC20ABI from "../../abi/ERC20.json";
 
 interface Props {
   coreContractAddress: string,
@@ -23,29 +15,33 @@ interface Props {
   projectId: string,
   priceWei: BigNumber
   currencySymbol: string,
-  currencyAddress: string,
   isConnected: boolean,
   artistCanMint: boolean,
   anyoneCanMint: boolean,
   scriptAspectRatio: number,
+  verifyBalance: boolean,
   isPaused: boolean,
-  isSoldOut: boolean
+  isSoldOut: boolean,
+  holderContractAddress: string,
+  holderTokenId: string
 }
 
-const MinterSetPriceERC20V4Button = (
+const MinterDALinHolderV5Button = (
   {
     coreContractAddress,
     mintContractAddress,
     projectId,
     priceWei,
     currencySymbol,
-    currencyAddress,
     isConnected,
     artistCanMint,
     anyoneCanMint,
     scriptAspectRatio,
+    verifyBalance,
     isPaused,
-    isSoldOut
+    isSoldOut,
+    holderContractAddress,
+    holderTokenId
   }: Props
 ) => {
   const windowSize = useWindowSize()
@@ -55,62 +51,18 @@ const MinterSetPriceERC20V4Button = (
   const handleMintingPreviewOpen = () => setMintingPreview(true)
   const handleMintingPreviewClose = () => setMintingPreview(false)
 
-  const account = useAccount()
-  const balance = useBalance({
-    address: account.address,
-    token: currencyAddress as `0x${string}`
-  })
-  const [isBalanceVerified, setIsBalanceVerified] = useState(false)
-  const [isAllowanceVerified, setIsAllowanceVerified] = useState(false)
-
-  useEffect(() => {
-    if (balance?.data?.value.gt(priceWei)) {
-      setIsBalanceVerified(true)
-    }
-  }, [balance, priceWei])
-
-  useContractRead({
-    address: currencyAddress as `0x${string}`,
-    abi: ERC20ABI,
-    functionName: "allowance",
-    args: [account.address, mintContractAddress],
-    watch: true,
-    enabled: (!isPaused || artistCanMint) && !isSoldOut,
-    onSuccess(data: BigNumber) {
-      setIsAllowanceVerified(data >= priceWei)
-    }
-  })
-
-  const erc20PrepareApprove = usePrepareContractWrite({
-    address: currencyAddress as `0x${string}`,
-    abi: ERC20ABI,
-    functionName: "approve",
-    enabled: (!isPaused || artistCanMint) && !isSoldOut && !isAllowanceVerified && isBalanceVerified,
-    args: [
-      mintContractAddress, BigNumber.from(priceWei)
-    ]
-  })
-  const erc20WriteApprove = useContractWrite({
-    ...erc20PrepareApprove.config,
-    onSuccess() {
-      setDialog("Approving ERC20...")
-    }
-  })
-  useWaitForTransaction({
-    hash: erc20WriteApprove?.data?.hash,
-    confirmations: 1,
-    onSuccess() {
-      setDialog("ERC20 Approved...")
-    }
-  })
-
   const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: MinterSetPriceERC20V4ABI,
+    abi: MinterDALinHolderV5ABI,
     functionName: "purchase",
-    enabled: (!isPaused || artistCanMint) && !isSoldOut && isBalanceVerified && isAllowanceVerified,
+    overrides: {
+      value: priceWei
+    },
+    enabled: (!isPaused || artistCanMint) && !isSoldOut && verifyBalance && holderContractAddress !== undefined && holderTokenId !== undefined,
     args: [
-      BigNumber.from(projectId)
+      BigNumber.from(projectId),
+      holderContractAddress,
+      BigNumber.from(holderTokenId || 0)
     ]
   })
 
@@ -143,20 +95,20 @@ const MinterSetPriceERC20V4Button = (
     }
   })
 
-  const mintingDisabled = isPaused || isSoldOut || !isConnected || !isBalanceVerified
+  const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyBalance || holderContractAddress === ""
   let mintingMessage = `${artistCanMint ? "Artist Mint " : "Purchase "} for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`
   if (isPaused && !artistCanMint) mintingMessage = "minting paused"
   else if (isSoldOut) mintingMessage = "sold out"
   else if (!isConnected) mintingMessage = "connect to purchase"
-  else if (!isBalanceVerified) mintingMessage = "insufficient funds"
-  else if (!isAllowanceVerified) mintingMessage = "set ERC20 allowance"
+  else if (!verifyBalance) mintingMessage = "insufficient funds"
+  else if (holderContractAddress === "") mintingMessage = "no NFTs held"
 
   return (
     <>
       <MintingButton
         disabled={mintingDisabled && !artistCanMint}
         message={mintingMessage}
-        contractPurchase={!isAllowanceVerified ? erc20WriteApprove.write : write}
+        contractPurchase={write}
       />
       <Box marginTop={1}>
         <Typography fontStyle="italic">
@@ -200,4 +152,4 @@ const MinterSetPriceERC20V4Button = (
   )
 }
 
-export default MinterSetPriceERC20V4Button
+export default MinterDALinHolderV5Button

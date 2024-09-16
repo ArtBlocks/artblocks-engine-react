@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from "wagmi"
 import { BigNumber } from "ethers"
-import { Box, Typography, Modal } from "@mui/material"
+import {
+  Box,
+  Typography,
+  Modal
+} from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import MinterHolderV4ABI from "abi/V3/MinterHolderV4.json"
+import MinterSetPriceHolderV5ABI from "abi/V5/MinterSetPriceHolderV5.json"
 import TokenView from "components/TokenView"
 import useWindowSize from "hooks/useWindowSize"
 import MintingButton from "components/MintingButton"
@@ -19,14 +23,15 @@ interface Props {
   artistCanMint: boolean,
   anyoneCanMint: boolean,
   scriptAspectRatio: number,
+  verifyAddress: boolean,
+  remainingInvocations: number,
+  merkleProof: string | null,
   verifyBalance: boolean,
   isPaused: boolean,
-  isSoldOut: boolean,
-  holderContractAddress: string,
-  holderTokenId: string
+  isSoldOut: boolean
 }
 
-const MinterHolderV4Button = (
+const MinterSetPriceHolderV5Button = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -37,11 +42,12 @@ const MinterHolderV4Button = (
     artistCanMint,
     anyoneCanMint,
     scriptAspectRatio,
+    verifyAddress,
+    remainingInvocations,
+    merkleProof,
     verifyBalance,
     isPaused,
-    isSoldOut,
-    holderContractAddress,
-    holderTokenId
+    isSoldOut
   }: Props
 ) => {
   const windowSize = useWindowSize()
@@ -53,16 +59,15 @@ const MinterHolderV4Button = (
 
   const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: MinterHolderV4ABI,
+    abi: MinterSetPriceHolderV5ABI,
     functionName: "purchase",
     overrides: {
       value: priceWei
     },
-    enabled: (!isPaused || artistCanMint) && !isSoldOut && verifyBalance && holderContractAddress !== undefined && holderTokenId !== undefined,
+    enabled: (!isPaused || artistCanMint) && !isSoldOut && verifyAddress && remainingInvocations > 0 && verifyBalance,
     args: [
       BigNumber.from(projectId),
-      holderContractAddress,
-      BigNumber.from(holderTokenId || 0)
+      merkleProof
     ]
   })
 
@@ -95,13 +100,14 @@ const MinterHolderV4Button = (
     }
   })
 
-  const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyBalance || holderContractAddress === ""
+  const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyAddress || !verifyBalance || remainingInvocations === 0
   let mintingMessage = `${artistCanMint ? "Artist Mint " : "Purchase "} for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`
   if (isPaused && !artistCanMint) mintingMessage = "minting paused"
   else if (isSoldOut) mintingMessage = "sold out"
   else if (!isConnected) mintingMessage = "connect to purchase"
+  else if (!verifyAddress) mintingMessage = "address not whitelisted"
   else if (!verifyBalance) mintingMessage = "insufficient funds"
-  else if (holderContractAddress === "") mintingMessage = "no NFTs held"
+  else if (remainingInvocations === 0) mintingMessage = "mint limit reached"
 
   return (
     <>
@@ -112,7 +118,7 @@ const MinterHolderV4Button = (
       />
       <Box marginTop={1}>
         <Typography fontStyle="italic">
-          {dialog}
+          {dialog === "" && remainingInvocations > 0 ? `whitelisted for ${remainingInvocations} ${remainingInvocations === 1 ? "mint" : "mints"}` : dialog}
         </Typography>
       </Box>
       <Modal
@@ -152,4 +158,4 @@ const MinterHolderV4Button = (
   )
 }
 
-export default MinterHolderV4Button
+export default MinterSetPriceHolderV5Button

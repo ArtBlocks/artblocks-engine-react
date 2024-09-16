@@ -4,7 +4,7 @@ import { BigNumber } from "ethers"
 import { Box, Typography, Modal } from "@mui/material"
 import { MULTIPLY_GAS_LIMIT } from "config"
 import { multiplyBigNumberByFloat, formatEtherFixed } from "utils/numbers"
-import MinterMerkleV5ABI from "abi/V3/MinterMerkleV5.json"
+import MinterDALinV5ABI from "abi/V5/MinterDALinV5.json"
 import TokenView from "components/TokenView"
 import useWindowSize from "hooks/useWindowSize"
 import MintingButton from "components/MintingButton"
@@ -21,10 +21,12 @@ interface Props {
   scriptAspectRatio: number,
   verifyBalance: boolean,
   isPaused: boolean,
-  isSoldOut: boolean
+  isSoldOut: boolean,
+  holderContractAddress: string,
+  holderTokenId: string
 }
 
-const MinterSetPriceV4Button = (
+const MinterDALinV5Button = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -37,7 +39,9 @@ const MinterSetPriceV4Button = (
     scriptAspectRatio,
     verifyBalance,
     isPaused,
-    isSoldOut
+    isSoldOut,
+    holderContractAddress,
+    holderTokenId
   }: Props
 ) => {
   const windowSize = useWindowSize()
@@ -49,14 +53,16 @@ const MinterSetPriceV4Button = (
 
   const { config } = usePrepareContractWrite({
     address: mintContractAddress as `0x${string}`,
-    abi: MinterMerkleV5ABI,
+    abi: MinterDALinV5ABI,
     functionName: "purchase",
     overrides: {
       value: priceWei
     },
-    enabled: (!isPaused || artistCanMint) && !isSoldOut && verifyBalance,
+    enabled: (!isPaused || artistCanMint) && !isSoldOut && verifyBalance && holderContractAddress !== undefined && holderTokenId !== undefined,
     args: [
-      BigNumber.from(projectId)
+      BigNumber.from(projectId),
+      holderContractAddress,
+      BigNumber.from(holderTokenId || 0)
     ]
   })
 
@@ -89,12 +95,13 @@ const MinterSetPriceV4Button = (
     }
   })
 
-  const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyBalance
+  const mintingDisabled = isPaused || isSoldOut || !isConnected || !verifyBalance || holderContractAddress === ""
   let mintingMessage = `${artistCanMint ? "Artist Mint " : "Purchase "} for ${formatEtherFixed(priceWei.toString(), 3)} ${currencySymbol}`
   if (isPaused && !artistCanMint) mintingMessage = "minting paused"
   else if (isSoldOut) mintingMessage = "sold out"
   else if (!isConnected) mintingMessage = "connect to purchase"
   else if (!verifyBalance) mintingMessage = "insufficient funds"
+  else if (holderContractAddress === "") mintingMessage = "no NFTs held"
 
   return (
     <>
@@ -145,4 +152,4 @@ const MinterSetPriceV4Button = (
   )
 }
 
-export default MinterSetPriceV4Button
+export default MinterDALinV5Button
