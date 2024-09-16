@@ -1,12 +1,12 @@
 import { useState } from "react"
-import { useAccount, useBalance, useContractReads } from "wagmi"
-import { BigNumber, utils } from "ethers"
+import { useAccount, useContractReads } from "wagmi"
+import { BigNumber } from "ethers"
 import { Box } from "@mui/material"
 import GenArt721CoreV3_EngineABI from "abi/V3/GenArt721CoreV3_Engine.json"
-import MinterSetPriceV4ABI from "abi/V3/MinterSetPriceV4.json"
+import MinterSetPriceERC20V5ABI from "abi/V5/MinterSetPriceERC20V5.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
-import MinterSetPriceV4Button from "components/MinterButtons/MinterSetPriceV4Button"
+import MinterSetPriceERC20V5Button from "components/MinterButtons/MinterSetPriceERC20V5Button"
 
 interface Props {
   coreContractAddress: string,
@@ -16,7 +16,7 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MinterSetPriceV4Interface = (
+const MinterSetPriceERC20V5Interface = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -27,9 +27,6 @@ const MinterSetPriceV4Interface = (
 ) => {
 
   const account = useAccount()
-  const balance = useBalance({
-    address: account.address
-  })
 
   const [projectStateData, setProjectStateData] = useState<any | null>(null)
   const [projectPriceInfo, setProjectPriceInfo] = useState<any | null>(null)
@@ -45,13 +42,13 @@ const MinterSetPriceV4Interface = (
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterSetPriceV4ABI,
+        abi: MinterSetPriceERC20V5ABI,
         functionName: "getPriceInfo",
         args: [BigNumber.from(projectId)]
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterSetPriceV4ABI,
+        abi: MinterSetPriceERC20V5ABI,
         functionName: "projectConfig",
         args: [BigNumber.from(projectId)]
       }
@@ -72,6 +69,7 @@ const MinterSetPriceV4Interface = (
   const maxInvocations = projectStateData.maxInvocations.toNumber()
   const maxHasBeenInvoked = projectConfig.maxHasBeenInvoked
   const currencySymbol = projectPriceInfo.currencySymbol
+  const currencyAddress = projectPriceInfo.currencyAddress
   const currentPriceWei = projectPriceInfo.tokenPriceInWei
   const priceIsConfigured = projectPriceInfo.isConfigured
   const isSoldOut = maxHasBeenInvoked || invocations >= maxInvocations
@@ -99,17 +97,17 @@ const MinterSetPriceV4Interface = (
           />
         )
       }
-      <MinterSetPriceV4Button
+      <MinterSetPriceERC20V5Button
         coreContractAddress={coreContractAddress}
         mintContractAddress={mintContractAddress}
         projectId={projectId}
         priceWei={currentPriceWei}
         currencySymbol={currencySymbol}
+        currencyAddress={currencyAddress}
         isConnected={account.isConnected}
         artistCanMint={artistCanMint}
         anyoneCanMint={anyoneCanMint}
         scriptAspectRatio={scriptAspectRatio}
-        verifyBalance={balance?.data?.formatted! >= utils.formatEther(projectPriceInfo.tokenPriceInWei.toString())}
         isPaused={isPaused}
         isSoldOut={isSoldOut}
       />
@@ -117,4 +115,4 @@ const MinterSetPriceV4Interface = (
   )
 }
 
-export default MinterSetPriceV4Interface
+export default MinterSetPriceERC20V5Interface

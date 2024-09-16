@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useAccount, useBalance, useContractReads } from "wagmi"
 import { BigNumber, utils } from "ethers"
 import { Box } from "@mui/material"
 import GenArt721CoreV3_EngineABI from "abi/V3/GenArt721CoreV3_Engine.json"
-import MinterMerkleV5ABI from "abi/V3/MinterMerkleV5.json"
+import MinterSetPriceV4ABI from "abi/V3/MinterSetPriceV4.json"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
-import MinterMerkleV5Button from "components/MinterButtons/MinterMerkleV5Button"
-import { MERKLE_PROOF_API_URL } from "config"
+import MinterSetPriceV4Button from "components/MinterButtons/MinterSetPriceV5Button"
 
 interface Props {
   coreContractAddress: string,
@@ -17,7 +16,7 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MinterMerkleV5Interface = (
+const MinterSetPriceV4Interface = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -35,43 +34,6 @@ const MinterMerkleV5Interface = (
   const [projectStateData, setProjectStateData] = useState<any | null>(null)
   const [projectPriceInfo, setProjectPriceInfo] = useState<any | null>(null)
   const [projectConfig, setProjectConfig] = useState<any | null>(null)
-  const [verifyAddress, setVerifyAddress] = useState<any | null>(false)
-  const [remainingInvocations, setRemainingInvocations] = useState<any | null>(null)
-  const [merkleProof, setMerkleProof] = useState(null)
-
-  useContractReads({
-    contracts: [
-      {
-        address: mintContractAddress as `0x${string}`,
-        abi: MinterMerkleV5ABI,
-        functionName: "verifyAddress",
-        args: [BigNumber.from(projectId), merkleProof, account.address],
-      },
-      {
-        address: mintContractAddress as `0x${string}`,
-        abi: MinterMerkleV5ABI,
-        functionName: "projectRemainingInvocationsForAddress",
-        args: [BigNumber.from(projectId), account.address],
-      }
-    ],
-    enabled: merkleProof != null && account.isConnected,
-    watch: true,
-    onSuccess(data) {
-      setVerifyAddress(data[0])
-      setRemainingInvocations(data[1])
-    }
-  })
-
-  useEffect(() => {
-    if (account.isConnected) {
-      fetch(`${MERKLE_PROOF_API_URL}?contractAddress=${coreContractAddress}&projectId=${projectId}&walletAddress=${account.address}`)
-        .then(response => response.json())
-        .then(data => setMerkleProof(data))
-    } else {
-      setMerkleProof(null)
-      setVerifyAddress(false)
-    }
-  }, [account.address, account.isConnected]);
 
   const { data, isError, isLoading } = useContractReads({
     contracts: [
@@ -83,13 +45,13 @@ const MinterMerkleV5Interface = (
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterMerkleV5ABI,
+        abi: MinterSetPriceV4ABI,
         functionName: "getPriceInfo",
         args: [BigNumber.from(projectId)]
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterMerkleV5ABI,
+        abi: MinterSetPriceV4ABI,
         functionName: "projectConfig",
         args: [BigNumber.from(projectId)]
       }
@@ -137,7 +99,7 @@ const MinterMerkleV5Interface = (
           />
         )
       }
-      <MinterMerkleV5Button
+      <MinterSetPriceV4Button
         coreContractAddress={coreContractAddress}
         mintContractAddress={mintContractAddress}
         projectId={projectId}
@@ -147,9 +109,6 @@ const MinterMerkleV5Interface = (
         artistCanMint={artistCanMint}
         anyoneCanMint={anyoneCanMint}
         scriptAspectRatio={scriptAspectRatio}
-        verifyAddress={verifyAddress}
-        remainingInvocations={remainingInvocations?.mintInvocationsRemaining.toNumber()}
-        merkleProof={merkleProof}
         verifyBalance={balance?.data?.formatted! >= utils.formatEther(projectPriceInfo.tokenPriceInWei.toString())}
         isPaused={isPaused}
         isSoldOut={isSoldOut}
@@ -158,4 +117,4 @@ const MinterMerkleV5Interface = (
   )
 }
 
-export default MinterMerkleV5Interface
+export default MinterSetPriceV4Interface

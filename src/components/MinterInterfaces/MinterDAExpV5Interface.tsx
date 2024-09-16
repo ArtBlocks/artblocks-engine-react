@@ -1,15 +1,14 @@
 import { useState } from "react"
 import moment from "moment-timezone"
-import {useAccount, useBalance, useContractRead, useContractReads} from "wagmi"
+import { useAccount, useBalance, useContractReads } from "wagmi"
 import { BigNumber } from "ethers"
 import { Box } from "@mui/material"
 import GenArt721CoreV3_EngineABI from "abi/V3/GenArt721CoreV3_Engine.json"
-import MinterDAExpSettlementV1ABI from "abi/V3/MinterDAExpSettlementV1.json"
+import MinterDAExpV4ABI from "abi/V3/MinterDAExpV4.json"
 import MintingCountdown from "components/MintingCountdown"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
-import MinterDAExpSettlementV1Button from "components/MinterButtons/MinterDAExpSettlementV1Button"
-import useCountOwnedTokens from "../../hooks/useCountOwnedTokens";
+import MinterDAExpV4Button from "components/MinterButtons/MinterDAExpV5Button"
 
 interface Props {
   coreContractAddress: string,
@@ -19,7 +18,7 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MinterDAExpSettlementV1Interface = (
+const MinterDAExpV4Interface = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -37,8 +36,6 @@ const MinterDAExpSettlementV1Interface = (
   const [projectStateData, setProjectStateData] = useState<any | null>(null)
   const [projectPriceInfo, setProjectPriceInfo] = useState<any | null>(null)
   const [projectConfig, setProjectConfig] = useState<any | null>(null)
-  const [projectExcessSettlementFunds, setProjectExcessSettlementFunds] = useState<any | null>(BigNumber.from(0))
-  const countOwnedTokensResponse = useCountOwnedTokens(`${coreContractAddress}-${projectId}`, account?.address?.toLowerCase() || "")
 
   const { data, isError, isLoading } = useContractReads({
     contracts: [
@@ -50,13 +47,13 @@ const MinterDAExpSettlementV1Interface = (
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterDAExpSettlementV1ABI,
+        abi: MinterDAExpV4ABI,
         functionName: "getPriceInfo",
         args: [BigNumber.from(projectId)]
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterDAExpSettlementV1ABI,
+        abi: MinterDAExpV4ABI,
         functionName: "projectConfig",
         args: [BigNumber.from(projectId)]
       }
@@ -66,18 +63,6 @@ const MinterDAExpSettlementV1Interface = (
       setProjectStateData(data[0])
       setProjectPriceInfo(data[1])
       setProjectConfig(data[2])
-    }
-  })
-
-  useContractRead({
-    address: mintContractAddress as `0x${string}`,
-    abi: MinterDAExpSettlementV1ABI,
-    functionName: "getProjectExcessSettlementFunds",
-    args: [BigNumber.from(projectId), account.address],
-    watch: true,
-    enabled: account.isConnected && countOwnedTokensResponse?.data?.tokens?.length > 0,
-    onSuccess(data) {
-      setProjectExcessSettlementFunds(data)
     }
   })
 
@@ -131,7 +116,7 @@ const MinterDAExpSettlementV1Interface = (
           />
         )
       }
-      <MinterDAExpSettlementV1Button
+      <MinterDAExpV4Button
         coreContractAddress={coreContractAddress}
         mintContractAddress={mintContractAddress}
         projectId={projectId}
@@ -144,11 +129,10 @@ const MinterDAExpSettlementV1Interface = (
         verifyBalance={balance?.data?.value.gt(projectPriceInfo.tokenPriceInWei) || false}
         isPaused={isPaused}
         isSoldOut={isSoldOut}
-        excessSettlementFunds={projectExcessSettlementFunds}
         auctionHasStarted={auctionHasStarted}
       />
     </Box>
   )
 }
 
-export default MinterDAExpSettlementV1Interface
+export default MinterDAExpV4Interface

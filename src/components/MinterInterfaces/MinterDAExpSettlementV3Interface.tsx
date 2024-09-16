@@ -1,12 +1,15 @@
 import { useState } from "react"
-import { useAccount, useContractReads } from "wagmi"
+import moment from "moment-timezone"
+import {useAccount, useBalance, useContractRead, useContractReads} from "wagmi"
 import { BigNumber } from "ethers"
 import { Box } from "@mui/material"
 import GenArt721CoreV3_EngineABI from "abi/V3/GenArt721CoreV3_Engine.json"
-import MinterSetPriceERC20V4ABI from "abi/V3/MinterSetPriceERC20V4.json"
+import MinterDAExpSettlementV1ABI from "abi/V3/MinterDAExpSettlementV1.json"
+import MintingCountdown from "components/MintingCountdown"
 import MintingProgress from "components/MintingProgress"
 import MintingPrice from "components/MintingPrice"
-import MinterSetPriceERC20V4Button from "components/MinterButtons/MinterSetPriceERC20V4Button"
+import MinterDAExpSettlementV1Button from "components/MinterButtons/MinterDAExpSettlementV3Button"
+import useCountOwnedTokens from "../../hooks/useCountOwnedTokens";
 
 interface Props {
   coreContractAddress: string,
@@ -16,7 +19,7 @@ interface Props {
   scriptAspectRatio: number
 }
 
-const MinterSetPriceERC20V4Interface = (
+const MinterDAExpSettlementV1Interface = (
   {
     coreContractAddress,
     mintContractAddress,
@@ -27,10 +30,15 @@ const MinterSetPriceERC20V4Interface = (
 ) => {
 
   const account = useAccount()
+  const balance = useBalance({
+    address: account.address
+  })
 
   const [projectStateData, setProjectStateData] = useState<any | null>(null)
   const [projectPriceInfo, setProjectPriceInfo] = useState<any | null>(null)
   const [projectConfig, setProjectConfig] = useState<any | null>(null)
+  const [projectExcessSettlementFunds, setProjectExcessSettlementFunds] = useState<any | null>(BigNumber.from(0))
+  const countOwnedTokensResponse = useCountOwnedTokens(`${coreContractAddress}-${projectId}`, account?.address?.toLowerCase() || "")
 
   const { data, isError, isLoading } = useContractReads({
     contracts: [
@@ -42,13 +50,13 @@ const MinterSetPriceERC20V4Interface = (
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterSetPriceERC20V4ABI,
+        abi: MinterDAExpSettlementV1ABI,
         functionName: "getPriceInfo",
         args: [BigNumber.from(projectId)]
       },
       {
         address: mintContractAddress as `0x${string}`,
-        abi: MinterSetPriceERC20V4ABI,
+        abi: MinterDAExpSettlementV1ABI,
         functionName: "projectConfig",
         args: [BigNumber.from(projectId)]
       }
@@ -61,6 +69,18 @@ const MinterSetPriceERC20V4Interface = (
     }
   })
 
+  useContractRead({
+    address: mintContractAddress as `0x${string}`,
+    abi: MinterDAExpSettlementV1ABI,
+    functionName: "getProjectExcessSettlementFunds",
+    args: [BigNumber.from(projectId), account.address],
+    watch: true,
+    enabled: account.isConnected && countOwnedTokensResponse?.data?.tokens?.length > 0,
+    onSuccess(data) {
+      setProjectExcessSettlementFunds(data)
+    }
+  })
+
   if (!data || !projectStateData || !projectPriceInfo || !projectConfig || isLoading || isError) {
     return null
   }
@@ -69,15 +89,20 @@ const MinterSetPriceERC20V4Interface = (
   const maxInvocations = projectStateData.maxInvocations.toNumber()
   const maxHasBeenInvoked = projectConfig.maxHasBeenInvoked
   const currencySymbol = projectPriceInfo.currencySymbol
-  const currencyAddress = projectPriceInfo.currencyAddress
   const currentPriceWei = projectPriceInfo.tokenPriceInWei
   const priceIsConfigured = projectPriceInfo.isConfigured
+  const startPriceWei = projectConfig.startPrice
+  const endPriceWei = projectConfig.basePrice
+  const auctionStartUnix = projectConfig.timestampStart.toNumber()
+  const auctionHasStarted = auctionStartUnix <= moment().unix()
+  const auctionStartFormatted = moment.unix(auctionStartUnix).format("LLL")
+  const auctionStartCountdown = moment.unix(auctionStartUnix).fromNow()
   const isSoldOut = maxHasBeenInvoked || invocations >= maxInvocations
   const isPaused = projectStateData.paused
   const isArtist = account.isConnected && account.address?.toLowerCase() === artistAddress?.toLowerCase()
   const isNotArtist = account.isConnected && account.address?.toLowerCase() !== artistAddress?.toLowerCase()
-  const artistCanMint = isArtist && priceIsConfigured && !isSoldOut
-  const anyoneCanMint = isNotArtist && priceIsConfigured && !isSoldOut && !isPaused
+  const artistCanMint = isArtist && priceIsConfigured && !isSoldOut && auctionHasStarted
+  const anyoneCanMint = isNotArtist && priceIsConfigured && !isSoldOut && auctionHasStarted && !isPaused
 
   return (
     <Box>
@@ -87,32 +112,43 @@ const MinterSetPriceERC20V4Interface = (
         maxHasBeenInvoked={maxHasBeenInvoked}
       />
       {
+        priceIsConfigured && !auctionHasStarted &&
+        (
+          <MintingCountdown
+            auctionStartFormatted={auctionStartFormatted}
+            auctionStartCountdown={auctionStartCountdown}
+          />
+        )
+      }
+      {
         priceIsConfigured &&
         (
           <MintingPrice
-            startPriceWei={currentPriceWei}
+            startPriceWei={startPriceWei}
             currentPriceWei={currentPriceWei}
-            endPriceWei={currentPriceWei}
+            endPriceWei={endPriceWei}
             currencySymbol={currencySymbol}
           />
         )
       }
-      <MinterSetPriceERC20V4Button
+      <MinterDAExpSettlementV1Button
         coreContractAddress={coreContractAddress}
         mintContractAddress={mintContractAddress}
         projectId={projectId}
         priceWei={currentPriceWei}
         currencySymbol={currencySymbol}
-        currencyAddress={currencyAddress}
         isConnected={account.isConnected}
         artistCanMint={artistCanMint}
         anyoneCanMint={anyoneCanMint}
         scriptAspectRatio={scriptAspectRatio}
+        verifyBalance={balance?.data?.value.gt(projectPriceInfo.tokenPriceInWei) || false}
         isPaused={isPaused}
         isSoldOut={isSoldOut}
+        excessSettlementFunds={projectExcessSettlementFunds}
+        auctionHasStarted={auctionHasStarted}
       />
     </Box>
   )
 }
 
-export default MinterSetPriceERC20V4Interface
+export default MinterDAExpSettlementV1Interface
